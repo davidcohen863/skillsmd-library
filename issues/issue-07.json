@@ -1,0 +1,443 @@
+{
+ "issue": 7,
+ "date": "5 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 5 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #7 had five trending repos and four AI skills. This page covers eight of them. Most are add-ons for a coding agent, from testing and CAD to page speed and review replies. If you only try two, start with gstack and blueline-speed.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "e2e",
+   "repo": "github.com/tester-army/e2e",
+   "stars": "3.7k",
+   "level": "Intermediate",
+   "cost": "Free (Apache-2.0), plus model costs if you use a paid subscription or API key",
+   "works_with": "Web apps (Chromium, Firefox and WebKit through Playwright) and iOS and Android apps on simulators and emulators",
+   "short": "Write end-to-end tests in plain language and let an AI agent drive your web or mobile app.",
+   "what": "An end-to-end testing framework for web and mobile apps. You describe a goal in natural language, an agent drives the app to reach it, and you check the result with normal locators and assertions in the same test. Agent steps that pass get recorded and replayed with no model calls until the app changes.",
+   "who": "Developers and QA engineers who write end-to-end tests for web or mobile apps and want fewer brittle selectors. Skip it if you need a stable API today, since it is still on the way to 1.0.",
+   "needs": [
+    "Node.js, since setup runs through npx",
+    "A model provider for agent steps: your own subscription, API key, or a local model. Tests without agent steps need no model",
+    "For mobile: iOS simulators or Android emulators"
+   ],
+   "steps": [
+    {
+     "title": "Set up e2e in your project",
+     "text": "init asks for an engine (web or mobile) and a model provider, then writes a config and an example test.",
+     "code": "npx e2e init"
+    },
+    {
+     "title": "Look at a finished setup",
+     "text": "The examples/ folder has standalone projects for Vite, Next.js, Astro, Expo, SwiftUI, Jetpack Compose, Kotlin Multiplatform and Flutter, each with a passing suite."
+    },
+    {
+     "title": "Read the docs offline if you like",
+     "text": "The e2e package ships every docs page, so your coding agent can read them in node_modules/e2e/docs."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A test file in your project (tests/checkout.e2e.ts)",
+    "text": "import { test, expect } from 'e2e';\n\ntest('a member upgrades to Pro', async ({ app, agent, screen }) => {\n  await app.open('/settings/billing');\n\n  await agent.act('upgrade the workspace to the Pro plan');\n  await agent.assert('the invoice preview shows a prorated amount');\n\n  await expect(screen.getByRole('status')).toContainText('Pro');\n});"
+   },
+   "watch": [
+    "The CLI sends anonymous usage data by default (commands, engines, where runs fail), but no test content, app content or credentials. Turn it off with `npx e2e telemetry disable` or `E2E_TELEMETRY_DISABLED=1`.",
+    "It is in active development before 1.0. APIs and config can change between minor releases."
+   ],
+   "sources": [
+    "https://github.com/tester-army/e2e"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "pstack",
+   "repo": "github.com/michael-denyer/pstack-claude",
+   "stars": "1.3k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, Pi, GitHub Copilot CLI and app. Docs cover OpenCode, Gemini CLI, Prime Agent and skills-only installs",
+   "short": "A port of Lauren Tan's pstack skill stack that routes your coding task to a fitting, verified workflow.",
+   "what": "A port of Lauren Tan's pstack, an opinionated skill stack first made for Cursor, to Claude Code, Codex, Pi, GitHub Copilot and other agents. You tell poteto-mode your goal and it picks a playbook, for example reproducing a bug, investigating, delegating the fix and rerunning the failing case. Other playbooks cover planning, features, refactoring, performance, prototypes, PR maintenance and shipping.",
+   "who": "Developers who already use a coding agent and want it to follow a set process with evidence for each fix. Skip it if you prefer to steer your agent prompt by prompt without an extra routing layer.",
+   "needs": [
+    "One of the supported agents: Claude Code, Codex, Pi or GitHub Copilot (the Copilot build is tested on Copilot CLI 1.0.87 to 1.0.92)",
+    "GitHub CLI login for the PR tools",
+    "An AI model account through your agent"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code: add the marketplace and install",
+     "text": "Run these inside Claude Code.",
+     "code": "/plugin marketplace add michael-denyer/pstack-claude\n/plugin install pstack@pstack-claude"
+    },
+    {
+     "title": "Codex: install from your terminal",
+     "code": "codex plugin marketplace add michael-denyer/pstack-claude\ncodex plugin add pstack@pstack-claude"
+    },
+    {
+     "title": "Pi: install from your terminal",
+     "text": "Invoke a skill with /skill:<name>.",
+     "code": "pi install git:github.com/michael-denyer/pstack-claude"
+    },
+    {
+     "title": "GitHub Copilot: install from your terminal",
+     "text": "Start a new session afterwards. The first skill that needs a model runs setup-pstack to pick one from your account.",
+     "code": "copilot plugin marketplace add michael-denyer/pstack-claude\ncopilot plugin install pstack@pstack-claude"
+    },
+    {
+     "title": "Optional: change models, effort or routing",
+     "text": "setup-pstack sets model defaults, reasoning effort per role, or turns automatic routing off. In Claude Code and the Copilot CLI:",
+     "code": "/pstack:setup-pstack"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Use poteto-mode to fix the search filter resetting when I change pages."
+   },
+   "watch": [
+    "The plugin installs a routing hook on Claude Code, Codex and GitHub Copilot. Codex asks you to trust it through /hooks before it runs. You can turn routing off with setup-pstack.",
+    "No server or telemetry. Anything the skills ask your agent to read, including session transcripts, goes to your model provider.",
+    "PR tools use your GitHub CLI login.",
+    "On Copilot CLI 1.0.92, non-interactive `copilot -p` sessions may not list plugin skills. Interactive sessions are unaffected."
+   ],
+   "sources": [
+    "https://github.com/michael-denyer/pstack-claude"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "gstack",
+   "repo": "github.com/garrytan/gstack",
+   "stars": "135.3k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Claude Code (full support). Experimental on OpenAI Codex CLI, OpenCode, Cursor, Factory Droid, Kiro and GitHub Copilot CLI; instruction-only for OpenClaw, Slate, Hermes and other rules-reading agents",
+   "short": "Garry Tan's set of slash commands that give your coding agent planning, review, QA and release roles.",
+   "what": "A collection of slash-command skills, written in Markdown, that run a sprint from idea to shipped PR: /office-hours to reframe the idea, plan reviews for scope, architecture and design, /review for bugs, /qa in a real browser, /cso for security audits and /ship to open the PR. Each step writes files the next one reads, such as a design doc or test plan.",
+   "who": "Founders, tech leads and first-time Claude Code users who want a structured process instead of a blank prompt. Skip it if you want a light install, since it builds a browser, adds hooks and edits CLAUDE.md.",
+   "needs": [
+    "Claude Code (or another supported agent)",
+    "Git",
+    "Bun v1.4.2+ (tested version). Setup refuses Bun older than 1.3.3",
+    "Node.js on Windows only",
+    "Optional on macOS: the Aside browser. Without it, setup builds gstack's own bundled browser",
+    "Optional for /cso: a native C toolchain (static-capable C compiler on Linux, Xcode command-line tools on macOS, Visual Studio 2022 Build Tools on Windows)"
+   ],
+   "steps": [
+    {
+     "title": "Install for Claude Code",
+     "text": "The README gives this as a prompt to paste into Claude Code, which also asks it to add a gstack section to CLAUDE.md listing the skills. The command it runs is:",
+     "code": "git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup"
+    },
+    {
+     "title": "Or install for other agents",
+     "text": "--host auto installs for every agent setup detects. Use --host codex (or another name) for one agent.",
+     "code": "git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack\ncd ~/gstack && ./setup --host auto"
+    },
+    {
+     "title": "Check what got installed",
+     "code": "./setup --status"
+    },
+    {
+     "title": "Optional: team mode for a shared repo",
+     "text": "Run from inside your repo. It bootstraps the repo so teammates get gstack and commits the change. Swap required for optional to nudge instead of block.",
+     "code": "(cd ~/.claude/skills/gstack && ./setup --team) && ~/.claude/skills/gstack/bin/gstack-team-init required && git add .claude/ CLAUDE.md && git commit -m \"require gstack for AI-assisted work\""
+    },
+    {
+     "title": "Follow the quick start",
+     "text": "Run /office-hours and describe what you're building, then /plan-ceo-review on a feature idea, /review on a branch with changes, and /qa on your staging URL."
+    },
+    {
+     "title": "If something is wrong, run the doctor",
+     "code": "~/.claude/skills/gstack/bin/gstack-doctor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "I want to build a daily briefing app for my calendar.\n/office-hours"
+   },
+   "watch": [
+    "Setup registers a default-on Stop hook in ~/.claude/settings.json. Opt out with `./setup --no-timeline-stop-hook`.",
+    "The suggested CLAUDE.md section tells your agent to use gstack's /browse for all web browsing and never use the Claude in Chrome tools. Edit it if you don't want that.",
+    "Team mode commits changes to your repo and runs an auto-update check at the start of each Claude Code session.",
+    "Browser skills can use your real logged-in sessions (Aside) or cookies you copy in with /setup-browser-cookies. Be careful which sites and profiles you share.",
+    "Telemetry is opt-in and off by default. gstack asks on first run. Turn it off later with `gstack-config set telemetry off`.",
+    "Some features call other AI services: outside reviews through Codex or Claude Code, and the design tool uses OpenAI models with an OPENAI_API_KEY.",
+    "To remove it, run `~/.claude/skills/gstack/bin/gstack-uninstall`. It does not edit CLAUDE.md, so remove the gstack sections yourself."
+   ],
+   "sources": [
+    "https://github.com/garrytan/gstack"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "text-to-cad",
+   "repo": "github.com/earthtojake/text-to-cad",
+   "stars": "17k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Fabrication services it connects to charge separately",
+   "works_with": "Claude Code, Claude Desktop, Codex, Cursor, Grok Build, Gemini, and other agents through the Skills CLI",
+   "short": "Lets your coding agent design 3D models as STEP, STL, 3MF or GLB files and check them for manufacturing.",
+   "what": "A plugin and skill set that gives your agent local workflows for making 3D CAD models from plain-language or image requests, with export to STEP, GLB, STL or 3MF. It also makes engineering drawings and DXF files, runs design-for-manufacturing and 3D printability checks, writes robot description files (URDF, SRDF, SDF), slices G-code and sends prints to Bambu Lab printers. A local viewer shows the models.",
+   "who": "Makers, hardware engineers and robotics developers who want an agent to draft printable or machinable parts. Skip it if you need a full interactive CAD program.",
+   "needs": [
+    "uv (check with `uv --version`)",
+    "Python 3.11+ and Node.js 20+ (listed in the README badges)",
+    "A network connection on first start, which downloads the CAD runtime",
+    "On Windows 11, Smart App Control must be off, or run the CAD skills under WSL"
+   ],
+   "steps": [
+    {
+     "title": "Easiest: ask your agent to install it",
+     "code": "Install text-to-cad from https://github.com/earthtojake/text-to-cad"
+    },
+    {
+     "title": "Claude Code",
+     "text": "Restart the app afterwards.",
+     "code": "claude plugin marketplace add earthtojake/text-to-cad#latest\nclaude plugin install text-to-cad@earthtojake"
+    },
+    {
+     "title": "Codex",
+     "text": "Install from Codex's plugin directory, or manually:",
+     "code": "codex plugin marketplace add earthtojake/text-to-cad --ref latest\ncodex plugin add text-to-cad@earthtojake"
+    },
+    {
+     "title": "Cursor",
+     "text": "Skip this if the Claude Code plugin is already installed. Restart Cursor after cloning.",
+     "code": "git clone --depth 1 --branch latest https://github.com/earthtojake/text-to-cad ~/.cursor/plugins/local/text-to-cad"
+    },
+    {
+     "title": "Gemini",
+     "code": "gemini extensions install https://github.com/earthtojake/text-to-cad --ref latest --consent --auto-update"
+    },
+    {
+     "title": "Other agents: install the skills only",
+     "text": "Install either the plugin or the skills in an app, not both. Claude Desktop and Grok Build have their own steps in the README.",
+     "code": "npx skills add earthtojake/text-to-cad#latest"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Make a simple mounting bracket with two screw holes, export it as STEP and STL, and show me the model."
+   },
+   "watch": [
+    "Telemetry is on by default: usage stats and crash reports with a random install ID, sent to PostHog, never file names, paths, contents or prompts. Turn it off with `uvx cadgen telemetry off`.",
+    "cadgen checks api.texttocad.dev for updates at most once a day. `CADGEN_UPDATE_CHECK=0` turns it off.",
+    "The Gemini install uses --consent to answer its security prompt and --auto-update. The Grok Build install uses --trust. Know what you are accepting.",
+    "On Windows 11 with Smart App Control on, every cadgen command fails because the OCP module is unsigned. Turning Smart App Control off can only be undone by reinstalling Windows.",
+    "The Bambu Labs skill sends prints to your Bambu Lab printer, and the SendCutSend skill prepares files for upload to that service. Check files before anything is sent or ordered."
+   ],
+   "sources": [
+    "https://github.com/earthtojake/text-to-cad"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "reply-to-customer-review-workflow",
+   "repo": "github.com/acaprino/daodan",
+   "stars": "",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Codex (this is the Codex export of the Daodan digital-marketing plugin). The same plugin also ships for Claude Code, GitHub Copilot, Pi and OpenCode V2",
+   "short": "Drafts a ready-to-post reply to a customer review, matched to its tone, language and sector.",
+   "what": "Paste a customer review from Airbnb, Booking, Tripadvisor, Amazon, Trustpilot, the App Store or Google, and the skill drafts a reply. It reads the review's language, sentiment, severity and sector, then gives you the reply, a short analysis and operational suggestions. You can set the brand name, tone (formal, friendly or casual), output language and sector, and ask for changes such as \"shorter\" or \"more formal\".",
+   "who": "Hotel and rental hosts, shop owners and app teams who answer reviews often. Skip it if you want general marketing copy, which the skill points to a different tool for, or if you don't use one of the supported coding agents.",
+   "needs": [
+    "Codex with plugin marketplace support",
+    "The digital-marketing plugin from the Daodan marketplace. It lists text-humanizer and playwright@claude-plugins-official as required dependencies",
+    "Codex runtime subagent support, which the host guide lists as the requirement for Daodan worker roles"
+   ],
+   "steps": [
+    {
+     "title": "Add the Daodan marketplace to Codex",
+     "code": "codex plugin marketplace add acaprino/daodan"
+    },
+    {
+     "title": "Install the digital-marketing plugin",
+     "text": "The host guide's example installs project-lifecycle@daodan and says to replace that ID with another plugin ID for an independent tool. Swap in digital-marketing@daodan before you run it.",
+     "code": "codex plugin install project-lifecycle@daodan"
+    },
+    {
+     "title": "Install the required dependencies",
+     "text": "The plugin page says digital-marketing needs the text-humanizer plugin and playwright@claude-plugins-official. Register any foreign marketplaces they need as part of installation."
+    },
+    {
+     "title": "Run the skill",
+     "text": "On Codex the entry is the reply-to-customer-review-workflow skill. Paste the review and any flags. Without arguments it asks you to paste a review."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/digital-marketing:reply-to-customer-review \"Amazing stay! The view was breathtaking and the host was incredibly welcoming.\" --brand \"Casa Luna\"\n\nThe skill's examples use this Claude notation. On Codex, call the reply-to-customer-review-workflow skill with the same text and flags."
+   },
+   "watch": [
+    "It hands off to a separate skill, review-reply-method, from the same plugin. Install the whole plugin, not just this folder.",
+    "The plugin's required capabilities include shell access, repository writes and network fetch, and it depends on the Playwright plugin, even though this skill only drafts text.",
+    "Read the draft before posting it. The skill writes replies for you to copy; it does not post them.",
+    "The project notes that a passing package test does not prove a newly installed host runs the workflow correctly."
+   ],
+   "sources": [
+    "https://github.com/acaprino/daodan/tree/master/exports/codex/plugins/digital-marketing/skills/reply-to-customer-review-workflow",
+    "https://github.com/acaprino/daodan",
+    "https://github.com/acaprino/daodan/blob/HEAD/docs/plugins/digital-marketing.md",
+    "https://github.com/acaprino/daodan/blob/HEAD/docs/hosts.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "llm-seo-audit-workflow",
+   "repo": "github.com/acaprino/daodan",
+   "stars": "",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Codex (this is the Codex export of the Daodan digital-marketing plugin), with the Playwright MCP server. The same plugin also ships for Claude Code, GitHub Copilot, Pi and OpenCode V2",
+   "short": "Audits a site or page to see whether AI answer engines can find and quote it, and writes a report.",
+   "what": "An answer-engine optimization audit for a live URL or a built static site. It checks the AI-bot allowlist in robots.txt, E-E-A-T signals, JSON-LD structured data, how easily passages can be quoted, and hidden text that could act as prompt injection. A worker agent runs a 6-phase audit and writes .aeo-audit/REPORT.md with scores, critical findings and AI-referral tracking setup.",
+   "who": "Site owners, marketers and SEO people who want their pages cited in AI Overviews, Perplexity, ChatGPT Search and similar tools. Skip it for traditional ranking SEO; the plugin has a separate seo-audit workflow for that.",
+   "needs": [
+    "Codex with plugin marketplace support and runtime subagent support",
+    "The digital-marketing plugin from the Daodan marketplace, plus its required text-humanizer plugin",
+    "playwright@claude-plugins-official (Microsoft's Playwright MCP server), which the skill uses to check live pages",
+    "A live URL or a path to built HTML output"
+   ],
+   "steps": [
+    {
+     "title": "Add the Daodan marketplace to Codex",
+     "code": "codex plugin marketplace add acaprino/daodan"
+    },
+    {
+     "title": "Install the digital-marketing plugin",
+     "text": "The host guide's example installs project-lifecycle@daodan and says to replace that ID with another plugin ID for an independent tool. Swap in digital-marketing@daodan before you run it.",
+     "code": "codex plugin install project-lifecycle@daodan"
+    },
+    {
+     "title": "Set up Playwright",
+     "text": "The plugin page lists playwright@claude-plugins-official as a required dependency for browser-based audits. For Codex it points to a per-host table in the project README; the shipped server comes with a note giving the registration command."
+    },
+    {
+     "title": "Run the audit",
+     "text": "On Codex the entry is the llm-seo-audit-workflow skill. Pass a URL or a local folder. Add --focus to limit the checks (crawlers, eeat, schema, passages, injection) or --strict-mode for a PASS/FAIL verdict."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/digital-marketing:llm-seo-audit https://example.com --focus schema,eeat\n\nThe skill's examples use this Claude notation. On Codex, call the llm-seo-audit-workflow skill with the same target and flags."
+   },
+   "watch": [
+    "It fetches the target site live through a browser. Run it only on sites you own or may review.",
+    "It writes results to an .aeo-audit/ folder in your project so later runs can compare against the first one. Decide whether to commit that folder.",
+    "The skill is a thin wrapper. The real work is done by the llm-seo-optimize agent from the same plugin, so install the whole plugin.",
+    "The plugin's required capabilities include shell access, repository writes and network fetch."
+   ],
+   "sources": [
+    "https://github.com/acaprino/daodan/tree/master/exports/codex/plugins/digital-marketing/skills/llm-seo-audit-workflow",
+    "https://github.com/acaprino/daodan",
+    "https://github.com/acaprino/daodan/blob/HEAD/docs/plugins/digital-marketing.md",
+    "https://github.com/acaprino/daodan/blob/HEAD/docs/hosts.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "blueline-speed",
+   "repo": "github.com/loriscomba97/blueline",
+   "stars": "",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Agent Skills format, tested with Claude Code and Codex. Helper scripts need Node.js 22 or later",
+   "short": "Finds why a marketing page is slow and what to fix first, with evidence for every finding.",
+   "what": "A page speed review skill from blueline, covering its laws 8 and 9: your page loads first, and media is prepared once and cached. It checks Core Web Vitals from real-user data, render-blocking and third-party scripts, JavaScript weight, fonts, the main image, layout shifts, caching, image formats and sizes, lazy loading and video. Two Node scripts collect facts as JSON, and the agent writes a fixed-shape report where every finding quotes a command output, file line or page text.",
+   "who": "Developers and marketers who run a marketing site and want a prioritized list of speed fixes. Skip it if you want a full site review, which the main blueline skill covers, or if you want automatic fixes without a review first.",
+   "needs": [
+    "A coding agent that supports Agent Skills. The README names Claude Code and Codex",
+    "A shell. Checks on a live site need network access",
+    "Node.js 22 or later for the helper scripts. Without Node, the references give equivalent curl commands",
+    "Optional: a CrUX API key in an environment variable for real-user speed data. Without it, the skill says to use PageSpeed Insights in a browser",
+    "Optional: an agent with a browser, for checks that compare raw and rendered HTML or need the first screen"
+   ],
+   "steps": [
+    {
+     "title": "Install from your project folder",
+     "text": "This installs all six blueline skills. Add -g for all your projects, or -s with a skill name to install only one. Each skill carries its own references and scripts, so blueline-speed can be installed on its own.",
+     "code": "npx skills add loriscomba97/blueline"
+    },
+    {
+     "title": "Call the skill",
+     "text": "Use /blueline-speed <url> in Claude Code or $blueline-speed <url> in Codex, or ask in plain words about page speed."
+    },
+    {
+     "title": "Or run the scripts yourself",
+     "text": "Run them from the skill's folder. Each prints JSON facts and signals.",
+     "code": "node scripts/page.mjs https://www.example.com/            # scripts in the head, stylesheets, fonts, images in order, video, cache headers\nnode scripts/assets.mjs https://www.example.com/          # JavaScript and CSS weight, image formats, sizes, cache lifetimes"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/blueline-speed <url> in Claude Code, or $blueline-speed <url> in Codex. Replace <url> with a site you own or may review."
+   },
+   "watch": [
+    "The scripts send GET and HEAD requests to the site under review and do not apply robots.txt. They go one request at a time with delays. Review only sites you own or may review.",
+    "Some fallback curl commands save page.html in the current folder.",
+    "The skill reviews first and changes nothing until you ask. Then it fixes one finding at a time.",
+    "Google guidance quoted in the references was checked on 30 September 2026. Newer changes are not covered.",
+    "The README says the checks do not guarantee rankings, AI citations or traffic."
+   ],
+   "sources": [
+    "https://github.com/loriscomba97/blueline/tree/main/skills/blueline-speed",
+    "https://github.com/loriscomba97/blueline"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "explain",
+   "repo": "github.com/aryank-08/agentic-dev-kit",
+   "stars": "37",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code (the README is written for Claude Code skills folders)",
+   "short": "Makes your coding agent explain code and concepts in plain, short English, with diagrams or a one-page sheet when useful.",
+   "what": "A skill that triggers whenever you ask your coding agent to explain something: code, a flow, a bug, a concept or an architecture. It picks the lightest format that works (text, an ASCII or sketch-style diagram, a one-page HTML reference sheet, or a video only if asked) and writes in simplified technical English based on ASD-STE100 rules. It also has an \"explain like I'm 13\" mode that uses one everyday analogy throughout.",
+   "who": "Anyone who uses Claude Code to understand an unfamiliar codebase or topic and wants shorter, clearer answers. Skip it if you prefer long, detailed prose, or if you use a different agent and don't want to adapt the setup.",
+   "needs": [
+    "Claude Code",
+    "curl, for the one-line install. Or a clone of the repo",
+    "For HTML pages and rich diagrams, the skill calls on an Artifact tool and the artifact-design and artifact-diagramming skills. For videos it names a faceless-explainer skill. None of these ship with this repo"
+   ],
+   "steps": [
+    {
+     "title": "Install for one project",
+     "text": "Run this from your project folder. For all your projects, use ~/.claude/skills/explain in both places instead of .claude/skills/explain.",
+     "code": "mkdir -p .claude/skills/explain && curl -fsSL https://raw.githubusercontent.com/ARYANK-08/agentic-dev-kit/main/skills/explain/SKILL.md -o .claude/skills/explain/SKILL.md"
+    },
+    {
+     "title": "Or copy from a clone",
+     "code": "mkdir -p .claude/skills\ncp -r path/to/agentic-dev-kit/skills/<name> .claude/skills/"
+    },
+    {
+     "title": "Restart Claude Code",
+     "text": "The skill loads when your request matches its description, so just ask for an explanation."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Explain Redux like I'm 13."
+   },
+   "watch": [
+    "The install downloads a single SKILL.md file. It does not run any script. Read the file after downloading if you want to check it.",
+    "The README gives no license, so reuse terms are not stated.",
+    "The richer formats depend on tools and skills from outside this repo. Without them, expect text and ASCII diagrams."
+   ],
+   "sources": [
+    "https://github.com/aryank-08/agentic-dev-kit/tree/main/skills/explain",
+    "https://github.com/aryank-08/agentic-dev-kit"
+   ]
+  }
+ ]
+}
