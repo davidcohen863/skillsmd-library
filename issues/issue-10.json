@@ -1,0 +1,402 @@
+{
+ "issue": 10,
+ "date": "8 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 8 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #10 had four trending repos and four new AI skills. Most of them are for people who already work with a coding agent. Two are specialist tools: a Windows debugger and a kit for running computer-use agents. If you only try two, start with Cloudflare's security audit skill and cmux.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "security-audit",
+   "repo": "github.com/cloudflare/security-audit-skill",
+   "stars": "26.4k",
+   "level": "Intermediate",
+   "cost": "Free (MIT) + agent costs",
+   "works_with": "Coding agents with tool use and parallel sub-agents",
+   "short": "Cloudflare's skill that turns your coding agent into a security auditor that checks each finding twice.",
+   "what": "A skill from Cloudflare that runs a security audit of a codebase in six phases: mapping the code, hunting for bugs, trying to disprove each candidate, writing structured findings, verifying them again with fresh agents, and writing a report. Every finding ends up as confirmed, needs validation, or rejected. Cloudflare says it's the single-repo starting point for its own vulnerability discovery harness.",
+   "who": "Developers and security people who want a structured audit of their own code from their coding agent. If your agent can't run parallel sub-agents, this won't work as designed.",
+   "needs": [
+    "A coding agent with a model that supports tool use and parallel sub-agents",
+    "Node.js, for the two small validator scripts the skill runs",
+    "An OS-enforced sandbox if you want it to build or run the target's code. Without one, it leaves those leads as needs validation"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "This uses the Skills CLI. Run `npx skills --help` to pick agents or install without prompts.",
+     "code": "npx skills add https://github.com/cloudflare/security-audit-skill \\\n  --skill security-audit"
+    },
+    {
+     "title": "Or install it for your user account",
+     "code": "npx skills add https://github.com/cloudflare/security-audit-skill \\\n  --skill security-audit \\\n  --global"
+    },
+    {
+     "title": "Start your agent in the code you want to audit",
+     "text": "Then ask for an audit. The skill switches on by itself when you ask for a security audit, a vulnerability hunt or a pen test."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, in the target repo",
+    "text": "security audit this codebase\n\nOr:\nfind security vulnerabilities in ./src\ndo a security review, output to ~/audits/my-project"
+   },
+   "watch": [
+    "A full audit starts many separate sub-agents for hunting and checking, and each one draws on your agent's plan or credits.",
+    "Reports go to `~/security-audit-skill/<repo-name>/run-<N>` unless you name a folder. It only writes inside the audited repo if you pick a folder that version control ignores.",
+    "The README's sandbox rules for running target code are strict: no outside network, a cleaned environment, resource limits and writes only to scratch folders. Don't let it run untrusted code outside one.",
+    "Runs add up. In Cloudflare's tests, one run found roughly half of what repeated runs found in total."
+   ],
+   "sources": [
+    "https://github.com/cloudflare/security-audit-skill"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Cua",
+   "repo": "github.com/trycua/cua",
+   "stars": "28.9k",
+   "level": "Advanced",
+   "cost": "Free for individuals",
+   "works_with": "Claude Code, Codex, Cursor, OpenClaw and other agents",
+   "short": "Gives AI agents full computers to use: desktops, local VMs, app control and benchmarks.",
+   "what": "A set of tools for computer-use agents. Cua Spaces is a desktop app that gives your agents full desktops, as macOS VMs on your Mac or Linux images. Cua Driver lets an agent inspect and operate desktop apps and browsers on macOS, Windows and Linux. The repo also has Lume for local VMs on Apple Silicon, small CUA-S1 models and Cua Bench for testing agents.",
+   "who": "Developers building or testing agents that click and type in real apps. If you just want a coding agent to edit files, you don't need this.",
+   "needs": [
+    "For Cua Spaces: macOS 26 or later",
+    "For Lume: a Mac with Apple Silicon",
+    "For Cua Bench: Python 3.12 or 3.13 and uv",
+    "Your own agent and model. Cua supplies the computer and the automation tools"
+   ],
+   "steps": [
+    {
+     "title": "Install Cua Spaces and the cua CLI (macOS)",
+     "text": "The installer shows a checklist (the CLI, the Spaces app, the Driver MCP and skill, hosting this machine), then runs `cua auth login`.",
+     "code": "curl -fsSL https://cua.ai/install.sh | sh"
+    },
+    {
+     "title": "Or install only Cua Driver on macOS or Linux",
+     "code": "/bin/bash -c \"$(curl -fsSL https://cua.ai/driver/install.sh)\""
+    },
+    {
+     "title": "Cua Driver on Windows (PowerShell)",
+     "code": "irm https://cua.ai/driver/install.ps1 | iex"
+    },
+    {
+     "title": "Try a local sandbox with the CLI",
+     "code": "cua sb create ubuntu --name dev          # a gVisor container, set up on first use\ncua sb exec dev uname -a\ncua sb screenshot dev\ncua sb rm dev"
+    },
+    {
+     "title": "Optional: Cua Bench",
+     "text": "Its first task needs no VM, Docker or model API key.",
+     "code": "uv tool install 'cua-bench[browser]'\nuv tool run --from 'cua-bench[browser]' playwright install chromium"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your agent, with Cua Driver connected",
+    "text": "Ask your agent to compute 6 × 7 in Calculator and check that the app shows 42. The Driver quickstart at cua.ai/docs/cua-driver/quickstart covers permissions and connecting your agent."
+   },
+   "watch": [
+    "Every install command pipes a script from cua.ai straight into your shell. Download it and read it first.",
+    "`cua auth login` signs you in and offers to install cua skills and the cua MCP server into your coding agents. You can say no.",
+    "Teleport moves signed-in apps such as Chrome or Slack into a Space. The README says sessions stay encrypted on your Mac and reach a Space only after you approve.",
+    "`cua host setup` makes your machine reachable through the cua.ai relay. Only run it if you want that.",
+    "Don't install the old `cuabot` npm package. The README says it has known security issues.",
+    "Cua Spaces is source-available under FSL-1.1-MIT. The rest of the repo is MIT."
+   ],
+   "sources": [
+    "https://github.com/trycua/cua"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "RAD Debugger",
+   "repo": "github.com/EpicGames/raddebugger",
+   "stars": "8k",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Windows x64 (debugging). Builds on Windows and Linux",
+   "short": "Epic Games' native graphical debugger for Windows x64, which can debug several processes at once.",
+   "what": "A native, user-mode graphical debugger that can handle multiple processes. Right now it only debugs programs on your own Windows x64 machine with PDB debug info. Linux and DWARF support are planned. The project also includes the RAD Linker, a fast MSVC-compatible linker for huge projects, and its own debug info format (RDI).",
+   "who": "C and C++ developers on Windows x64, especially on very large codebases. Skip it if you need to debug on macOS or Linux today. It's still alpha.",
+   "needs": [
+    "A Windows x64 machine to debug on",
+    "To build on Windows: Microsoft C/C++ Build Tools v15 (2017) or later, or Clang with the Windows SDK",
+    "To build on Linux: GCC or Clang, plus the freetype, X11, GL and EGL development libraries"
+   ],
+   "steps": [
+    {
+     "title": "Easiest: download a release",
+     "text": "Pre-built binaries are on the project's GitHub releases page. The debugger's own usage README is packaged with each release."
+    },
+    {
+     "title": "Or build on Windows",
+     "text": "Open the `x64 Native Tools Command Prompt for VS <year>`, check the compiler responds with `cl`, then `cd` to the repo root and run:",
+     "code": "build"
+    },
+    {
+     "title": "Make a release build",
+     "text": "The default build is a debug build, which may run slower. A release build takes much longer.",
+     "code": "build release"
+    },
+    {
+     "title": "Build the linker or the radbin tool too",
+     "code": "build radlink release\nbuild radbin release"
+    },
+    {
+     "title": "Or build on Ubuntu, Debian or Mint",
+     "text": "Install the libraries, then run the build script from the repo root.",
+     "code": "sudo apt install -y libfreetype6-dev libx11-dev libxext-dev libxfixes-dev libxrandr-dev libgl-dev libegl-dev\n./build.sh"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "x64 Native Tools Command Prompt",
+    "text": "cl\n\nIf it prints the Microsoft C/C++ compiler banner, run `build` from the repo root. You'll find `raddbg.exe` in the new `build` folder."
+   },
+   "watch": [
+    "It's alpha. Epic asks for bug reports with dump files and steps to reproduce.",
+    "The GitHub README is a technical overview. How to use the debugger is in a separate README that ships with releases, or in the `build` folder after you build.",
+    "The linker's `/rad_large_pages` option can fragment memory on a normal Windows setup and force a reboot. The README recommends it only in Docker or VM images that reset after each link."
+   ],
+   "sources": [
+    "https://github.com/EpicGames/raddebugger"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "cmux",
+   "repo": "github.com/manaflow-ai/cmux",
+   "stars": "28k",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Any terminal agent: Claude Code, Codex, OpenCode, Gemini CLI, Aider and more",
+   "short": "A Mac terminal with vertical tabs that lights up the pane where a coding agent needs you.",
+   "what": "A native macOS terminal built on libghostty, the engine behind Ghostty. When an agent needs your attention, its pane gets a blue ring and its tab lights up in a sidebar that also shows the git branch, PR status, folder and ports. It has a built-in browser your agent can drive, SSH workspaces and a CLI for scripting.",
+   "who": "Mac users who run several coding agent sessions at once and lose track of which one is waiting. It's macOS only for now.",
+   "needs": [
+    "A Mac. cmux is a native Swift and AppKit app",
+    "Optional: Homebrew, for the second install method",
+    "Your agent CLIs installed first, if you want cmux to set up session resume for them"
+   ],
+   "steps": [
+    {
+     "title": "Install from the DMG",
+     "text": "Download `cmux-macos.dmg` from the latest GitHub release, open it and drag cmux into Applications. It updates itself after that."
+    },
+    {
+     "title": "Or install with Homebrew",
+     "code": "brew tap manaflow-ai/cmux\nbrew install --cask cmux"
+    },
+    {
+     "title": "First launch",
+     "text": "macOS may ask you to confirm opening an app from an identified developer. Click Open. It reads your existing Ghostty config for themes and fonts."
+    },
+    {
+     "title": "Let agent sessions resume after a restart",
+     "text": "This sets up hooks for the agents it can find and prints what it skipped.",
+     "code": "cmux hooks setup"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "cmux",
+    "text": "Run two agents side by side (⌘ D splits right). When one stops to wait for you, its pane gets a blue ring. Press ⌘ ⇧ U to jump to the latest unread one.\n\nFor a remote machine: cmux ssh user@remote"
+   },
+   "watch": [
+    "Browser import can copy cookies, history and sessions from Chrome, Firefox, Arc and other browsers into cmux. It's optional, so only use it if you want those logins inside cmux.",
+    "When you reopen cmux it can run your agents' resume commands automatically. Turn off Settings > Terminal > Resume Agent Sessions on Reopen if you'd rather it didn't.",
+    "`cmux hooks setup` changes the hook settings of the agents it finds.",
+    "The README says tokens, passwords, secrets and API keys are dropped from saved resume settings."
+   ],
+   "sources": [
+    "https://github.com/manaflow-ai/cmux"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "literature-review-tools",
+   "repo": "github.com/brycewang-stanford/lit-review-agent-tools",
+   "stars": "32",
+   "level": "Intermediate",
+   "cost": "Skill free. Some tools need API keys",
+   "works_with": "Claude Code, plus other agents that can load a SKILL.md",
+   "short": "Finds papers, fetches legal open-access PDFs and installs research tools like PaperQA2 or MinerU for you.",
+   "what": "A literature review skill with three modes. Look up searches six scholarly indexes (OpenAlex, Crossref, Semantic Scholar, PubMed, Europe PMC, arXiv) and fetches open-access full text with no install and no API key. Recommend picks a tool from a catalog of 70+ open-source projects. Run installs a tool such as MinerU, PaperQA2 or ASReview in its own Python environment and runs it.",
+   "who": "Researchers, students and anyone writing a literature review or related-work section with a coding agent. Its install steps are written for Claude Code.",
+   "needs": [
+    "Python 3. The search scripts and the launcher use only the standard library",
+    "Optional: uv, which the launcher uses when it's there",
+    "API keys only for some tools. GPT Researcher's web UI needs `OPENAI_API_KEY` and `TAVILY_API_KEY`, and the PaperQA2 steps need `OPENAI_API_KEY`"
+   ],
+   "steps": [
+    {
+     "title": "Install as a Claude Code plugin",
+     "text": "This pulls in the skill and the launcher scripts in one step.",
+     "code": "/plugin marketplace add brycewang-stanford/lit-review-agent-tools\n/plugin install lit-review-agent-tools@lit-review-marketplace"
+    },
+    {
+     "title": "Or copy the skill folder",
+     "text": "For one project only, copy it into `.claude/skills/` inside that project instead.",
+     "code": "git clone https://github.com/brycewang-stanford/lit-review-agent-tools\ncp -r lit-review-agent-tools/skills/literature-review-tools ~/.claude/skills/"
+    },
+    {
+     "title": "Restart your agent",
+     "text": "The skill loads on its own when your request is about literature review work. For other agents, point your skills loader at `skills/literature-review-tools/SKILL.md`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "find recent papers on <your topic>\n\nOr:\nget me the PDF for this DOI\ndoes this citation exist?\nwhat should I use to turn PDFs into Markdown for an LLM?"
+   },
+   "watch": [
+    "Run mode installs tools into separate environments under `~/.lit-review-tools/` and keeps API keys in `~/.lit-review-tools/.env`. Your agent runs these installs through its shell.",
+    "Some tools are big. marker and docling pull in PyTorch.",
+    "GPT Researcher and STORM start long-running local web servers (ports 8000 and 8501).",
+    "The README says nothing in it gets round a paywall. Closed papers are reported as closed."
+   ],
+   "sources": [
+    "https://github.com/brycewang-stanford/lit-review-agent-tools/tree/main/skills/literature-review-tools",
+    "https://github.com/brycewang-stanford/lit-review-agent-tools/tree/main/skills",
+    "https://github.com/brycewang-stanford/lit-review-agent-tools"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ask-gemini",
+   "repo": "github.com/humanfia/hoa",
+   "stars": "14",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code (Humanize also has Codex and Kimi setup guides)",
+   "short": "Sends a question to Gemini CLI as an outside expert and brings back an answer backed by web research.",
+   "what": "A skill from the Humanize plugin that passes your question to Gemini CLI and returns its answer. Gemini is always told to research the question with Google Search, so it suits questions that need current information. The copy in this repo sits in a research archive. Humanize itself is mainly a loop where one agent builds and Codex reviews.",
+   "who": "Claude Code users who also have Gemini CLI and want a second, web-researched opinion inside their session. If you don't use Gemini CLI, skip it.",
+   "needs": [
+    "Claude Code. Humanize is a Claude Code plugin",
+    "Gemini CLI installed. The skill stops with an error if it can't find it",
+    "Codex CLI, for the rest of Humanize (its review loop)"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "text": "The vendored README in this repo points to the PolyArch marketplace for installs.",
+     "code": "/plugin marketplace add PolyArch/humanize"
+    },
+    {
+     "title": "Install the Humanize plugin",
+     "code": "/plugin install humanize@PolyArch"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "/humanize:ask-gemini What are the latest best practices for X?\n\nYou can add --gemini-model or --gemini-timeout before the question."
+   },
+   "watch": [
+    "Your question is sent to Gemini through Gemini CLI, under whatever Gemini account the CLI uses.",
+    "The default model is `gemini-3.1-pro-preview` with a one-hour timeout, so a hard question can run a long time.",
+    "Each answer is saved to `.humanize/skill/<timestamp>/output.md` in your project.",
+    "You install the plugin from PolyArch/humanize. That may be newer than the copy in the HOA repo we read (version 1.16.0)."
+   ],
+   "sources": [
+    "https://github.com/humanfia/hoa/tree/main/putnambench/humanize/skills/ask-gemini",
+    "https://github.com/humanfia/hoa/tree/main/putnambench/humanize",
+    "https://github.com/humanfia/hoa"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ai-chat",
+   "repo": "github.com/AceDataCloud/Skills",
+   "stars": "17",
+   "level": "Intermediate",
+   "cost": "Paid API. Most services have a free quota",
+   "works_with": "Claude Code, GitHub Copilot, Gemini CLI, Codex, Cursor, Roo Code, Goose and more",
+   "short": "Lets your agent call 50+ AI models through one AceDataCloud API token.",
+   "what": "Teaches your agent how to use AceDataCloud's chat gateway. One token covers OpenAI-compatible chat and responses, native Claude Messages, text embeddings for search, stateful conversations and scheduled agent tasks. Its list covers GPT, Claude, Gemini, Grok, Kimi, GLM and DeepSeek models.",
+   "who": "Developers who want to try or switch between many models through one account and one key. If you already have keys with the model makers you use, you may not need it.",
+   "needs": [
+    "An AceDataCloud account at platform.acedata.cloud with a subscribed service and an API token",
+    "The token set as `ACEDATACLOUD_API_TOKEN`",
+    "Node.js for `npx`, to install the skill"
+   ],
+   "steps": [
+    {
+     "title": "Get a token",
+     "text": "Register at platform.acedata.cloud, subscribe to a service, create an API credential, then set it in your shell rather than pasting it into chat.",
+     "code": "export ACEDATACLOUD_API_TOKEN=\"your-token-here\""
+    },
+    {
+     "title": "Install the skills",
+     "text": "This installs every AceDataCloud skill. To install only this one, use the README's specific-skills form (`--skill <name>`) with `ai-chat`.",
+     "code": "npx skills add acedatacloud/skills --skill '*' --yes"
+    },
+    {
+     "title": "Or, in Claude Code, use the plugin marketplace",
+     "code": "/plugin marketplace add acedatacloud/skills\n/plugin install acedatacloud-ai-tools@acedatacloud-skills"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your terminal",
+    "text": "curl -X POST https://api.acedata.cloud/aichat2/conversations \\\n  -H \"Authorization: Bearer $ACEDATACLOUD_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\":\"gpt-4.1\",\"question\":\"Summarize the latest release notes.\",\"stateful\":true}'"
+   },
+   "watch": [
+    "Everything you send goes through AceDataCloud's servers on the way to the model.",
+    "Scheduled agent tasks are billed per model call and run unattended, up to 15 minutes a run. Unless you set an end time, they stop three months after you create them.",
+    "Installing with `'*'` also adds the connector skills for Gmail, Slack, GitHub and others. Pick single skills if you don't want those.",
+    "The SKILL.md says some newer models need account eligibility. Check access and pricing before you rely on one."
+   ],
+   "sources": [
+    "https://github.com/AceDataCloud/Skills/tree/main/skills/ai-chat",
+    "https://github.com/AceDataCloud/Skills",
+    "https://github.com/AceDataCloud/Skills/blob/main/.claude-plugin/marketplace.json"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "agent-config-audit",
+   "repo": "github.com/shipshitdev/skills",
+   "stars": "37",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, Cursor",
+   "short": "Checks your AGENTS.md, CLAUDE.md, hooks and settings for duplicate rules and stale files, then reports back.",
+   "what": "A skill that finds every agent instruction file in your workspace (CLAUDE.md, AGENTS.md, .cursorrules, agent settings and hooks, memory files) and checks them for duplicated rules, stale files, broken paths and settings drift. It writes a report with critical, moderate and minor findings plus a fix plan. By default it changes nothing.",
+   "who": "Anyone whose agent keeps making the same mistake despite rules that should stop it, or who has config files spread across several repos. With one short CLAUDE.md you won't get much from it.",
+   "needs": [
+    "Claude Code, Codex or Cursor",
+    "Node.js for `npx`, or Claude Code for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs the whole collection (169 skills) for the three agents named. Don't use `--all`, which installs to every agent the CLI knows (30+).",
+     "code": "npx skills add shipshitdev/skills -g --agent claude-code codex cursor --skill '*' -y"
+    },
+    {
+     "title": "Or, in Claude Code, install just the Dev Workflow bundle",
+     "text": "agent-config-audit is in this bundle.",
+     "code": "/plugin marketplace add shipshitdev/skills\n/plugin install shipshitdev-dev-workflow@shipshitdev"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent, at the workspace root",
+    "text": "audit CLAUDE.md\n\nOr ask it to check your agent config for duplicated rules and stale files."
+   },
+   "watch": [
+    "Fix mode edits your agent config files. It only starts when you ask for fixes and confirm the exact plan, and a request to sync configs doesn't count.",
+    "It asks before overwriting configs or deleting or merging duplicated rules.",
+    "The repo's old `scripts/install-skills.sh` installer was removed. The README says not to run an old copy."
+   ],
+   "sources": [
+    "https://github.com/shipshitdev/skills/tree/master/bundles/dev-workflow/skills/agent-config-audit",
+    "https://github.com/shipshitdev/skills"
+   ]
+  }
+ ]
+}
