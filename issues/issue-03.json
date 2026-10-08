@@ -1,0 +1,416 @@
+{
+ "issue": 3,
+ "date": "1 Oct 2026",
+ "checked": "3 Oct 2026",
+ "blurb": "Every repo and skill from the 1 October issue, with what it does, who it's for, what you need and the exact setup steps from each project's own README.",
+ "intro": "Issue #3 covered four trending GitHub repos and four new AI skills. They range from a desktop app you can install in a few clicks to a radar you'd build on a workbench, so each section starts with who it's really for. If you only try two, start with Magnitude and the NotebookLM skill.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "AERIS-10 radar (PLFM_RADAR)",
+   "repo": "github.com/NawfalMotii79/PLFM_RADAR",
+   "stars": "26.6k",
+   "level": "Specialist",
+   "cost": "Parts (not stated)",
+   "works_with": "Hardware build",
+   "short": "Open design files for a 10.5 GHz phased array radar you build yourself.",
+   "what": "The full open design for AERIS-10, a 10.5 GHz phased array radar: circuit boards, firmware, FPGA code and a Python GUI. It comes in a 3 km version and a 20 km version.",
+   "who": "The README says researchers, drone developers and serious SDR enthusiasts. In practice that means electronics engineers who can order and assemble multi-board PCBs and use FPGA tools. There's no software-only install, so most readers will just want to look around the repo.",
+   "needs": [
+    "A basic understanding of radar, and experience assembling PCBs (the README's own prerequisites)",
+    "Python for the GUI. The README says 3.8+, but the repo's `pyproject.toml` asks for 3.12 or later",
+    "Vivado, if you want to change the FPGA signal processing",
+    "The parts. Key chips include an XC7A50T FPGA, an STM32F746 and 16 ADTR1107 front ends. The README gives no cost"
+   ],
+   "steps": [
+    {
+     "title": "Read the docs first",
+     "text": "The README points to a docs site with the system architecture, a hardware bring-up guide and test reports: NawfalMotii79.github.io/PLFM_RADAR/docs/"
+    },
+    {
+     "title": "Order the PCBs",
+     "text": "Production files are in `/4_Schematics and Boards Layout/4_7_Production Files`."
+    },
+    {
+     "title": "Source the components",
+     "text": "The BOM and placement (CPL) files are in the same Production Files folder."
+    },
+    {
+     "title": "Assemble",
+     "text": "Use the schematics in `/4_Schematics and Boards Layout/4_6_Schematics` with the production files. The README says a standalone assembly guide isn't tracked yet."
+    },
+    {
+     "title": "Pick the antenna and enclosure",
+     "text": "Choose the antenna array files for your version. Mechanical drawings for the enclosure are in `/8_Utils/Mechanical_Drawings`."
+    }
+   ],
+   "try": {
+    "label": "Suggested",
+    "where": "On GitHub",
+    "text": "Browse the docs site and the GUI code in 9_Firmware/9_3_GUI/ to see how the system fits together before buying anything."
+   },
+   "watch": [
+    "It's labelled Alpha and \"work in progress\", and the repo hasn't been updated since 17 June 2026.",
+    "The 20 km version transmits 10 W on each of 16 channels. The README doesn't cover radio licensing, so check your local rules before you transmit anything.",
+    "The README calls the long-range version both AERIS-10E and AERIS-10X."
+   ],
+   "sources": [
+    "https://github.com/NawfalMotii79/PLFM_RADAR"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/aeris-10-radar-plfm-radar-setup-guide"
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenClaw",
+   "repo": "github.com/openclaw/openclaw",
+   "stars": "391k",
+   "level": "Intermediate",
+   "cost": "Free + model costs",
+   "works_with": "WhatsApp, Slack, Telegram and more",
+   "short": "A personal AI assistant on your own computer that you message from your chat apps.",
+   "what": "An open-source AI assistant that runs on your own computer. You talk to it through apps you already use, like WhatsApp, Slack, Telegram, Discord and iMessage, and it can take actions for you. You choose the AI model it uses.",
+   "who": "People comfortable in a terminal who want their own assistant wired into their chat apps. The install is one line, but getting the most from it means setting up a model provider, channels and security.",
+   "needs": [
+    "macOS, Linux (or WSL2) or Windows",
+    "Node.js, which the installer sets up for you if needed. For a manual npm install: Node 24.16+ or 26.1+",
+    "An account with an AI model provider. OpenClaw itself has no paid tier, but you pay for the model you connect"
+   ],
+   "steps": [
+    {
+     "title": "Run the installer",
+     "text": "On macOS, Linux or WSL2:",
+     "code": "curl -fsSL https://openclaw.ai/install.sh | bash"
+    },
+    {
+     "title": "Or on Windows",
+     "text": "In PowerShell:",
+     "code": "iwr -useb https://openclaw.ai/install.ps1 | iex"
+    },
+    {
+     "title": "Finish the setup wizard",
+     "text": "On a fresh install the installer opens onboarding automatically. If you installed with npm instead, start it yourself:",
+     "code": "openclaw onboard --install-daemon"
+    },
+    {
+     "title": "Check it's running",
+     "code": "openclaw gateway status\nopenclaw dashboard"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Control UI",
+    "text": "Run openclaw dashboard to open the Control UI, then send it a message to confirm the assistant is working. Channel setup is at docs.openclaw.ai/start/getting-started"
+   },
+   "watch": [
+    "By default, tools run on your actual machine for the main session. Read the security and sandboxing guides before connecting other people or exposing it to the internet.",
+    "Treat incoming messages as untrusted. Unknown senders have to be approved with `openclaw pairing approve <channel> <code>`.",
+    "The install pipes a script from the internet into your shell. That's common, but read it first if you're unsure."
+   ],
+   "sources": [
+    "https://github.com/openclaw/openclaw",
+    "https://docs.openclaw.ai"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/openclaw-setup-guide"
+  },
+  {
+   "kind": "Repo",
+   "name": "MCP reference servers",
+   "repo": "github.com/modelcontextprotocol/servers",
+   "stars": "91k",
+   "level": "Developers",
+   "cost": "Free",
+   "works_with": "Claude Desktop and other MCP apps",
+   "short": "Official example MCP servers for files, memory, web fetching, git and more.",
+   "what": "A small set of official example MCP servers: Everything, Fetch, Filesystem, Git, Memory, Sequential Thinking and Time. They give an AI app tools like reading files, fetching web pages or keeping a memory.",
+   "who": "Developers learning MCP or building their own servers. Non-developers can still use Memory, Fetch or Filesystem by pasting a config block into Claude Desktop. For a full list of servers, the README points to the MCP Registry at registry.modelcontextprotocol.io.",
+   "needs": [
+    "Node.js (for the `npx` servers) or `uv` (for the Python servers). The README doesn't give versions",
+    "An MCP app. Claude Desktop is the example the README uses",
+    "No accounts or keys for the core servers"
+   ],
+   "steps": [
+    {
+     "title": "Try a server on its own",
+     "text": "This runs the Memory server. On its own it isn't very useful; the next step plugs it into your AI app.",
+     "code": "npx -y @modelcontextprotocol/server-memory"
+    },
+    {
+     "title": "Add it to Claude Desktop",
+     "text": "Add this to Claude Desktop's config file, then restart the app:",
+     "code": "{\n  \"mcpServers\": {\n    \"memory\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@modelcontextprotocol/server-memory\"]\n    }\n  }\n}"
+    },
+    {
+     "title": "On Windows, wrap npx",
+     "code": "{\n  \"mcpServers\": {\n    \"memory\": {\n      \"command\": \"cmd\",\n      \"args\": [\"/c\", \"npx\", \"-y\", \"@modelcontextprotocol/server-memory\"]\n    }\n  }\n}"
+    },
+    {
+     "title": "Python servers use uvx",
+     "text": "For example, the Git server:",
+     "code": "uvx mcp-server-git"
+    }
+   ],
+   "try": {
+    "label": "Suggested",
+    "where": "Claude Desktop",
+    "text": "Remember that my newsletter goes out every morning at 7am.\n\nThen, in a new chat:\nWhat do you remember about my newsletter?"
+   },
+   "watch": [
+    "The README says these are reference implementations, not production-ready servers.",
+    "Many well-known servers (GitHub, Slack, Postgres, Puppeteer, Google Drive and others) have been archived. The README's example config still shows GitHub and Postgres, so skip those.",
+    "Filesystem gives your AI read and write access to the folder you list. Point it at one specific folder, never your whole home folder."
+   ],
+   "sources": [
+    "https://github.com/modelcontextprotocol/servers"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/mcp-reference-servers-setup-guide"
+  },
+  {
+   "kind": "Repo",
+   "name": "Magnitude",
+   "repo": "github.com/magnitudedev/magnitude",
+   "stars": "6.3k",
+   "level": "Easy",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, OpenClaw, Cline and more",
+   "short": "A desktop app that runs open AI models on your own computer for your coding agent.",
+   "what": "A desktop app that downloads open AI models and runs them on your own computer, tuning itself to your hardware. You then connect your coding agent to it in one click, so it runs free and private.",
+   "who": "Anyone who already uses a coding agent and wants to try free, private, local models. It installs like any app. How big a model you can run depends on your machine.",
+   "needs": [
+    "macOS, Linux or Windows",
+    "Any Apple Silicon, NVIDIA or AMD GPU, or just a CPU. The README says there's no fixed minimum: more memory lets you run bigger models",
+    "No account or API key. Once a model is downloaded it works offline"
+   ],
+   "steps": [
+    {
+     "title": "Download and install",
+     "text": "Get the app from magnitude.dev/download, install it and open it. The `magnitude` CLI comes with it."
+    },
+    {
+     "title": "Pick a model",
+     "text": "Open Discover, choose a recommended model and download it. Start with a small one."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "Open Connections and connect the agent you use. One click works for Pi, OpenCode, Hermes, OpenClaw, Codex, Claude Code, Oh My Pi and Cline. Anything else can use its OpenAI-compatible API."
+    }
+   ],
+   "try": {
+    "label": "Suggested",
+    "where": "Your coding agent",
+    "text": "Once connected, ask your agent a simple coding question and compare the answer and speed with your usual model."
+   },
+   "watch": [
+    "The speed claims (up to 2x faster than llama.cpp) are the maker's own benchmarks.",
+    "Models can be large downloads, and the README gives no exact hardware numbers.",
+    "It's a young project: the repo started in June 2026 and the CLI is at version 0.2."
+   ],
+   "sources": [
+    "https://github.com/magnitudedev/magnitude",
+    "https://magnitude.dev"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/magnitude-setup-guide"
+  },
+  {
+   "kind": "Skill",
+   "name": "linkedin-search",
+   "repo": "github.com/MadsLorentzen/ai-job-search",
+   "stars": "44.8k",
+   "level": "Intermediate",
+   "cost": "Skill free",
+   "works_with": "Claude Code, Codex, Gemini CLI, Cursor",
+   "short": "Searches LinkedIn's public job listings for any city, country or remote.",
+   "what": "Searches LinkedIn's public job listings for any city, country or remote, with filters for how recent and remote, hybrid or on-site, and can pull a posting's full description. It needs no LinkedIn login. It's part of a larger AI job search framework.",
+   "who": "Job seekers who are comfortable in a terminal. The skill on its own only needs Bun. The full framework (CV setup, applications, interview prep) is built on Claude Code.",
+   "needs": [
+    "Bun, a JavaScript runtime. It's all the skill needs",
+    "For the full framework: Claude Code (a paid Claude plan or API credits), Python 3.10+ and LaTeX",
+    "No LinkedIn account and no API key"
+   ],
+   "steps": [
+    {
+     "title": "Get the framework",
+     "text": "The README has no one-line skill install, so you get the whole repo. If you'll put your own CV in it, use a private repo rather than a public fork (the README explains how in SETUP.md section 8).",
+     "code": "gh repo fork MadsLorentzen/ai-job-search --clone\ncd ai-job-search"
+    },
+    {
+     "title": "Install Bun",
+     "text": "macOS and Linux:",
+     "code": "curl -fsSL https://bun.sh/install | bash"
+    },
+    {
+     "title": "Or on Windows",
+     "code": "powershell -ExecutionPolicy Bypass -c \"irm https://bun.sh/install.ps1 | iex\""
+    },
+    {
+     "title": "Set up your profile (full framework only)",
+     "code": "claude\n# Then inside Claude Code:\n/setup"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Repo root",
+    "text": "bun run .agents/skills/linkedin-search/cli/src/cli.ts search -q \"product manager\" -l \"Berlin, Germany\" --remote remote --format table\n\nOr ask your agent: Are there any marketing manager jobs in London posted in the last 7 days?"
+   },
+   "watch": [
+    "The skill's own docs say automated access is against LinkedIn's Terms of Service. Keep volume low and don't use it commercially or for bulk data collection.",
+    "A public fork plus /setup would put your CV and salary expectations in public. Use a private repo.",
+    "The other job board skills in the repo are Danish, so most readers will only use this one."
+   ],
+   "sources": [
+    "https://github.com/MadsLorentzen/ai-job-search",
+    "https://github.com/MadsLorentzen/ai-job-search/tree/master/.agents/skills/linkedin-search"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/linkedin-search-setup-guide"
+  },
+  {
+   "kind": "Skill",
+   "name": "open-supermarkets",
+   "repo": "github.com/abracadabra50/open-supermarkets",
+   "stars": "115",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Claude Code, Claude Desktop, Cursor, OpenClaw",
+   "short": "Lets your agent search supermarkets, compare prices and build a basket.",
+   "what": "Lets you or your AI agent search real supermarket catalogues and prices, compare shops, build a basket, see delivery slots and preview checkout. It covers the UK (Tesco, Sainsbury's, Ocado), the Netherlands and Belgium (Albert Heijn), Spain, Hungary and the US and Canada.",
+   "who": "Tinkerers building meal-planning or shopping helpers. Searching in Spain, the Netherlands and Belgium needs no account. UK baskets need your supermarket login, which is fiddlier.",
+   "needs": [
+    "Node.js 18 or later",
+    "No account for Spain, the Netherlands or Belgium. Tesco, Sainsbury's and Ocado need your login. Kroger needs a free API key",
+    "Playwright's Chromium, only for the shops that log in through a browser"
+   ],
+   "steps": [
+    {
+     "title": "Try it with no install",
+     "code": "npx open-supermarkets providers\nnpx open-supermarkets search \"olive oil\" --country ES --limit 5"
+    },
+    {
+     "title": "Or install it globally",
+     "code": "npm install -g open-supermarkets\nsupermarket providers"
+    },
+    {
+     "title": "Connect it to your AI app",
+     "text": "Add this MCP block to Claude Desktop, Cursor or any MCP app:",
+     "code": "{\n  \"mcpServers\": {\n    \"groceries\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"open-supermarkets\", \"mcp\"]\n    }\n  }\n}"
+    },
+    {
+     "title": "Or add the skill",
+     "text": "The README says to drop `SKILL.md` and the `skills/` folder into Claude Code, OpenClaw or another agent that reads SKILL.md files. Note: the SKILL.md still shows older commands, so follow the README's `supermarket` commands."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "With MCP connected",
+    "text": "Plan a week of high-protein dinners, no pork and no nuts. Price the shop at Tesco, show me the basket and do not place an order.\n\n(Pricing at Tesco needs a Tesco login. For a no-login first try, search a Spanish or Dutch shop.)"
+   },
+   "watch": [
+    "Most integrations are unofficial and may conflict with the shops' terms. The README says it's meant for personal automation of your own shopping.",
+    "Checkout only previews by default. Spending money needs `--confirm`. Never let an agent add that without you watching.",
+    "UK logins mean putting your password on the command line or exporting browser cookies, and sessions are saved on your computer. Treat those files like passwords.",
+    "Don't rely on its allergen data. Check the packaging."
+   ],
+   "sources": [
+    "https://github.com/abracadabra50/open-supermarkets"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/open-supermarkets-setup-guide"
+  },
+  {
+   "kind": "Skill",
+   "name": "fframes-video",
+   "repo": "github.com/dmtrKovalenko/fframes",
+   "stars": "1.9k",
+   "level": "Developers",
+   "cost": "Free",
+   "works_with": "Agents that install skills with npx skills",
+   "short": "Has your agent make videos in code and render them to .mp4.",
+   "what": "fframes makes videos from code, and this skill teaches your coding agent to go from an empty folder to a finished .mp4: it sets up a project, designs the motion, adds sound and checks its own work with contact sheets, because it can't watch the video.",
+   "who": "Developers, or patient beginners with a coding agent, who want title cards, explainers or social clips made in code. The agent writes the code, but the setup installs a Rust toolchain and video libraries.",
+   "needs": [
+    "Rust, from rustup.rs",
+    "Video libraries. On a Mac: `brew install pkg-config ffmpeg x264 x265 opus nasm ninja` (the README has Linux and Windows versions)",
+    "A GPU is recommended. It works on CPU only, but slower and with no preview window",
+    "No accounts or API keys"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill to your agent",
+     "code": "npx skills add https://fframes.studio"
+    },
+    {
+     "title": "Ask for a video",
+     "text": "The README says to describe the video you want the way you'd brief a motion designer. The skill then has the agent create a project and build it. The first build is the slow one."
+    },
+    {
+     "title": "Without an agent",
+     "text": "You can also try it by hand:",
+     "code": "cargo install --locked cargo-fframes\ncargo fframes new my-video\ncd my-video && cargo run --release -- preview"
+    }
+   ],
+   "try": {
+    "label": "Suggested",
+    "where": "Your coding agent",
+    "text": "Make a 10-second portrait title card that says \"Skills MD\" with a spring-in animation, render it to out.mp4 and show me a contact strip."
+   },
+   "watch": [
+    "Missing system libraries are the most common reason builds fail. Install the full list for your system first.",
+    "On a Mac or Linux the first build takes under a minute on a fast machine. Other setups can compile from source for up to about 20 minutes.",
+    "Enabling H.264 needs a GPL codec flag (`libav-agree-gpl`), so check the licence if you use it commercially."
+   ],
+   "sources": [
+    "https://github.com/dmtrKovalenko/fframes",
+    "https://github.com/dmtrKovalenko/fframes/tree/main/skills/fframes-video"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/fframes-video-setup-guide"
+  },
+  {
+   "kind": "Skill",
+   "name": "notebooklm",
+   "repo": "github.com/teng-lin/notebooklm-py",
+   "stars": "19.6k",
+   "level": "Easy",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, OpenClaw, MCP apps",
+   "short": "Lets your agent run Google NotebookLM: sources, questions, podcasts and more.",
+   "what": "An unofficial tool and skill that lets your AI agent use Google NotebookLM (which Google renamed Gemini Notebook in July 2026). It can create notebooks, add sources like web pages, PDFs and YouTube videos, ask questions with citations, and make audio overviews, slide decks, quizzes and mind maps.",
+   "who": "Anyone who already uses NotebookLM and wants their agent to do the clicking. The install is short.",
+   "needs": [
+    "Python 3.10 or later",
+    "`uv` (recommended) or `pipx`. Install uv with `curl -LsSf https://astral.sh/uv/install.sh | sh`",
+    "A Google account. The first login downloads a browser (about 170 MB)"
+   ],
+   "steps": [
+    {
+     "title": "Install the tool",
+     "code": "uv tool install \"notebooklm-py[browser]\"   # or: pipx install \"notebooklm-py[browser]\""
+    },
+    {
+     "title": "Sign in to Google",
+     "code": "notebooklm login"
+    },
+    {
+     "title": "Check it worked",
+     "text": "You should see \"status\": \"ok\".",
+     "code": "notebooklm auth check --test --json"
+    },
+    {
+     "title": "Add the skill to your agent",
+     "text": "Either of these works:",
+     "code": "notebooklm skill install\n# or\nnpx skills add teng-lin/notebooklm-py"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "notebooklm create \"My Research\"\nnotebooklm use <notebook_id>\nnotebooklm source add \"https://en.wikipedia.org/wiki/Artificial_intelligence\"\nnotebooklm ask \"What are the key themes?\"\nnotebooklm generate audio \"make it engaging\" --wait\nnotebooklm download audio ./podcast.m4a"
+   },
+   "watch": [
+    "It's unofficial and uses Google's internal APIs, which can change or be rate-limited at any time. The README says it's best for prototypes, research and personal projects.",
+    "Your login files work like passwords. Never share or commit them. Avoid the \"master token\" mode on your main Google account.",
+    "Cinematic video needs a paid Google AI Ultra plan."
+   ],
+   "sources": [
+    "https://github.com/teng-lin/notebooklm-py"
+   ],
+   "pdf": "https://www.skillsmd.tech/products/notebooklm-setup-guide"
+  }
+ ]
+}
