@@ -1,0 +1,369 @@
+{
+ "issue": 5,
+ "date": "3 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 3 October issue that we could source, with what it does, who it's for, what you need and the setup steps from its own README.",
+ "intro": "Issue #5 covered five trending GitHub repos and three new AI skills, and seven of them have guides here. Most are for people who already use a coding agent, and three lean toward marketing. If you only try two, start with Caveman and Marketing Skills.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Caveman",
+   "repo": "github.com/JuliusBrussee/caveman",
+   "stars": "109.3k",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Skill: Claude Code, Codex, Gemini CLI, Cursor, Windsurf, Cline, Copilot and 30+ more. Proxy: Claude Code, Codex, Gemini CLI, Aider, Kilo, Qwen, OpenCode, Hermes, OpenClaw and Pi",
+   "short": "Cuts tokens two ways: a skill that makes your agent answer in short plain sentences, and a proxy that shrinks what it reads.",
+   "what": "Caveman has two parts. The skill changes how your agent replies: answer first, short sentences, with code, commands, paths and numbers kept exact. The CLI proxy compresses logs, CSV, YAML, JSON and test output before the agent reads them. In the project's own benchmark that meant 33.2% fewer input tokens across whole Claude Code sessions, with 18 of 18 answers right.",
+   "who": "Anyone paying per token or running into context limits with a coding agent. If you pay per request instead (GitHub Copilot premium requests, for example), the README says shorter answers cost the same, so skip it.",
+   "needs": [
+    "For the skill: a coding agent that supports skills",
+    "For the proxy: Node.js 22.13 or later, plus your own model keys or Claude Pro/Max login"
+   ],
+   "steps": [
+    {
+     "title": "Just the skill, for shorter answers",
+     "code": "npx skills add JuliusBrussee/caveman -g"
+    },
+    {
+     "title": "Or the Claude Code plugin",
+     "text": "It starts on its own in every interactive session, subagents included.",
+     "code": "claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman"
+    },
+    {
+     "title": "The proxy, to shrink what the agent reads",
+     "text": "After the first run, plain `claude` keeps using it.",
+     "code": "npm install -g @caveman-ai/cli && caveman setup --install\ncaveman claude        # or codex · gemini · aider · kilo · qwen · opencode · hermes · openclaw · pi"
+    },
+    {
+     "title": "See where your tokens go",
+     "code": "caveman learn                 # rank where your tokens go, from agent history already on disk\ncaveman stats                 # your token history"
+    },
+    {
+     "title": "Uninstall",
+     "text": "On npm 12 or newer, add `--allow-git=root` too.",
+     "code": "npx -y github:JuliusBrussee/caveman -- --uninstall"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/caveman\n\nAlso try /ultracave for even shorter replies and /caveman-review for one-line review findings. Say \"stop caveman\" to go back. In Codex, type $caveman."
+   },
+   "watch": [
+    "The caveman CLI sends usage stats by default: commands run, token counts, a random install ID, OS and IP. It doesn't send prompts, code or file paths. Turn it off with `caveman telemetry off` or `DO_NOT_TRACK=1`.",
+    "The skill on its own runs on your machine and sends nothing.",
+    "The proxy runs with your keys and your Claude Pro/Max login.",
+    "The install-everywhere option pipes a script from the internet into bash. Read the script before you run it.",
+    "HTML has no compressor yet. In the benchmark, the HTML session came out 9.9% worse."
+   ],
+   "sources": [
+    "https://github.com/JuliusBrussee/caveman"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Marketing Skills",
+   "repo": "github.com/coreyhaines31/marketingskills",
+   "stars": "52.5k",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, Cursor, Windsurf and any agent that supports the Agent Skills spec",
+   "short": "A library of marketing skills for your coding agent: conversion, copywriting, SEO, analytics, ads, email and growth.",
+   "what": "Corey Haines' collection of AI agent skills for marketing work, from landing page conversion and copywriting to SEO audits, analytics tracking, ads, pricing and launches. A product-marketing skill holds your product, audience and positioning, and the other skills read it before doing anything.",
+   "who": "Technical marketers and founders who already use a coding agent. If you're new to the terminal, the README points to a companion guide, Coding for Marketers.",
+   "needs": [
+    "A coding agent that supports skills"
+   ],
+   "steps": [
+    {
+     "title": "Install all the skills",
+     "text": "The CLI finds the agents you have and asks where to install.",
+     "code": "npx skills add coreyhaines31/marketingskills"
+    },
+    {
+     "title": "Or just a few",
+     "code": "npx skills add coreyhaines31/marketingskills --skill cro copywriting"
+    },
+    {
+     "title": "Running it from inside Claude Code?",
+     "text": "Name the agent, or the skills may land in a folder Claude Code doesn't read.",
+     "code": "npx skills add coreyhaines31/marketingskills -a claude-code"
+    },
+    {
+     "title": "Or use the Claude Code plugin",
+     "code": "claude plugin marketplace add coreyhaines31/marketingskills\nclaude plugin install marketing-skills@marketingskills"
+    },
+    {
+     "title": "In Codex",
+     "text": "Then open /plugins in a Codex session and pick marketing-skills.",
+     "code": "codex plugin marketplace add coreyhaines31/marketingskills"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Help me optimize this landing page for conversions\n\nOr call a skill directly: /cro, /emails, /seo-audit"
+   },
+   "watch": [
+    "The README lists paid partners (Converly and Ploy) whose integrations are documented next to neutral options. It says partners don't influence what the core skills recommend.",
+    "Upgrading from v1.x leaves old skill folders next to the new ones. The README gives the cleanup command and a rename map.",
+    "/plugin only works in an interactive Claude Code CLI session, not on the web or in GitHub Actions."
+   ],
+   "sources": [
+    "https://github.com/coreyhaines31/marketingskills"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Effect",
+   "repo": "github.com/Effect-TS/effect",
+   "stars": "16.7k",
+   "level": "Advanced",
+   "cost": "Free",
+   "works_with": "TypeScript on Node.js, Bun, Deno and the browser",
+   "short": "A TypeScript library for production apps, with typed errors, dependency injection, concurrency, tracing and schema validation.",
+   "what": "Effect is a TypeScript library for the hard parts of large applications: typed errors, dependency injection, structured concurrency, scheduling, tracing and schema validation. The monorepo also ships packages for SQL databases, AI providers (Anthropic, OpenAI, OpenRouter and others), React, Solid and Vue bindings, OpenTelemetry and Vitest. Version 4.x is a long-term support release with at least three years of bug and security fixes.",
+   "who": "TypeScript developers and teams building services they expect to run for years. If you're on Effect 3.x, read the migration guide in the repo first.",
+   "needs": [
+    "TypeScript 5.9 or newer. TypeScript 7 is recommended",
+    "Node.js 18 or newer when running on Node. Some packages need more; @effect/sql-sqlite-node needs Node.js 22.16 or newer",
+    "The strict flag turned on in tsconfig.json"
+   ],
+   "steps": [
+    {
+     "title": "Install the core package",
+     "code": "npm install effect"
+    },
+    {
+     "title": "Turn on strict type-checking",
+     "text": "Effect requires the `strict` flag in your `tsconfig.json`."
+    },
+    {
+     "title": "Add integration packages as you need them",
+     "text": "For example `@effect/platform-node`, `@effect/sql-pg` or `@effect/ai-anthropic`. All packages are released together with matching versions."
+    },
+    {
+     "title": "Upgrading from 3.x",
+     "text": "Follow MIGRATION.md in the repo. The v3 code lives on the `v3` branch."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Using the effect package, rewrite this async function so its errors are typed and it retries on failure: [paste your function]"
+   },
+   "watch": [
+    "APIs marked unstable may change in minor releases, and experimental APIs in patch releases.",
+    "The README has no code examples. Docs and guides are on effect.website."
+   ],
+   "sources": [
+    "https://github.com/Effect-TS/effect"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Google Agent Skills",
+   "repo": "github.com/google/skills",
+   "stars": "20.8k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Agents supported by npx skills, plus plugins for Claude Code, Codex and Antigravity CLI",
+   "short": "Google's own AI skills for Google Cloud, GKE, BigQuery, Firebase, Gemini APIs, Google Ads and more.",
+   "what": "Google's collection of agent skills for its products, mostly Google Cloud. It covers onboarding and authentication, GKE, BigQuery and other databases, Cloud Run and Firebase, monitoring and logging, security and IAM, the Well-Architected Framework, the Gemini APIs and Genkit, and the Google Ads and mobile ads SDKs. The repo also bundles plugins that pair skills with MCP servers.",
+   "who": "Developers and platform engineers working on Google Cloud or with Google's developer APIs. If you don't use Google products, skip it.",
+   "needs": [
+    "Node.js, which includes npx",
+    "A coding agent"
+   ],
+   "steps": [
+    {
+     "title": "Install",
+     "text": "Pick specific skills or all of them, the agents to set up, and project or global scope.",
+     "code": "npx skills add google/skills"
+    },
+    {
+     "title": "Or add the plugins in Claude Code",
+     "text": "Then install the one you want with `claude plugin install <plugin>@google-plugins`.",
+     "code": "claude plugin marketplace add google/skills"
+    },
+    {
+     "title": "In Codex",
+     "text": "Then install from the /plugins browser.",
+     "code": "codex plugin marketplace add google/skills"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Using the Cloud Run basics skill, walk me through deploying this app to Cloud Run."
+   },
+   "watch": [
+    "The README lists over 150 skills. The installer lets you choose only the ones you need.",
+    "The plugins bundle MCP servers as well as skills.",
+    "Skills for Android, Flutter, Dart, Firestore, Google Maps and ADK live in other repos. The README links to them."
+   ],
+   "sources": [
+    "https://github.com/google/skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "instagram-marketing",
+   "repo": "github.com/sergebulaev/instagram-skills",
+   "stars": "215",
+   "level": "Beginner",
+   "cost": "Free for drafts. Auto-posting uses Publora (free sign-up); optional Pixfaro images are paid per image",
+   "works_with": "Claude Code, Codex, claude.ai, Claude Desktop, OpenClaw, Hermes Agent and others through npx skills",
+   "short": "Nine Instagram skills that write captions, plan carousels and weekly posts, size hashtags and audit your profile, with your approval first.",
+   "what": "A bundle of 9 skills for Instagram: caption writer, carousel planner, hook extractor, hashtag strategist, humanizer, content planner, repurposer, profile optimizer and audience insights. You supply the image or video and the skills write the words. Every draft waits for your OK, and with Publora connected the skills can upload your media and schedule the post.",
+   "who": "Creators, marketers and small businesses who post on Instagram and use an AI agent. Auto-posting needs an Instagram Business or Creator account.",
+   "needs": [
+    "Nothing extra for draft-only mode",
+    "For auto-posting: a free Publora account, your Publora API key and Instagram platform ID, an Instagram Business or Creator account, and the Python packages requests and python-dotenv",
+    "Audience Insights reads niche and profile data through Apify"
+   ],
+   "steps": [
+    {
+     "title": "Install for any agent",
+     "code": "npx skills add sergebulaev/instagram-skills"
+    },
+    {
+     "title": "Or, in Claude Code",
+     "code": "/plugin marketplace add sergebulaev/instagram-skills\n/plugin install instagram-skills@instagram-skills"
+    },
+    {
+     "title": "Or in Codex",
+     "code": "codex plugin marketplace add sergebulaev/instagram-skills\ncodex plugin add instagram-skills@instagram-skills"
+    },
+    {
+     "title": "Optional: connect Publora to auto-post",
+     "text": "Sign up at app.publora.com, connect your Instagram account, then create a `.env` file in the instagram-skills folder:",
+     "code": "PUBLORA_API_KEY=sk_paste_your_key_here\nINSTAGRAM_PLATFORM_ID=instagram-paste_your_id_here"
+    },
+    {
+     "title": "Install the two Python packages",
+     "code": "pip install requests python-dotenv"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Write me an Instagram caption about how I cut my editing time from 6 hours to 47 minutes. Hook in the first line."
+   },
+   "watch": [
+    "Auto-posting sends your media and captions through Publora, a third-party service connected to your Instagram account.",
+    "Instagram rejects text-only posts. Without media, the skill gives you the caption to paste into the app.",
+    "Personal Instagram accounts can't use the publishing API.",
+    "Pixfaro image generation is a paid API, priced by model.",
+    "After an approved draft, the skill may close the session with one line asking you to star the repo."
+   ],
+   "sources": [
+    "https://github.com/sergebulaev/instagram-skills/tree/main",
+    "https://github.com/sergebulaev/instagram-skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "bria-ai",
+   "repo": "github.com/Bria-AI/bria-skill",
+   "stars": "68",
+   "level": "Beginner",
+   "cost": "Free API key. Usage pricing is not stated in the README",
+   "works_with": "Claude Code, Cursor, Cline, Codex and 37+ other agents",
+   "short": "Lets your coding agent make and edit images with Bria: text to image, object edits, background removal, upscaling and product shots.",
+   "what": "Connects your agent to Bria.ai's image models through 20+ API endpoints. It can generate images from text, edit by instruction or mask, add, replace or remove objects, remove backgrounds, upscale, restyle, relight, change the season and restore old photos. It also builds e-commerce product shots and whole catalogs. Bria describes its models as commercially safe and royalty-free.",
+   "who": "Developers, marketers and shop owners who want images made from inside their coding agent, for websites, product listings or ads.",
+   "needs": [
+    "A Bria API key, free at platform.bria.ai",
+    "A coding agent that supports skills"
+   ],
+   "steps": [
+    {
+     "title": "In Claude Code",
+     "code": "/plugin marketplace add Bria-AI/bria-skill\n/plugin install bria-ai@bria-skills"
+    },
+    {
+     "title": "Or for other agents",
+     "code": "npx skills add bria-ai/bria-skill"
+    },
+    {
+     "title": "Set your key",
+     "text": "Or just start using it, and the skill walks you through setup.",
+     "code": "export BRIA_API_KEY=\"your-key-here\""
+    },
+    {
+     "title": "Or add it to Claude Code as an MCP server",
+     "code": "claude mcp add bria-skills -- npx -y bria-skills"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Generate a hero image for a SaaS landing page, 16:9, modern and clean"
+   },
+   "watch": [
+    "The images you edit are sent to Bria's API.",
+    "Signing in saves your access token and API key in `~/.bria/credentials`.",
+    "If your Bria account's billing is blocked, the skill stops and shows Bria's message.",
+    "The same marketplace also has remove-background, ad-delayer, ad-resize, vgl and image-utils, which you install separately."
+   ],
+   "sources": [
+    "https://github.com/Bria-AI/bria-skill/tree/dev/skills/bria-ai",
+    "https://github.com/Bria-AI/bria-skill"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ultimate-seo-geo",
+   "repo": "github.com/mykpono/ultimate-seo-geo",
+   "stars": "85",
+   "level": "Intermediate",
+   "cost": "Free. Optional API keys for PageSpeed and extensions",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Windsurf, Cline, Aider, Devin and other AGENTS.md tools",
+   "short": "An SEO and AI-search skill that audits a site, scores it, plans the fixes and writes them, from schema to robots.txt.",
+   "what": "A skill for visibility in Google and in AI search tools such as AI Overviews, ChatGPT Search and Perplexity. Give it a URL and it runs an audit with a 0 to 100 health score, turns the findings into a phased plan, then writes fixes like JSON-LD schema, meta rewrites, redirect maps and robots.txt. Bundled Python scripts run the checks and export HTML, Excel and PDF reports.",
+   "who": "Developers, founders and marketers using a coding agent who want scripted SEO checks plus fixes. It doesn't cover paid ads, social media or writing full articles.",
+   "needs": [
+    "Python 3.8 or later and the packages in requirements.txt",
+    "A coding agent",
+    "Optional: API keys for PageSpeed, and for extensions such as Firecrawl or DataForSEO"
+   ],
+   "steps": [
+    {
+     "title": "In Claude Code",
+     "code": "/plugin marketplace add mykpono/ultimate-seo-geo\n/plugin install ultimate-seo-geo@ultimate-seo-geo"
+    },
+    {
+     "title": "Or for any AGENTS.md tool",
+     "text": "Clone it, then open the folder in your tool.",
+     "code": "git clone https://github.com/mykpono/ultimate-seo-geo.git\ncd ultimate-seo-geo\npip install -r requirements.txt"
+    },
+    {
+     "title": "Run a full report",
+     "code": "python scripts/generate_report.py https://example.com --output seo-report.html"
+    },
+    {
+     "title": "Update the Claude Code plugin",
+     "text": "Claude Code doesn't pull new releases on its own. Restart the session afterwards.",
+     "code": "cd ~/.claude/plugins/marketplaces/ultimate-seo-geo && git pull"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Generate the complete schema markup for my SaaS product page at app.example.com\n\nOr: \"How do I get cited by ChatGPT and Perplexity for our core product keywords?\""
+   },
+   "watch": [
+    "The report script fetches pages from the target site. `--crawl-deep` covers more but is slower and puts more load on the host.",
+    "By default many checks use the seed URL with modest crawl limits, so it isn't a full-site crawl.",
+    "On Homebrew Python (PEP 668), install the requirements into a virtual environment first.",
+    "The Claude desktop app doesn't load skills from `~/.claude/skills`. Upload SKILL.md to a Project instead."
+   ],
+   "sources": [
+    "https://github.com/mykpono/ultimate-seo-geo/tree/main",
+    "https://github.com/mykpono/ultimate-seo-geo"
+   ]
+  }
+ ]
+}
