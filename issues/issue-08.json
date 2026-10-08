@@ -1,0 +1,400 @@
+{
+ "issue": 8,
+ "date": "6 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 6 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #8 had five trending repos and four AI skills. This page covers seven of them. Most are for people who already use a coding agent, and a few are for self-hosters and tinkerers. If you only try two, start with The Agency and Caddy.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "openGym",
+   "repo": "github.com/DuarteSantos8/openGym",
+   "stars": "4.7k",
+   "level": "Intermediate",
+   "cost": "Free. The optional AI coach uses your own AI provider key",
+   "works_with": "Docker with Compose on your own server (amd64 or arm64 images). Use it from a phone or laptop browser, or the Android APK",
+   "short": "A self-hosted gym and body-weight tracker with guided workouts, synced across your devices behind passkey login.",
+   "what": "openGym is a workout tracker you run on your own box. You plan routines over a library of 1,324 exercises, run guided sessions with a rest timer and pre-filled weights, and log sets and body weight. Data stays as JSON files in a ./data folder on your host and syncs between your devices.",
+   "who": "People who lift and want their training log on their own server instead of a subscription app, and who are comfortable running Docker. If you only want a phone app with no server, the README points to a standalone Android APK. Skip it if you don't want to look after a server or set up HTTPS.",
+   "needs": [
+    "Docker with Compose",
+    "About 140 MB of disk for exercise media, downloaded once on first start",
+    "HTTPS on a domain if you want to sign in with passkeys from your phone. The self-hosting guide covers Cloudflare Tunnel, Caddy, Traefik and nginx",
+    "Optional: your own provider key (Anthropic, OpenAI, Gemini or an OpenAI-compatible endpoint, Ollama included) for the AI coach"
+   ],
+   "steps": [
+    {
+     "title": "Clone the repo",
+     "code": "git clone https://github.com/DuarteSantos8/openGym\ncd openGym"
+    },
+    {
+     "title": "Create your settings file",
+     "text": "All configuration lives in .env. RP_ID and ORIGIN must match the address you serve it from.",
+     "code": "cp .env.example .env"
+    },
+    {
+     "title": "Pull the prebuilt images and start it",
+     "text": "Skip the pull to build from source instead.",
+     "code": "docker compose pull\ndocker compose up -d"
+    },
+    {
+     "title": "Open it and create a profile",
+     "text": "Go to http://localhost:8080 and tap Create profile."
+    },
+    {
+     "title": "Set up HTTPS for your phone",
+     "text": "Passkeys from a phone need HTTPS on a domain. Follow docs/SELF_HOSTING.md, which also covers HTTPS on a LAN and Kubernetes."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Browser",
+    "text": "Open http://localhost:8080, tap Create profile, and load one of the four starter plans (Push/Pull/Legs, Upper/Lower, Full Body, 5x5). Or try the in-browser demo first: https://opengym.duarte-santos.ch/demo/"
+   },
+   "watch": [
+    "The first start downloads about 140 MB of exercise media from a third-party source. The README says those images and animations are not covered by the AGPL and their ownership is disputed, so don't reuse them without clearing it with the rights holder.",
+    "The README says the default install calls no AI service and has no telemetry. The AI coach and MCP server are off by default. If you turn the coach on, your training data goes to the AI provider you configure, with your key.",
+    "Guest use (\"Continue without account\") is on by default. Set ALLOW_GUEST=0 and consider INVITE_ONLY if the instance is reachable from the internet.",
+    "Back up the ./data folder. It holds every profile, workout and the session signing key.",
+    "Login trouble is almost always an RP_ID/ORIGIN mismatch in .env, per the README.",
+    "AGPL-3.0: if you run a modified version as a network service, you must offer that version's source."
+   ],
+   "sources": [
+    "https://github.com/DuarteSantos8/openGym"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "The Agency (agency-agents)",
+   "repo": "github.com/msitarzewski/agency-agents",
+   "stars": "157.5k",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Claude Code natively, plus install scripts for GitHub Copilot, Antigravity, Gemini CLI, OpenCode, Cursor, Aider, Windsurf, OpenClaw, Qwen Code, Kimi Code, Codex, Osaurus, Hermes and DeepSeek Harness",
+   "short": "Over 230 ready-made specialist agent personas (frontend dev, security, marketing, sales and more) to install into your coding agent.",
+   "what": "A collection of more than 230 agent files grouped into divisions such as Engineering, Design, Marketing, Sales, Testing, Security and Game Development. Each file gives an agent a role, workflow, deliverables and success metrics. Scripts convert and install them into the format each coding agent expects.",
+   "who": "Anyone using an AI coding agent who wants role-specific helpers, for code review, design, marketing copy or project planning. Install only the divisions you need. Skip it if you prefer to write your own short prompts, since the full set is large.",
+   "needs": [
+    "A supported coding agent",
+    "A local copy of the repo to run the scripts (the README does not give a clone command)",
+    "Bash to run scripts/convert.sh and scripts/install.sh",
+    "Optional: the Agency Agents desktop app for macOS, Linux or Windows instead of the scripts"
+   ],
+   "steps": [
+    {
+     "title": "Get the repo",
+     "text": "Clone or download github.com/msitarzewski/agency-agents and open a terminal in that folder."
+    },
+    {
+     "title": "Generate the files for other tools",
+     "text": "Claude Code and GitHub Copilot use the agent files as they are. Other tools need this step first.",
+     "code": "./scripts/convert.sh"
+    },
+    {
+     "title": "Run the interactive installer",
+     "text": "It detects which tools you have and lets you tick the ones to install into.",
+     "code": "./scripts/install.sh"
+    },
+    {
+     "title": "Or install only some divisions",
+     "text": "See the teams and agent counts with --list teams, and add --dry-run to preview.",
+     "code": "./scripts/install.sh --tool claude-code --division engineering,security"
+    },
+    {
+     "title": "Or use the desktop app on a Mac",
+     "text": "The app browses the roster, installs agents with a click and keeps them updated.",
+     "code": "brew install --cask msitarzewski/agency-agents/agency-agents"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Use the Frontend Developer agent to review this component."
+   },
+   "watch": [
+    "The installer writes into your tools' config folders, for example ~/.claude/agents/, ~/.codex/agents/ and ~/.gemini/. Cursor, Windsurf, Aider and OpenCode installs write into your current project (.cursor/rules/, .windsurfrules, CONVENTIONS.md, .opencode/agents/).",
+    "Read scripts/install.sh before running it, and use --dry-run to see what it will copy.",
+    "The README says OpenCode registers only about 119 agents and silently drops the rest. Install a subset with --division to stay under that limit.",
+    "For Aider the README says all agent bodies together are about a million tokens, so it installs an index instead of the full text."
+   ],
+   "sources": [
+    "https://github.com/msitarzewski/agency-agents"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Caddy",
+   "repo": "github.com/caddyserver/caddy",
+   "stars": "77.3k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "A single executable with no external dependencies, downloaded from GitHub Releases. Building from source needs Go 1.26.0 or newer",
+   "short": "A web server and reverse proxy that turns on HTTPS for your sites automatically.",
+   "what": "Caddy is an extensible server platform, mostly used as an HTTPS server. It gets certificates from ZeroSSL and Let's Encrypt for public names, runs a local CA for internal names, and supports HTTP/1.1, HTTP/2 and HTTP/3 by default. You configure it with a Caddyfile, its native JSON config, or its JSON API.",
+   "who": "Developers and self-hosters who need to serve a site or put HTTPS in front of an app. Skip it if you already run a web server you are happy with and don't need automatic certificates.",
+   "needs": [
+    "A machine to run it on. The release download is a single executable",
+    "Permission to bind to low ports (80, 443) if your config uses them",
+    "Go 1.26.0 or newer, only if you build from source"
+   ],
+   "steps": [
+    {
+     "title": "Download Caddy",
+     "text": "Get the executable for your system from https://github.com/caddyserver/caddy/releases and place it in your PATH. Other install methods are at https://caddyserver.com/docs/install."
+    },
+    {
+     "title": "Or build from source",
+     "text": "These steps do not embed proper version information. Use xcaddy build for that, or to add plugins.",
+     "code": "$ git clone \"https://github.com/caddyserver/caddy.git\"\n$ cd caddy/cmd/caddy/\n$ go build"
+    },
+    {
+     "title": "Allow low ports on Linux, if needed",
+     "text": "Only for a binary you built yourself that must bind to ports below 1024.",
+     "code": "sudo setcap cap_net_bind_service=+ep ./caddy"
+    },
+    {
+     "title": "Do the Getting Started guide",
+     "text": "The README recommends every user do it: https://caddyserver.com/docs/getting-started. Shorter quick-start tutorials are at https://caddyserver.com/docs/quick-starts."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Browser",
+    "text": "Work through the Getting Started guide at https://caddyserver.com/docs/getting-started, or pick one of the quick-starts at https://caddyserver.com/docs/quick-starts."
+   },
+   "watch": [
+    "The README gives no first command. Its setup and config instructions are on caddyserver.com/docs, not in the repo README.",
+    "setcap gives the binary permission to bind to low ports. The README also shows a sudoers line to skip the password prompt for setcap and warns to do that only if you know what you are doing.",
+    "Automatic HTTPS requests certificates from public certificate authorities (ZeroSSL, Let's Encrypt) for public names.",
+    "The license is not stated in the README. Check the LICENSE file in the repo.",
+    "\"Caddy\" is a registered trademark of Stack Holdings GmbH, per the README."
+   ],
+   "sources": [
+    "https://github.com/caddyserver/caddy"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "esp32-c3-adblock",
+   "repo": "github.com/M-Abozaid/esp32-c3-adblock",
+   "stars": "1.6k",
+   "level": "Advanced",
+   "cost": "Free, plus an ESP32-C3 board (about $2 per the README)",
+   "works_with": "ESP32-C3 boards with 4 MB flash (tested on a C3 SuperMini). Classic ESP32 4 MB boards also build. Built and flashed with PlatformIO",
+   "short": "A Pi-hole style DNS ad blocker that runs on a cheap ESP32-C3 board with no PSRAM.",
+   "what": "Firmware that turns an ESP32-C3 into a DNS sinkhole. It stores the blocklist as sorted 40-bit hashes in flash, so 140,000+ domains fit in about 0.7 MB and use about 50 KB of RAM. Blocked domains get 0.0.0.0, and everything else is forwarded to an upstream resolver.",
+   "who": "Tinkerers with an ESP32 board who want network-wide ad blocking on cheap hardware, and who can flash firmware with PlatformIO. Skip it if you want a polished appliance or need TLS on the dashboard, which this chip doesn't run.",
+   "needs": [
+    "An ESP32-C3 board with 4 MB flash (no PSRAM needed) and a stable USB power source",
+    "A current PlatformIO (the VSCode extension, or pip install -U platformio in a venv). The README says the distro/apt package is too old",
+    "Python 3 to build the blocklist",
+    "A copy of the repo"
+   ],
+   "steps": [
+    {
+     "title": "Create your secrets file",
+     "text": "Set real WEB_USER, WEB_PASS and OTA_PASS values in src/secrets.h. WiFi details are optional because there is a setup portal.",
+     "code": "cp src/secrets.example.h src/secrets.h"
+    },
+    {
+     "title": "Build the blocklist",
+     "text": "The default is StevenBlack base plus Hagezi Light, about 100k entries. You can pass your own URLs or files after the output name.",
+     "code": "python3 tools/build_blocklist.py data/blocklist.bin"
+    },
+    {
+     "title": "Flash the firmware and the blocklist over USB",
+     "text": "This is the only USB flash. Later updates go over WiFi.",
+     "code": "pio run -t upload\npio run -t uploadfs"
+    },
+    {
+     "title": "Watch it boot and open the dashboard",
+     "text": "If it can't connect to WiFi, join the C3-AdBlock-XXXX access point from your phone and pick your network.",
+     "code": "pio device monitor          # -> http://c3adblock.local"
+    },
+    {
+     "title": "Point your DNS at it",
+     "text": "Set a device's DNS to the board's IP, or add it as a secondary resolver behind your main DNS."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "dig @<c3-ip> doubleclick.net   # -> 0.0.0.0  (blocked)\ndig @<c3-ip> github.com        # -> real IP  (forwarded)"
+   },
+   "watch": [
+    "Change the placeholder passwords in src/secrets.h. With the example values the device still boots, and its dashboard and OTA passwords are public in the repo.",
+    "The dashboard is plain HTTP with Basic Auth. The README says anyone who can sniff your LAN can read those credentials.",
+    "The WiFi setup access point is open (unencrypted), so the WiFi password you type there is only as safe as that local radio link during setup.",
+    "The device sits in the path of every DNS query on your network. Anyone who can reflash it controls your DNS, which is why the passwords matter.",
+    "Remote auto-update pulls a blocklist from a URL on a schedule. The README offers one rebuilt weekly by GitHub Actions in this repo.",
+    "With 4 MB flash, firmware OTA leaves room for about 250k domains. Larger lists need the single-app partition table and no firmware OTA.",
+    "The Linux ModemManager fix in the README runs sudo commands and adds a udev rule. Read them before running."
+   ],
+   "sources": [
+    "https://github.com/M-Abozaid/esp32-c3-adblock"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "mixpanelyst",
+   "repo": "github.com/mixpanel/mixpanel-headless",
+   "stars": "18",
+   "level": "Intermediate",
+   "cost": "Free. Needs a Mixpanel account",
+   "works_with": "Claude Code, as part of the mixpanel-headless plugin. The underlying Python library and mp CLI run on Python 3.10+",
+   "short": "Lets your coding agent answer Mixpanel questions by writing and running Python against your project's data.",
+   "what": "An analysis skill from Mixpanel's own plugin. Ask about trends, funnels, retention, user paths, cohorts or experiments in plain language, and the agent writes Python with the mixpanel_headless library and pandas, runs it, and answers from the result. It also teaches the agent which defaults mislead, how to check a result, and how to manage entities like feature flags, alerts and Lexicon.",
+   "who": "Product managers, analysts and engineers who already use Mixpanel and work in Claude Code. Skip it if you don't have Mixpanel data, or if you want to add tracking code to an app (the skill says it is not for that).",
+   "needs": [
+    "Claude Code with plugins enabled",
+    "Python 3.10 or later, or uv (setup builds a private Python environment with one of them)",
+    "A Mixpanel account: a service account, a browser login, or an OAuth token"
+   ],
+   "steps": [
+    {
+     "title": "Add the plugin marketplace",
+     "text": "Run this inside Claude Code.",
+     "code": "/plugin marketplace add mixpanel/mixpanel-headless"
+    },
+    {
+     "title": "Install the plugin",
+     "text": "Restart Claude Code afterwards.",
+     "code": "/plugin install mixpanel-headless@mixpanel-headless-marketplace"
+    },
+    {
+     "title": "Run setup once",
+     "text": "It creates a private Python environment under ~/.claude/plugins/data/ and installs mixpanel_headless 0.4.0 or later there, never into your system Python.",
+     "code": "/mixpanel-headless:setup"
+    },
+    {
+     "title": "Connect your Mixpanel account",
+     "text": "The auth skill shows the session and lets you log in or switch accounts, projects and workspaces. The library's recommended first command is mp login, which opens a browser login by default.",
+     "code": "/mixpanel-headless:auth"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "How many signups last week?\n\nThen try:\nWhere do users drop off in checkout?\nDo users come back after onboarding?"
+   },
+   "watch": [
+    "When the skill runs, the plugin pre-approves its Python and mp commands for that turn, including ones that change or delete Mixpanel objects. The skills tell the agent to list objects and ask before any delete. Add ask or deny rules in your Claude Code permissions if you want a prompt for each command.",
+    "Credentials are saved to ~/.mp/config.toml. If you run mp login with MP_OAUTH_TOKEN set, the token is stored there inline.",
+    "Each report link the agent creates stores a new record in Mixpanel.",
+    "The library is pre-release. The README says APIs may change before 1.0."
+   ],
+   "sources": [
+    "https://github.com/mixpanel/mixpanel-headless/tree/main/mixpanel-plugin/skills/mixpanelyst",
+    "https://github.com/mixpanel/mixpanel-headless",
+    "https://github.com/mixpanel/mixpanel-headless/blob/HEAD/mixpanel-plugin/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "deepline-gtm",
+   "repo": "github.com/getaero-io/gtm-eng-skills",
+   "stars": "63",
+   "level": "Intermediate",
+   "cost": "Paid Deepline credits. The free tier includes 100 credits",
+   "works_with": "Claude Code (primary), Cursor, Codex CLI, Gemini CLI, Antigravity. Needs the Deepline CLI",
+   "short": "Routes your coding agent through lead sourcing, enrichment and outbound tasks using the Deepline CLI and 40+ data providers.",
+   "what": "The main skill in a set of sales prospecting skills. It tells your coding agent how to build lead lists, find emails, phones and LinkedIn URLs, score accounts and write outreach, using the Deepline CLI to call providers like Apollo, Crustdata, PDL and Hunter with fallbacks between them. It includes rules for piloting on a small sample and asking for approval before paid runs.",
+   "who": "GTM engineers, founders and sales ops people who work from CSVs and want an agent to run enrichment for them. Skip it if you don't want a paid Deepline account or don't do outbound prospecting.",
+   "needs": [
+    "A Deepline account (free tier available)",
+    "Node.js with npm, to install the Deepline CLI",
+    "A coding agent that supports SKILL.md files"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "Installs all skills in the repo. Add --global to make them available in every project.",
+     "code": "npx skills add getaero-io/gtm-eng-skills --all"
+    },
+    {
+     "title": "Or install only this skill and a few related ones",
+     "code": "npx skills add getaero-io/gtm-eng-skills --skill deepline-gtm build-tam linkedin-url-lookup"
+    },
+    {
+     "title": "Install the Deepline CLI and log in",
+     "text": "From the README's prerequisites. The skill's own quick start uses npm install -g deepline and deepline auth register --wait auto instead.",
+     "code": "npm install -g @deepline/cli\ndeepline auth login"
+    },
+    {
+     "title": "Or use the one-line installer",
+     "text": "This pipes a remote script into your shell.",
+     "code": "curl -fsSL \"https://code.deepline.com/api/v2/cli/install\" | bash"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Enrich the leads in this CSV, score them against my ICP, and queue the top 50 in Lemlist"
+   },
+   "watch": [
+    "Enrichment uses paid Deepline credits. The skill says planning is not approval for paid work and asks before full runs, but check spend with deepline billing balance.",
+    "The curl installer pipes a script into bash. Read the script first. The README's other quick start asks your agent to follow instructions from https://code.deepline.com/agent-install.txt, so read that file before pasting the prompt.",
+    "Your lead data and the people you look up are sent to Deepline and third-party data providers. The skills find personal emails, phone numbers and LinkedIn profiles.",
+    "Unless you say otherwise, the skill tells the agent to send bug reports with deepline feedback send when things fail. It asks before uploading the whole session.",
+    "The README and the skill name different npm packages for the CLI (@deepline/cli and deepline)."
+   ],
+   "sources": [
+    "https://github.com/getaero-io/gtm-eng-skills/tree/main/skills/deepline-gtm",
+    "https://github.com/getaero-io/gtm-eng-skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "hyperframes-animation",
+   "repo": "github.com/heygen-com/hyperframes",
+   "stars": "57.3k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, Cursor, Gemini CLI, IBM Bob, OpenCode and other agents that support skills. HyperFrames needs Node.js 22+ and FFmpeg",
+   "short": "Teaches your coding agent motion rules, scene templates and transitions for HyperFrames videos made from HTML.",
+   "what": "The animation skill for HyperFrames, an open-source framework that renders HTML, CSS and seekable animations into MP4 video. It gives your agent atomic motion rules, multi-phase scene blueprints, scene transitions and notes for seven animation runtimes (GSAP by default, plus Lottie, Three.js, Anime.js, CSS keyframes, Web Animations API and TypeGPU). It also includes a script that maps a composition's animations to spot dead zones and timing problems.",
+   "who": "Developers and designers making product videos, motion graphics or social clips with an AI coding agent. Skip it if you don't use HyperFrames; it is one of the domain skills the /hyperframes router loads on demand.",
+   "needs": [
+    "Node.js 22 or later",
+    "FFmpeg",
+    "A coding agent that supports skills"
+   ],
+   "steps": [
+    {
+     "title": "In Claude Code, install the plugin",
+     "text": "Then use /hyperframes:hyperframes. The plugin bundles the full skill set.",
+     "code": "claude plugin marketplace add heygen-com/hyperframes\nclaude plugin install hyperframes@hyperframes"
+    },
+    {
+     "title": "Or install the core skills for any agent",
+     "text": "The core set includes the router and the hyperframes-* domain skills, this one included. It installs from the current main branch.",
+     "code": "npx hyperframes skills update"
+    },
+    {
+     "title": "Or pick skills interactively",
+     "text": "Choose the Core Skills group in the picker.",
+     "code": "npx skills add heygen-com/hyperframes"
+    },
+    {
+     "title": "Start a project and preview it",
+     "code": "npx hyperframes init my-video\ncd my-video\nnpx hyperframes preview      # preview in browser with live reload\nnpx hyperframes render       # render to MP4"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Using /hyperframes, create a 10-second product intro with a fade-in title, a background video, and subtle background music."
+   },
+   "watch": [
+    "The /hyperframes router runs npx hyperframes skills update to install creation workflows on demand, so your agent will fetch and install more skills as it goes.",
+    "npx skills add pulls from the skills.sh registry, which the README says can lag main by hours.",
+    "The animation-map script can bootstrap the bundled HyperFrames package from npm if it is not in your project.",
+    "Cloning the full repo for development pulls about 240 MB of test videos through Git LFS. You don't need that to use the skill."
+   ],
+   "sources": [
+    "https://github.com/heygen-com/hyperframes/tree/main/skills/hyperframes-animation",
+    "https://github.com/heygen-com/hyperframes"
+   ]
+  }
+ ]
+}
