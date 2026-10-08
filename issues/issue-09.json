@@ -1,0 +1,368 @@
+{
+ "issue": 9,
+ "date": "7 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 7 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #9 had four trending repos and four new AI skills. Most are for people who use a coding agent every day. DeepGEMM is only for GPU kernel specialists. If you only try two, start with i-have-adhd and Diagram Design.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "REA",
+   "repo": "github.com/morluto/rea",
+   "stars": "11.1k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, Gemini CLI and other agents with local MCP",
+   "short": "An MCP server that lets your agent reverse engineer apps, binaries and websites and show its evidence.",
+   "what": "REA (Reverse Engineer Anything) connects your agent to tools for inspecting native binaries, JavaScript and Electron apps, .NET assemblies, Android APKs, websites and more. You ask how a feature in an app works, and the agent traces it, explains it with evidence and can build a similar version. The same tools work from your terminal.",
+   "who": "Developers and security researchers who want to understand how existing software works without its source. For native binaries you'll need Hopper, Ghidra or IDA, so it's not a casual install.",
+   "needs": [
+    "Node.js 22.x (22.19 or later), 24.x (24.11 or later) or 26+, plus npm",
+    "For native binaries: Hopper, Ghidra or IDA. Setup can install Hopper if you approve",
+    "For websites: a Chrome-family browser. Other targets list their own tools in the README"
+   ],
+   "steps": [
+    {
+     "title": "Set up your agent",
+     "text": "Choose your agents, review the proposed changes and approve them. It backs up your existing config. Restart your agent afterwards.",
+     "code": "npx rea-agents setup"
+    },
+    {
+     "title": "Optional: install the rea command",
+     "code": "npm install --global rea-agents\nrea --help"
+    },
+    {
+     "title": "Or try it from the terminal on an Electron app",
+     "text": "Replace the path with an extracted app folder or ASAR file.",
+     "code": "npx -y rea-agents@latest analyze-javascript-application /absolute/path/to/app --json"
+    },
+    {
+     "title": "Keep it updated",
+     "text": "Releases come often. For the npm-installed CLI run `rea update`. If you set up with npx, run:",
+     "code": "npx rea-agents@latest setup"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Understand how search works in the Notes app, show me the evidence, and build a similar feature for my project.\n\n(Swap Notes for the app and feature you care about.)"
+   },
+   "watch": [
+    "Setup changes your agent's config to add REA's MCP server and its instructions. It shows the changes and keeps backups.",
+    "Runtime capture runs or interacts with the target app using your own user permissions. Static JavaScript and .NET inspection only read the files.",
+    "Analysis runs locally, but your agent sends the results to its model provider.",
+    "The README says you are responsible for having permission to reverse engineer a target and for following the law."
+   ],
+   "sources": [
+    "https://github.com/morluto/rea"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "i-have-adhd",
+   "repo": "github.com/ayghri/i-have-adhd",
+   "stars": "54.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Gemini CLI, GitHub Copilot, Cursor, OpenCode, Pi, Grok and more",
+   "short": "Makes your coding agent lead with the next action, number its steps and drop the filler.",
+   "what": "A skill with 10 output rules for your coding agent. It leads with the next action, numbers multi-step tasks, ends with one concrete next step, skips tangents, caps lists at five items and drops preambles and closers. No ADHD diagnosis needed.",
+   "who": "Anyone who's tired of scrolling past \"Great question!\" to find the command. It still explains fully when you ask it to explain.",
+   "needs": [
+    "A supported coding agent. INSTALL.md has steps for more than a dozen"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code",
+     "text": "Then type `/i-have-adhd` in a session.",
+     "code": "claude plugin marketplace add ayghri/i-have-adhd\nclaude plugin install i-have-adhd@i-have-adhd"
+    },
+    {
+     "title": "Codex",
+     "text": "Codex won't switch it on by itself. Type `$i-have-adhd` to use it.",
+     "code": "codex plugin marketplace add ayghri/i-have-adhd --ref main\ncodex plugin add i-have-adhd@i-have-adhd"
+    },
+    {
+     "title": "Gemini CLI (always on)",
+     "text": "The extension applies the rules from the first message. `git` must be installed.",
+     "code": "gemini extensions install https://github.com/ayghri/i-have-adhd"
+    },
+    {
+     "title": "Cursor, Copilot and other skills-compatible agents",
+     "code": "npx skills add ayghri/i-have-adhd -g"
+    },
+    {
+     "title": "Optional: always on in Claude Code",
+     "text": "A start-of-session hook loads the rules when this flag file exists. Delete the file to go back to on-demand.",
+     "code": "touch ~/.claude/.i-have-adhd-always"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/i-have-adhd\n\nThen ask your usual question. Say \"stop adhd mode\" or \"normal mode\" to turn it off for the session."
+   },
+   "watch": [
+    "The README's first install option is a prompt you paste into your agent so it installs itself by reading the repo's AGENTS.md. We listed the manual commands from INSTALL.md instead, so you can see what runs.",
+    "In Claude Code, Codex, Qwen Code and Grok nothing changes until you invoke it. Other agents may switch it on by themselves.",
+    "On Grok the install needs `--trust`, which lets the plugin's hooks and skills run."
+   ],
+   "sources": [
+    "https://github.com/ayghri/i-have-adhd",
+    "https://github.com/ayghri/i-have-adhd/blob/main/INSTALL.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Diagram Design",
+   "repo": "github.com/cathrynlavery/diagram-design",
+   "stars": "44.4k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, GitHub Copilot, Factory Droid, Pi, Cursor, Gemini CLI and more",
+   "short": "Has your coding agent draw clean editorial diagrams as single HTML files, in your own brand colors.",
+   "what": "A skill that makes your agent draw diagrams as self-contained HTML and SVG files: architecture, flowcharts, sequences, timelines, quadrants, Sankey charts and dozens more. It can read your website and match your brand colors and fonts. It can also redraw draw.io, Mermaid or Excalidraw files and export PNG or SVG.",
+   "who": "Anyone who writes docs, posts or slides and wants diagrams that don't look like generic AI boxes. For quick text diagrams or simple lists, the README itself says to skip it.",
+   "needs": [
+    "A coding agent that supports plugins or skills",
+    "For PNG export only: Python with Playwright and Chromium"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code",
+     "text": "Then open `/plugin`, go to Marketplaces, select diagram-design and choose Enable auto-update. It's off by default for third-party marketplaces.",
+     "code": "/plugin marketplace add cathrynlavery/diagram-design\n/plugin install diagram-design@diagram-design"
+    },
+    {
+     "title": "Codex",
+     "code": "codex plugin marketplace add cathrynlavery/diagram-design\ncodex plugin add diagram-design@diagram-design"
+    },
+    {
+     "title": "GitHub Copilot",
+     "code": "copilot plugin marketplace add cathrynlavery/diagram-design\ncopilot plugin install diagram-design@diagram-design"
+    },
+    {
+     "title": "Any other skills host (Cursor, Gemini CLI, Cline and more)",
+     "text": "This copy doesn't follow marketplace updates. Run `npx skills update diagram-design` to update.",
+     "code": "npx skills add cathrynlavery/diagram-design"
+    },
+    {
+     "title": "Optional: set up PNG export",
+     "code": "pip install playwright && playwright install chromium"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Make me an architecture diagram of my app: frontend, backend, database, Redis cache.\n\nTo use your brand: onboard diagram-design to https://yoursite.com"
+   },
+   "watch": [
+    "Generated diagrams load fonts from Google Fonts when opened, so Google sees the viewer's IP address. Remove the font link or open the file offline to avoid that.",
+    "Brand onboarding has your agent fetch pages from the site you name. Nothing is fetched unless you ask.",
+    "Official builds come only from this repo. A listing under another publisher name is an unofficial copy.",
+    "Its privacy policy says it has no server, no analytics and no telemetry."
+   ],
+   "sources": [
+    "https://github.com/cathrynlavery/diagram-design",
+    "https://github.com/cathrynlavery/diagram-design/blob/main/PRIVACY.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "DeepGEMM",
+   "repo": "github.com/deepseek-ai/DeepGEMM",
+   "stars": "8.8k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "NVIDIA SM90 or SM100 GPUs with PyTorch",
+   "short": "DeepSeek's library of fast GPU kernels for the matrix maths inside large language models.",
+   "what": "A CUDA kernel library from DeepSeek for the core maths of modern LLMs: FP8, FP4 and BF16 matrix multiplies, fused mixture-of-experts with overlapped communication (Mega MoE), and scoring kernels for DeepSeek's lightning indexer. Kernels compile at runtime, so installing needs no CUDA compilation. DeepSeek also pitches it as a readable resource for learning GPU kernel optimization.",
+   "who": "Engineers who build LLM training or inference systems on NVIDIA SM90 or SM100 GPUs. If you don't write GPU code, skip it.",
+   "needs": [
+    "An NVIDIA GPU with SM90 or SM100 architecture",
+    "Python 3.8 or higher",
+    "Compilers and standard libraries with C++20 `<format>` support",
+    "CUDA Toolkit 12.9 or higher and PyTorch 2.3 or higher",
+    "CUTLASS 4.0 or higher (cloned with the Git submodule)"
+   ],
+   "steps": [
+    {
+     "title": "Clone with submodules and build for development",
+     "text": "The README has you print each script with `cat` before running it.",
+     "code": "# Submodule must be cloned\ngit clone --recursive git@github.com:deepseek-ai/DeepGEMM.git\ncd DeepGEMM\n\n# Link some essential includes and build the C++ extension\ncat develop.sh\n./develop.sh"
+    },
+    {
+     "title": "Install",
+     "code": "cat install.sh\n./install.sh"
+    },
+    {
+     "title": "Use it from Python",
+     "text": "Import `deep_gemm` in your project. The `tests` folder has worked examples."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Python",
+    "text": "import deep_gemm\n\nThen call fp8_gemm_nt for a basic FP8 GEMM (D = C + A @ B.T). See tests/test_mega_moe.py and tests/test_attention.py for fuller examples."
+   },
+   "watch": [
+    "You handle input transposition and FP8 casting yourself. The README says its simple PyTorch helpers for these may be slower.",
+    "Mega MoE needs a multi-process launch with symmetric memory and PyTorch 2.9 or later.",
+    "SM90 and SM100 need scaling factors in different formats (FP32 on SM90, packed UE8M0 on SM100).",
+    "DeepSeek has a separate DeepGEMM-Ascend repo for Ascend hardware."
+   ],
+   "sources": [
+    "https://github.com/deepseek-ai/DeepGEMM"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "nano-banana-image",
+   "repo": "github.com/AceDataCloud/Skills",
+   "stars": "17",
+   "level": "Intermediate",
+   "cost": "Paid API. Most services have a free quota",
+   "works_with": "Claude Code, GitHub Copilot, Gemini CLI, Codex, Cursor, Roo Code, Goose and more",
+   "short": "Makes and edits images with Gemini's Nano Banana models through the AceDataCloud API.",
+   "what": "Teaches your agent to generate images from text, or edit images you already have, with the Nano Banana models (nano-banana, nano-banana-2-lite, nano-banana-2 and nano-banana-pro) through AceDataCloud. Edits are plain-language instructions with no mask. It supports several aspect ratios and 1K, 2K or 4K output.",
+   "who": "People who want their agent to produce or touch up images and are happy to use a paid API account. If you already call Google's API directly, you may not need it.",
+   "needs": [
+    "An AceDataCloud account at platform.acedata.cloud with a subscribed service and an API token",
+    "The token set as `ACEDATACLOUD_API_TOKEN`",
+    "Node.js for `npx`, or Claude Code for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "Get a token",
+     "text": "Register at platform.acedata.cloud, subscribe to a service, create an API credential, then set it in your shell rather than pasting it into chat.",
+     "code": "export ACEDATACLOUD_API_TOKEN=\"your-token-here\""
+    },
+    {
+     "title": "Install the skills",
+     "text": "This installs every AceDataCloud skill. To install only this one, use the README's specific-skills form (`--skill <name>`) with `nano-banana-image`.",
+     "code": "npx skills add acedatacloud/skills --skill '*' --yes"
+    },
+    {
+     "title": "Or, in Claude Code, install the media plugin",
+     "text": "nano-banana-image is in the ai-media bundle.",
+     "code": "/plugin marketplace add acedatacloud/skills\n/plugin install acedatacloud-ai-media@acedatacloud-skills"
+    },
+    {
+     "title": "Optional: add the MCP server for tool use",
+     "text": "Or use the hosted endpoint at https://nanobanana.mcp.acedata.cloud/mcp.",
+     "code": "pip install mcp-nano-banana"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your terminal",
+    "text": "curl -X POST https://api.acedata.cloud/nano-banana/images \\\n  -H \"Authorization: Bearer $ACEDATACLOUD_API_TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"action\": \"generate\", \"prompt\": \"a watercolor painting of a French countryside village\", \"model\": \"nano-banana\"}'"
+   },
+   "watch": [
+    "Your prompts and images go through AceDataCloud's servers.",
+    "Jobs can run asynchronously. You poll `/nano-banana/tasks` with the task's `id` until the image is ready.",
+    "Images to edit are passed as URLs in `image_urls`, so they need to be reachable online.",
+    "Installing with `'*'` also adds the connector skills for Gmail, Slack, GitHub and others. Pick single skills if you don't want those."
+   ],
+   "sources": [
+    "https://github.com/AceDataCloud/Skills/tree/main/skills/nano-banana-image",
+    "https://github.com/AceDataCloud/Skills",
+    "https://github.com/AceDataCloud/Skills/blob/main/.claude-plugin/marketplace.json"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "grill-me (listed as grilling)",
+   "repo": "github.com/shipshitdev/skills",
+   "stars": "37",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, Cursor",
+   "short": "Questions you hard about a plan, round by round, until every open decision is settled.",
+   "what": "A skill that interviews you about a plan, decision or idea. It maps the decisions as a tree, asks every question it can ask right now in one numbered round, suggests an answer for each and waits for yours. It looks facts up itself instead of asking you, and stops when nothing is left open. The repo has renamed it from grilling to grill-me. It's adapted from Matt Pocock's grilling skill (MIT).",
+   "who": "Anyone about to start a feature, project or big decision who wants the gaps found before work begins. It won't write code or act on the plan.",
+   "needs": [
+    "Claude Code, Codex or Cursor",
+    "Node.js for `npx`, or Claude Code for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "In Claude Code, install the Dev Loop bundle",
+     "text": "grill-me is in this bundle.",
+     "code": "/plugin marketplace add shipshitdev/skills\n/plugin install shipshitdev-dev-loop@shipshitdev"
+    },
+    {
+     "title": "Or install the whole collection",
+     "text": "This adds all 169 skills for the three agents named. Don't use `--all`, which installs to every agent the CLI knows (30+).",
+     "code": "npx skills add shipshitdev/skills -g --agent claude-code codex cursor --skill '*' -y"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "grill me on this plan: <paste your plan>\n\n(\"interview me\" also works.)"
+   },
+   "watch": [
+    "It may start a read-only sub-agent to look up facts in your files or tracker. It doesn't edit code or write to trackers.",
+    "It stops at a shared understanding and waits for you to confirm before anything is acted on.",
+    "The repo's old `scripts/install-skills.sh` installer was removed. The README says not to run an old copy."
+   ],
+   "sources": [
+    "https://github.com/shipshitdev/skills/tree/master/bundles/dev-loop/skills/grill-me",
+    "https://github.com/shipshitdev/skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "blume",
+   "repo": "github.com/haydenbleasel/blume",
+   "stars": "1.7k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor",
+   "short": "Teaches your coding agent to build and maintain a docs site with Blume, a Markdown-first framework.",
+   "what": "The core skill for Blume, an open-source docs framework on Astro and Vite. You drop Markdown or MDX into a folder and get a docs site with navigation, search, theming and Open Graph images. The skill teaches your agent to scaffold the site, write pages, edit `blume.config.ts` and run the Blume CLI. Blume also ships skills for migrating from other docs tools and keeping docs up to date.",
+   "who": "Developers who want a docs site for a project and want their agent to do most of the setup and writing. If you're moving from Mintlify, Docusaurus or another docs tool, Blume's separate blume-migrate skill handles that.",
+   "needs": [
+    "Node.js 22.19 or newer",
+    "A coding agent that supports skills"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "Run it in the project where an agent will help with your docs.",
+     "code": "npx skills add haydenbleasel/blume"
+    },
+    {
+     "title": "Scaffold a site",
+     "text": "This creates `docs/index.mdx` and `blume.config.ts`, adds dev and build scripts and installs dependencies.",
+     "code": "npx blume init"
+    },
+    {
+     "title": "Run the dev server",
+     "code": "npm run dev"
+    },
+    {
+     "title": "Build static HTML",
+     "text": "Output goes to `dist/`, with a local search index.",
+     "code": "npm run build"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Use the blume skill to set up a docs site in this project and write a quickstart page."
+   },
+   "watch": [
+    "`npx blume migrate` and `blume upgrade --claude` or `--codex` hand work to Claude Code or Codex, which then edit your project.",
+    "The optional in-page assistant and MCP server need server output, set with a deploy adapter in `blume.config.ts`.",
+    "Blume generates a hidden `.blume/` folder on each run. Don't edit it. Run `npx blume eject` if you want a standalone Astro project."
+   ],
+   "sources": [
+    "https://github.com/haydenbleasel/blume/tree/main/skills/blume",
+    "https://github.com/haydenbleasel/blume",
+    "https://github.com/haydenbleasel/blume/blob/main/apps/docs/content/docs/advanced/skills.mdx"
+   ]
+  }
+ ]
+}
