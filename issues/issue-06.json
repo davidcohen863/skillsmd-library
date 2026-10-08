@@ -1,0 +1,375 @@
+{
+ "issue": 6,
+ "date": "4 Oct 2026",
+ "checked": "8 Oct 2026",
+ "blurb": "Every repo and skill from the 4 October issue that we could source, with what it does, who it's for, what you need and the setup steps from its own README.",
+ "intro": "Issue #6 covered six trending GitHub repos and three new AI skills, and seven of them have guides here. Most are for people who already use a coding agent, while OpenCut and Cloudflare OS are apps you run yourself. If you only try two, start with Agent Skills and Claude-Mem.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "ECC",
+   "repo": "github.com/affaan-m/ECC",
+   "stars": "272.5k",
+   "level": "Intermediate",
+   "cost": "Free. The optional ECC Pro GitHub App for private repos is from $19 per seat a month",
+   "works_with": "Claude Code (best supported), Codex, Kimi Code, plus limited adapters for Cursor, OpenCode, Gemini CLI, Zed, GitHub Copilot and others",
+   "short": "A large pack of agents, skills, hooks and rules that makes your coding agent plan, test, review and keep notes between sessions.",
+   "what": "ECC installs a working method into your coding agent: 68 agents, 293 skills and 94 legacy commands, plus hooks, rules, memory and the AgentShield security scanner. It makes the agent plan before it builds, check changes with tests, review its own work from a fresh context and turn repeated wins into reusable skills.",
+   "who": "Developers who use a coding agent every day and want a full process set up in one go. It works best with Claude Code; other agents get partial support, so check the README's support table first. The README suggests starting with the one workflow you need.",
+   "needs": [
+    "Node.js 18 or newer for the guided setup",
+    "Git and Claude Code 2.1 or newer on your PATH for the Claude plugin setup",
+    "A supported coding agent"
+   ],
+   "steps": [
+    {
+     "title": "Run the guided setup",
+     "text": "This is the recommended path for Claude Code. It handles the plugin install, updates, scope and hook choices.",
+     "code": "npx ecc-universal@2.2.3 setup"
+    },
+    {
+     "title": "Or use Claude Code's plugin commands",
+     "text": "Pick one install method per agent. Installing twice into the same agent duplicates skills, commands and hooks.",
+     "code": "/plugin marketplace add https://github.com/affaan-m/ECC\n/plugin install ecc@ecc"
+    },
+    {
+     "title": "Add the rule packs you want",
+     "text": "Plugins can't ship rules, so copy them in yourself. Start with `rules/common` plus one language you use.",
+     "code": "git clone https://github.com/affaan-m/ECC.git\ncd ECC\nmkdir -p ~/.claude/rules/ecc\ncp -R rules/common ~/.claude/rules/ecc/\ncp -R rules/typescript ~/.claude/rules/ecc/  # replace with your stack"
+    },
+    {
+     "title": "In Codex",
+     "text": "Inside Codex, `$configure-ecc` runs the guided setup.",
+     "code": "codex plugin marketplace add affaan-m/ECC\ncodex plugin add ecc@ecc"
+    },
+    {
+     "title": "Or install without hooks",
+     "text": "This keeps the rules, agents, commands and core workflows but leaves out the runtime hooks.",
+     "code": "npx ecc-universal@2.2.3 install --profile minimal --target claude"
+    },
+    {
+     "title": "Remove it later",
+     "text": "Run these from the project folder you installed from. Plugin users remove the plugin in Claude Code instead.",
+     "code": "npx ecc-universal@2.2.3 uninstall --dry-run\nnpx ecc-universal@2.2.3 uninstall"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/ecc:plan \"Add authentication\"\n\nOther starting points:\n/code-review for a fresh-context review\n/build-fix to repair a build\n/context-budget to check how full the context is"
+   },
+   "watch": [
+    "Install only from the sources the README lists: the GitHub repo, the npm packages ecc-universal and ecc-agentshield, the plugin ecc@ecc, the ECC Tools GitHub App and ecc.tools. The README warns that unofficial mirrors may contain malware.",
+    "Hooks run shell commands and MCP servers can hold credentials. The README says to treat both as executable configuration. Use the minimal profile if you don't want runtime hooks.",
+    "If you already stacked install methods, the README's Reset / Uninstall section gives the cleanup order.",
+    "In Codex, the native hooks need an explicit trust decision.",
+    "Support outside Claude Code is limited. Check the platform support table before expecting every feature."
+   ],
+   "sources": [
+    "https://github.com/affaan-m/ECC"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Agent Skills",
+   "repo": "github.com/addyosmani/agent-skills",
+   "stars": "100.9k",
+   "level": "Beginner",
+   "cost": "Free",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, Antigravity, OpenCode, Windsurf, Kiro and other agents",
+   "short": "25 engineering skills and 9 slash commands that take your coding agent from spec to plan, build, test, review and ship.",
+   "what": "Addy Osmani's pack of 25 skills writes down how senior engineers work: a spec before code, small tasks, tests as proof and review before merge. Nine commands map to each stage (/spec, /plan, /build, /test, /review, /ship and three more). Skills also switch on by themselves when a task fits, for example API design or UI work.",
+   "who": "Developers who want their coding agent to work through a set process, from spec to ship. The README's adoption guide covers both new projects and established codebases.",
+   "needs": [
+    "A coding agent. The skills CLI installs into 70+ agents",
+    "For the Codex plugin, Codex CLI v0.122 or later"
+   ],
+   "steps": [
+    {
+     "title": "Install all 25 skills into any agent",
+     "code": "npx skills add addyosmani/agent-skills"
+    },
+    {
+     "title": "Or browse first",
+     "code": "npx skills add addyosmani/agent-skills --list"
+    },
+    {
+     "title": "Or, in Claude Code, use the plugin",
+     "text": "If the marketplace step fails over SSH, the README gives an HTTPS version.",
+     "code": "/plugin marketplace add addyosmani/agent-skills\n/plugin install agent-skills@addy-agent-skills"
+    },
+    {
+     "title": "In Codex",
+     "text": "Then call skills with @, for example `@spec-driven-development`.",
+     "code": "codex plugin marketplace add addyosmani/agent-skills\ncodex plugin add agent-skills@agent-skills"
+    },
+    {
+     "title": "In Gemini CLI",
+     "code": "gemini skills install https://github.com/addyosmani/agent-skills.git --path skills"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/spec\n\nThen /plan and /build. Once the spec exists, /build auto writes the plan and works through every task after you approve the plan once."
+   },
+   "watch": [
+    "Installing a single skill with npx copies only that skill's folder, not the shared `references/` checklists. The skill still works, but its links to those checklists won't.",
+    "/build auto runs every task after one approval. Each task is still test-driven and committed on its own, and it pauses on failures or risky steps.",
+    "Cursor, Windsurf, OpenCode and Copilot need manual setup. Each has its own guide in the repo's docs folder."
+   ],
+   "sources": [
+    "https://github.com/addyosmani/agent-skills"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenCut",
+   "repo": "github.com/OpenCut-app/OpenCut",
+   "stars": "91.8k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Web today. The rewrite targets desktop, mobile and browser from one codebase",
+   "short": "A free, open-source video editor. The current version runs at opencut.app while the team rewrites it from scratch.",
+   "what": "OpenCut is a free and open-source video editor for web, desktop and mobile. This repo holds a ground-up rewrite with a Rust core. The README lists what's coming: an editor API, third-party plugins, a headless mode for batch rendering, a scripting tab and an MCP server so AI agents can drive it.",
+   "who": "People who want a free video editor, and developers who want to follow the rewrite. If you just want to edit a video today, the README points you to the classic version.",
+   "needs": [
+    "For the classic version: nothing to install, it runs at opencut.app",
+    "To run the rewrite locally: proto, which installs the tools pinned in the repo"
+   ],
+   "steps": [
+    {
+     "title": "Use the classic version today",
+     "text": "opencut.app still runs the classic version. Its code is at github.com/opencut-app/opencut-classic."
+    },
+    {
+     "title": "To run the rewrite, install proto (Linux, macOS, WSL)",
+     "code": "bash <(curl -fsSL https://moonrepo.dev/install/proto.sh)"
+    },
+    {
+     "title": "Or install proto on Windows (PowerShell)",
+     "code": "irm https://moonrepo.dev/install/proto.ps1 | iex"
+    },
+    {
+     "title": "Install the pinned tools from the repo root",
+     "code": "proto use"
+    },
+    {
+     "title": "Start the apps",
+     "code": "moon run web:dev       # localhost:5173\nmoon run api:dev       # localhost:8787"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your browser",
+    "text": "Open opencut.app to use the classic editor. The rewrite will live at new.opencut.app until it's ready to take over."
+   },
+   "watch": [
+    "Both proto installers pipe a script from the internet straight into your shell. Read the script before you run it.",
+    "The rewrite is early. The API, plugins, headless mode and MCP server are listed as coming.",
+    "The team isn't taking outside contributions yet while the architecture is being designed."
+   ],
+   "sources": [
+    "https://github.com/OpenCut-app/OpenCut"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Cloudflare OS",
+   "repo": "github.com/cloudflare/cloudflare-os",
+   "stars": "10.7k",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Many AI model providers and self-hosted models. Runs on Cloudflare Workers, or locally on wrangler and workerd",
+   "short": "Cloudflare's internal AI workspace, now open source: agent chat, small sandboxed apps and approval controls you can run yourself.",
+   "what": "An AI productivity environment Cloudflare built for its own staff. It has an agent chat UI, lets agents build small sandboxed apps it calls gadgets that you can share like documents, and puts Gatekeepers between agents and outside services. A Gatekeeper limits access to the resource you chose, logs every action and holds anything with side effects for your approval.",
+   "who": "Teams that want to run their own company AI workspace and are comfortable with Cloudflare Workers. Cloudflare's idea is that you copy it and make your own version. The README calls this an early access release with many rough edges.",
+   "needs": [
+    "pnpm",
+    "An AI model provider of your choice",
+    "For deployment: a Cloudflare account",
+    "For integrations such as GitHub, Google or Slack: OAuth client credentials for each service, set up per that Gatekeeper's README"
+   ],
+   "steps": [
+    {
+     "title": "Run it locally",
+     "text": "From the repo folder, after installing pnpm. This runs the whole stack on wrangler and workerd so you can see what it does.",
+     "code": "pnpm run-local"
+    },
+    {
+     "title": "Open it",
+     "text": "Visit http://localhost:8787. Your data is stored in a `.wrangler` subfolder."
+    },
+    {
+     "title": "Or deploy to your Cloudflare account",
+     "text": "Use the online flow at https://os.cloudflare.app/deploy. For custom Gatekeepers or code changes, the README points to github.com/cloudflare/cloudflare-os-starter."
+    },
+    {
+     "title": "Connect outside services",
+     "text": "Each Gatekeeper package (GitHub, Google, Cloudflare, Supabase, Notion, Confluence, Slack and others) has its own setup instructions."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The Cloudflare OS chat",
+    "text": "Make slides for my upcoming meeting with a customer.\n\nOr: \"Make a tic tac toe game.\" followed by \"I'll be X and you be O. I've made my first move. Your turn.\""
+   },
+   "watch": [
+    "The local run is for trying it out. The README says it isn't the right way to run it on a production server, and the self-hosted workerd path is marked coming soon.",
+    "When an agent does something that needs approval, the Gatekeeper simulates the result so the agent can keep going. You approve or reject the real actions later, so check the queue before assuming anything happened.",
+    "Agents and gadgets start with access to nothing. You introduce each resource, such as a GitHub repo, before they can use it.",
+    "Setting up OAuth for some services is fiddly. The README warns that many providers don't make it easy."
+   ],
+   "sources": [
+    "https://github.com/cloudflare/cloudflare-os"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Claude-Mem",
+   "repo": "github.com/thedotmack/claude-mem",
+   "stars": "95.8k",
+   "level": "Beginner",
+   "cost": "Free (Apache-2.0). The default hosted memory has a 30-day free trial",
+   "works_with": "Claude Code, plus OpenCode, T3 Code, Antigravity CLI, Oh My Pi, Pi, DeepSeek Harness, Grok Bot and OpenClaw",
+   "short": "Gives your coding agent memory across sessions by recording what it did and feeding summaries into new sessions.",
+   "what": "Claude-Mem captures what your agent does with its tools, writes compressed summaries and loads them into later sessions, so the agent keeps what it learned about a project after a session ends. It keeps everything in a local SQLite database with Chroma vector search, has a web viewer and gives the agent search tools for past work.",
+   "who": "Anyone who works on the same projects with a coding agent over many sessions and is tired of re-explaining context. It was built for Claude Code first.",
+   "needs": [
+    "Node.js 20 or higher",
+    "Claude Code with plugin support, or another supported agent",
+    "Bun and uv, which the installer adds if they're missing",
+    "A memory provider: the claude-mem observer (email sign-in), your own OpenRouter or Gemini key, or your Anthropic plan"
+   ],
+   "steps": [
+    {
+     "title": "Install",
+     "text": "The installer sets things up, then asks you to sign in through an email link and pick a memory provider.",
+     "code": "npx claude-mem install"
+    },
+    {
+     "title": "Or skip the sign-in",
+     "text": "Pass an explicit `--provider` flag or set `CLAUDE_MEM_ONLINE_OPTIN=false`, and the installer finishes without an account."
+    },
+    {
+     "title": "Or install inside Claude Code",
+     "text": "Restart Claude Code afterwards. Context from earlier sessions then appears in new ones.",
+     "code": "/plugin marketplace add thedotmack/claude-mem\n\n/plugin install claude-mem"
+    },
+    {
+     "title": "For other agents",
+     "text": "Swap `opencode` for `t3code`, `antigravity`, `omp`, `pi` or `grok-bot`.",
+     "code": "npx claude-mem install --ide opencode"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Work as usual, then start a new session. Past context loads on its own.\n\nTo dig into history, the agent uses the memory search tools, for example:\nsearch(query=\"authentication bug\", type=\"bugfix\", limit=10)"
+   },
+   "watch": [
+    "`npm install -g claude-mem` installs only the library. Use `npx claude-mem install` or the /plugin commands to get the hooks and worker.",
+    "The default memory provider is a hosted service. After the 30-day trial, memory falls back to your Anthropic plan unless you subscribe.",
+    "It records your agent's tool use. Wrap anything sensitive in `<private>` tags to keep it out of storage.",
+    "It adds lifecycle hooks to your agent and runs a local worker service.",
+    "The OpenClaw installer pipes a script from the internet into bash. Read the script before you run it."
+   ],
+   "sources": [
+    "https://github.com/thedotmack/claude-mem"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ad-delayer",
+   "repo": "github.com/Bria-AI/bria-skill",
+   "stars": "68",
+   "level": "Beginner",
+   "cost": "Free API key. Each run is billed; prices are not stated in the README",
+   "works_with": "Claude Code, Cursor, Cline, Codex and 37+ other agents",
+   "short": "Turns a flat, finished ad image back into editable layers: background, product, logo, headline, copy and call to action.",
+   "what": "Sends a finished ad to Bria's Ad Delayer and gets it back as separate layers, plus a `result.json` that records where each layer sits, how big it is and how its text is styled. Each piece of text comes back twice, as an exact outlined SVG and as editable text, so you can change a headline, a price or the language.",
+   "who": "Marketers and designers who need to resize, re-price or translate an ad when the original design file is lost. If you only need a background removed, the skill points you to Bria's separate remove-background skill.",
+   "needs": [
+    "A Bria API key, free to create at platform.bria.ai",
+    "A coding agent that supports skills",
+    "Ads up to 2048 px on each side. Bigger ones need an enterprise plan"
+   ],
+   "steps": [
+    {
+     "title": "In Claude Code, add the marketplace and install",
+     "code": "/plugin marketplace add Bria-AI/bria-skill\n/plugin install ad-delayer@bria-skills"
+    },
+    {
+     "title": "Or install Bria's skills into other agents",
+     "code": "npx skills add bria-ai/bria-skill"
+    },
+    {
+     "title": "Set your key",
+     "text": "Or just start using it, and the skill walks you through signing in.",
+     "code": "export BRIA_API_KEY=\"your-key-here\""
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Turn this ad into layers: /path/to/summer-sale.jpg\n\nThe layers and result.json land in a summer-sale-layers folder."
+   },
+   "watch": [
+    "Each run is a billed job that takes 2 to 3 minutes. The skill says not to resubmit the same ad by hand after a failure.",
+    "Your ad is sent to Bria's API for processing.",
+    "Signing in saves your access token and API key in `~/.bria/credentials`.",
+    "The default limit is 9 delayering runs a minute per account."
+   ],
+   "sources": [
+    "https://github.com/Bria-AI/bria-skill/tree/dev/skills/ad-delayer",
+    "https://github.com/Bria-AI/bria-skill"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "writing-great-system-prompts",
+   "repo": "github.com/ArdaYILDIZ-DEV/pi-skills-public",
+   "stars": "16",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Pi Coding Agent",
+   "short": "A Pi skill for writing and auditing system prompts with clear permissions, approval steps and failure handling.",
+   "what": "One of 19 skills in a collection for the Pi coding agent. It helps you design, review and harden system prompts, agent personas and tool descriptions: who the agent takes instructions from, what needs approval, how it handles failures and untrusted content, and what it must return. It ends with test cases to check a revised prompt against.",
+   "who": "People who build agents or maintain long-lived system prompts in Pi. It isn't meant for one-off task prompts or AGENTS.md files; other skills in the same collection cover those.",
+   "needs": [
+    "Pi Coding Agent",
+    "Git, to clone the collection",
+    "Node.js 18 or later if you want to run the included validator"
+   ],
+   "steps": [
+    {
+     "title": "Install the collection for all projects",
+     "code": "git clone https://github.com/ArdaYILDIZ-DEV/pi-skills-public.git ~/.pi/agent/skills"
+    },
+    {
+     "title": "Or into one project",
+     "code": "git clone https://github.com/ArdaYILDIZ-DEV/pi-skills-public.git .pi/skills"
+    },
+    {
+     "title": "Check that the skills pass validation",
+     "code": "cd ~/.pi/agent/skills\nnode writing-great-skills/scripts/validate.mjs */"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Pi",
+    "text": "/skill:writing-great-system-prompts Review this system prompt for unclear permissions and missing approval steps: [paste your prompt]"
+   },
+   "watch": [
+    "The skill turns off automatic use (`disable-model-invocation`), so call it by name.",
+    "Cloning installs all 19 skills in the collection.",
+    "Several skills include Turkish trigger phrases. The README gives a prompt to strip them if you only work in English.",
+    "The README covers Pi only."
+   ],
+   "sources": [
+    "https://github.com/ArdaYILDIZ-DEV/pi-skills-public/tree/main/writing-great-system-prompts",
+    "https://github.com/ArdaYILDIZ-DEV/pi-skills-public"
+   ]
+  }
+ ]
+}
