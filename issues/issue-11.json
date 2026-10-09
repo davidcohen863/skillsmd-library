@@ -1,0 +1,211 @@
+{
+ "issue": 11,
+ "date": "9 Oct 2026",
+ "checked": "9 Oct 2026",
+ "blurb": "Every repo and skill from the 9 October issue that I could source, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #11 had three trending repos and four new AI skills, and four of them have guides here. Two let your agent drive a real browser or desktop apps, so they suit people who already work with a coding agent. ArtCraft is a desktop app for artists and filmmakers. If you use Claude Cowork or Claude Code for everyday work, start with Knowledge Work Plugins.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "ArtCraft",
+   "repo": "github.com/storytold/artcraft",
+   "stars": "9.4k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Windows and macOS (Linux by building from source)",
+   "short": "A desktop app for making AI images and video, where you build the scene in 2D or 3D before you generate it.",
+   "what": "ArtCraft calls itself the IDE for artists. You compose in 2D, stage scenes in 3D, pose characters and set the camera, then pick an image or video model to generate the shot. It also does background removal, image to 3D mesh, inpainting and image to video, with models from ArtCraft, Grok, Midjourney, Sora and World Labs.",
+   "who": "Artists, designers and filmmakers who want more control over composition and camera than a text prompt gives. If you only want quick one-off images, a plain image generator is simpler.",
+   "needs": [
+    "A Windows or macOS computer for the stable release",
+    "On Linux, the project's development setup guide, since Linux is only covered by building from source"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Stable releases for Windows and macOS are at getartcraft.com."
+    },
+    {
+     "title": "Or get the latest build",
+     "text": "Newer builds are on the GitHub releases page of `storytold/artcraft`."
+    },
+    {
+     "title": "Or build from source",
+     "text": "Follow `_docs/dev_setup.md` in the repo. This is the route for Linux."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "ArtCraft",
+    "text": "Start with a text prompt to explore an idea, then use the canvas and scene tools to refine it. For example, pose a character and set your camera before generating the final shot."
+   },
+   "watch": [
+    "The README lists the models and providers but says nothing about prices, credits or accounts. Check that before you generate a lot.",
+    "Some models in the catalog are marked as currently disabled, and some are restricted and not available in the desktop app."
+   ],
+   "sources": [
+    "https://github.com/storytold/artcraft"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Knowledge Work Plugins",
+   "repo": "github.com/anthropics/knowledge-work-plugins",
+   "stars": "27.9k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Cowork, Claude Code",
+   "short": "Anthropic's 11 open-source plugins that set Claude up for a job, such as sales, legal, finance, data or support.",
+   "what": "Each plugin bundles skills, slash commands, sub-agents and connectors for one job function. There are plugins for productivity, sales, customer support, product management, marketing, legal, finance, data, enterprise search and bio research, plus one for building your own. They are all markdown and JSON files, with no code or build steps.",
+   "who": "People who use Claude Cowork or Claude Code for everyday work and want it to follow their team's way of doing things. They are built for Claude, so skip them if you use another assistant.",
+   "needs": [
+    "Claude Cowork or Claude Code",
+    "Accounts in the tools you want a plugin to connect to, such as Slack, Notion, HubSpot or Jira"
+   ],
+   "steps": [
+    {
+     "title": "In Cowork, install from the plugin page",
+     "text": "Plugins for Cowork are at claude.com/plugins."
+    },
+    {
+     "title": "In Claude Code, add the marketplace",
+     "code": "claude plugin marketplace add anthropics/knowledge-work-plugins"
+    },
+    {
+     "title": "Install a plugin",
+     "text": "This installs the sales plugin. Swap in the name of the one you want.",
+     "code": "claude plugin install sales@knowledge-work-plugins"
+    },
+    {
+     "title": "Make it yours",
+     "text": "Edit `.mcp.json` to point at your own tools, and add your terminology and processes to the skill files."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code, after installing a plugin",
+    "text": "/sales:call-prep\n\nOr, with the data plugin:\n/data:write-query"
+   },
+   "watch": [
+    "Connectors link Claude to your company tools through MCP servers. Check each plugin's `.mcp.json` so you know what it will reach before you sign in.",
+    "Skills switch on by themselves when they seem relevant, so a plugin can change how Claude answers even when you don't call a command.",
+    "The README calls these generic starting points. Expect to edit them before they fit your team."
+   ],
+   "sources": [
+    "https://github.com/anthropics/knowledge-work-plugins"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "agent-browser",
+   "repo": "github.com/jikig-ai/soleur",
+   "stars": "16",
+   "level": "Advanced",
+   "cost": "Not stated in the README. Source-available under BSL 1.1",
+   "works_with": "Claude Code, Codex, Devin CLI (inside the Soleur plugin)",
+   "short": "Lets your agent drive a browser with Vercel's agent-browser CLI to open pages, fill in forms, take screenshots and pull data.",
+   "what": "A skill from the Soleur plugin that teaches your agent the agent-browser CLI. The agent opens a page, takes an accessibility snapshot that labels elements like `@e1`, then clicks, fills and reads them by those labels. It also covers screenshots, PDFs, parallel sessions and a script that hides credentials in snapshots.",
+   "who": "Developers who want their coding agent to test or automate web pages from the command line. It ships inside Soleur, which has 67 agents and 103 skills, so skip it if you only want a single browser skill.",
+   "needs": [
+    "Claude Code, Codex or Devin CLI",
+    "npm, to install the agent-browser CLI",
+    "Python 3, which runs the snapshot redactor script",
+    "About 300MB of disk for the Chrome for Testing download"
+   ],
+   "steps": [
+    {
+     "title": "Add the Soleur marketplace",
+     "text": "These are the README's recommended commands for Claude Code.",
+     "code": "claude plugin marketplace add jikig-ai/soleur-marketplace\nclaude plugin install soleur@soleur-marketplace"
+    },
+    {
+     "title": "Or install it in Codex",
+     "text": "Then start a new Codex session and review the bundled hooks in `/hooks`.",
+     "code": "codex plugin marketplace add jikig-ai/soleur --sparse .agents/plugins --sparse plugins/soleur\ncodex plugin add soleur@soleur"
+    },
+    {
+     "title": "Install the agent-browser CLI",
+     "text": "The second line downloads Chrome for Testing.",
+     "code": "npm install --prefix ~/.local -g agent-browser@0.22.3\nagent-browser install"
+    },
+    {
+     "title": "On Linux, set the launch flag",
+     "text": "Needed on Ubuntu 23.10 and later, in containers and in VMs. Run it before the first `agent-browser` command in a session.",
+     "code": "export AGENT_BROWSER_ARGS=\"--no-sandbox\""
+    },
+    {
+     "title": "Restart your agent",
+     "text": "Plugin changes apply on restart."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to fill in a form on a page. The SKILL.md's form example opens the page, takes a snapshot, fills the name and email fields, ticks the terms box, clicks submit and saves a screenshot of the confirmation."
+   },
+   "watch": [
+    "This installs all of Soleur, not just this skill, including its hooks. The README asks Codex users to review the hooks.",
+    "Accessibility snapshots include the values in input fields, so an autofilled password can end up in your agent's transcript. The skill routes snapshots through a redactor, and its SKILL.md says that only reduces the risk.",
+    "The Linux `--no-sandbox` flag turns off Chrome's sandbox for agent-browser's own automation browser. It does not touch your normal browser.",
+    "Soleur is under BSL 1.1. The README says it is source-available for individual and internal company use, and the one restriction is offering it as a competing hosted service."
+   ],
+   "sources": [
+    "https://github.com/jikig-ai/soleur/tree/main/plugins/soleur/skills/agent-browser",
+    "https://github.com/jikig-ai/soleur"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "cua-driver",
+   "repo": "github.com/trycua/cua",
+   "stars": "28.2k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, OpenClaw and other agents, on macOS, Windows and Linux",
+   "short": "Lets your agent operate real desktop apps on macOS, Windows or Linux, then check that the task actually worked.",
+   "what": "A skill for the Cua Driver CLI and MCP server. Your agent reads an app's accessibility tree, acts through element tokens, menu paths, window geometry or pixel coordinates, then checks the result from a fresh snapshot. It can also drive browser pages and record runs when you ask.",
+   "who": "People who want an agent to do GUI tasks in apps that have no API. If the job can be done with code or an API, you don't need this.",
+   "needs": [
+    "macOS, Windows or Linux",
+    "A coding agent that can load skills or connect to an MCP server",
+    "The system permissions Cua Driver asks for to see and control apps"
+   ],
+   "steps": [
+    {
+     "title": "Install Cua Driver on macOS or Linux",
+     "code": "/bin/bash -c \"$(curl -fsSL https://cua.ai/driver/install.sh)\""
+    },
+    {
+     "title": "Or on Windows (PowerShell)",
+     "code": "irm https://cua.ai/driver/install.ps1 | iex"
+    },
+    {
+     "title": "Add the skill to your agent",
+     "text": "The `cua` installer shows a checklist that includes the cua-driver MCP and skill for your agents. Pass `--only cua-driver` to skip the checklist. It then runs `cua auth login`, which offers to install skills into your agents.",
+     "code": "curl -fsSL https://cua.ai/install.sh | sh"
+    },
+    {
+     "title": "Check it works",
+     "code": "cua-driver --version\ncua-driver status\ncua-driver doctor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask it to compute 6 × 7 in Calculator and check that the app shows 42."
+   },
+   "watch": [
+    "Every install command pipes a script from cua.ai straight into your shell. Read the script before you run it.",
+    "The agent controls real apps on your machine. Foreground mode can move your cursor and change focus, and the skill says to use it only after you allow visible control.",
+    "The `unrestricted` permission profile skips Cua's approval prompts. Stick with `standard` unless you know you want that.",
+    "The `cua` installer signs you in with `cua auth login`.",
+    "The optional cua-perception extension is not MIT. It includes AGPL-licensed parts."
+   ],
+   "sources": [
+    "https://github.com/trycua/cua/tree/main/libs/cua/skills/cua-driver",
+    "https://github.com/trycua/cua/blob/main/libs/cua/skills/cua-driver/RUNTIME.md",
+    "https://github.com/trycua/cua"
+   ]
+  }
+ ]
+}
