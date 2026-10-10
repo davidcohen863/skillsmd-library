@@ -1,0 +1,416 @@
+{
+ "issue": 12,
+ "date": "10 Oct 2026",
+ "checked": "10 Oct 2026",
+ "blurb": "Every repo and skill from the 10 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #12 had four trending repos and four new AI skills, and all eight have guides here. Most are for people who already work with a coding agent, from code review and SwiftUI help to agents messaging each other in tmux. LiteLLM is for anyone calling more than one model provider. If you write work emails with AI, start with work-humanizer.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Open Code Review",
+   "repo": "github.com/alibaba/open-code-review",
+   "stars": "45.7k",
+   "level": "Intermediate",
+   "cost": "Free (Apache-2.0). You pay your LLM provider for the model calls unless you use delegation mode.",
+   "works_with": "Claude Code, Codex, Cursor, Kimi Code and OpenCode, on Windows, macOS and Linux",
+   "short": "A code review CLI from Alibaba that reads your Git diff and leaves line-level review comments using an LLM you configure.",
+   "what": "Open Code Review started as Alibaba's internal AI code review assistant. The `ocr` command reads your Git changes, sends the changed files to an LLM agent that can read whole files and search the codebase, and writes structured comments tied to exact lines. Fixed engineering steps pick and group the files and match review rules, and the agent handles the judgement calls. `ocr scan` reviews whole files when there's no diff.",
+   "who": "Developers and teams who want automated reviews on their own changes or in CI. The README says it trades some recall for precision, so it finds fewer issues than a general agent but raises fewer false alarms. If you already review by hand and don't want an LLM in the loop, skip it.",
+   "needs": [
+    "Git 2.41 or later",
+    "Node and npm for the global install",
+    "An LLM provider and API key, unless you use delegation mode"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI",
+     "text": "This puts the `ocr` command on your path. The docs list other ways to install, such as an install script or a release binary.",
+     "code": "npm install -g @alibaba-group/open-code-review"
+    },
+    {
+     "title": "Pick a provider and model",
+     "text": "An interactive screen asks for the provider, your API key and the model, then tests the connection.",
+     "code": "ocr config provider          # Select a built-in provider or add a custom one\nocr config model             # Pick a model for the active provider"
+    },
+    {
+     "title": "Review your changes",
+     "text": "Run it inside your project. This reviews staged, unstaged and untracked changes.",
+     "code": "ocr review"
+    },
+    {
+     "title": "Review a branch",
+     "code": "ocr review --from main --to feature-branch"
+    },
+    {
+     "title": "Or let your coding agent do the review",
+     "text": "Delegation mode has OCR choose the files and rules while your agent's own model writes the review, so no OCR API key is needed.",
+     "code": "ocr delegate preview"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `ocr scan --path internal/agent` to review a whole directory, or `ocr review --format json --output result.json` to save the results for an AI agent to read."
+   },
+   "watch": [
+    "Your changed files and parts of your codebase go to whatever LLM provider you configure.",
+    "The setup stores your provider API key.",
+    "Plugins for each coding agent are documented separately in `plugins/open-code-review/README.md`."
+   ],
+   "sources": [
+    "https://github.com/alibaba/open-code-review",
+    "https://raw.githubusercontent.com/alibaba/open-code-review/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "LingBot-Map",
+   "repo": "github.com/Robbyant/lingbot-map",
+   "stars": "17.9k",
+   "level": "Advanced",
+   "cost": "Free (Apache-2.0)",
+   "works_with": "Linux or any machine with an NVIDIA GPU and CUDA, Python 3.10",
+   "short": "A research model that builds a 3D reconstruction from a stream of images or video and shows it in a browser viewer.",
+   "what": "LingBot-Map is a feed-forward 3D foundation model for streaming 3D reconstruction. The README says it runs at about 20 FPS at 518×378 on sequences of more than 10,000 frames. A demo script opens an interactive 3D viewer at `http://localhost:8080`, and a separate offline pipeline renders long sequences to MP4.",
+   "who": "Researchers and engineers working on 3D vision, mapping or robotics who have a CUDA GPU. If you don't have an NVIDIA GPU or you're not comfortable with conda and PyTorch, this isn't for you.",
+   "needs": [
+    "conda",
+    "An NVIDIA GPU with CUDA (the install command targets CUDA 12.8)",
+    "A copy of the repo",
+    "The lingbot-map checkpoint from Hugging Face (robbyant/lingbot-map) or ModelScope"
+   ],
+   "steps": [
+    {
+     "title": "Create the environment",
+     "code": "conda create -n lingbot-map python=3.10 -y\nconda activate lingbot-map"
+    },
+    {
+     "title": "Install PyTorch",
+     "text": "This is the CUDA 12.8 build. For other CUDA versions the README points to PyTorch's own install page.",
+     "code": "pip install torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cu128"
+    },
+    {
+     "title": "Install lingbot-map",
+     "text": "Run this from the repo folder.",
+     "code": "pip install -e ."
+    },
+    {
+     "title": "Install FlashInfer (recommended)",
+     "text": "Without it the model falls back to PyTorch attention with `--use_sdpa`.",
+     "code": "pip install --index-url https://pypi.org/simple flashinfer-python"
+    },
+    {
+     "title": "Add the viewer extras (optional)",
+     "code": "pip install -e \".[vis]\""
+    },
+    {
+     "title": "Download the model",
+     "text": "Get the lingbot-map checkpoint from the Hugging Face repo robbyant/lingbot-map and note where you saved the `.pt` file."
+    },
+    {
+     "title": "Run the first scene",
+     "code": "python demo.py --model_path /path/to/lingbot-map.pt \\\n    --image_folder example/courthouse --mask_sky"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal, then the browser viewer",
+    "text": "Run the courthouse example above, then open `http://localhost:8080` to explore the reconstruction. The `example/university` and `example/loop` scenes also ship with the repo."
+   },
+   "watch": [
+    "Sky masking downloads an ONNX model from Hugging Face the first time you use it.",
+    "For long runs or limited GPU memory, the README suggests `--num_scale_frames 2` or windowed mode.",
+    "The offline rendering pipeline needs more installs, including NVIDIA Kaolin, ffmpeg and CUDA extensions you build yourself."
+   ],
+   "sources": [
+    "https://github.com/Robbyant/lingbot-map",
+    "https://raw.githubusercontent.com/Robbyant/lingbot-map/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "LiteLLM",
+   "repo": "github.com/BerriAI/litellm",
+   "stars": "60.8k",
+   "level": "Intermediate",
+   "cost": "Open source. A paid Enterprise license adds SSO, support and other features.",
+   "works_with": "Python, any OpenAI-compatible client, and 100+ LLM providers",
+   "short": "Call 100+ LLM providers through one OpenAI-style API, as a Python library or as a self-hosted gateway with cost tracking.",
+   "what": "LiteLLM gives you one interface for OpenAI, Anthropic, Gemini, Bedrock, Azure and many more, all in the OpenAI format. You can use it as a Python SDK, or run the proxy server as a gateway for a team with virtual keys, spend tracking, guardrails, load balancing and an admin dashboard. It can also route MCP tools and A2A agents.",
+   "who": "Developers who call more than one model provider, and teams who want one place to manage keys and spending. If you only ever use one provider through its own SDK, you probably don't need it.",
+   "needs": [
+    "Python with `uv`",
+    "An API key for each provider you want to call"
+   ],
+   "steps": [
+    {
+     "title": "Add the Python SDK",
+     "code": "uv add litellm"
+    },
+    {
+     "title": "Call a model",
+     "text": "Set your provider keys as environment variables, then call `completion` with a `provider/model` name.",
+     "code": "from litellm import completion\nimport os\n\nos.environ[\"OPENAI_API_KEY\"] = \"your-openai-key\"\nos.environ[\"ANTHROPIC_API_KEY\"] = \"your-anthropic-key\"\n\n# OpenAI\nresponse = completion(model=\"openai/gpt-4o\", messages=[{\"role\": \"user\", \"content\": \"Hello!\"}])"
+    },
+    {
+     "title": "Or run the gateway",
+     "text": "This starts the proxy server. Point any OpenAI client at `http://0.0.0.0:4000`.",
+     "code": "uv tool install 'litellm[proxy]'\nlitellm --model gpt-4o"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Python",
+    "text": "With the gateway running, create `openai.OpenAI(api_key=\"anything\", base_url=\"http://0.0.0.0:4000\")` and send a chat completion to `gpt-4o` with the message \"Hello!\"."
+   },
+   "watch": [
+    "You store your provider API keys with LiteLLM, either as environment variables or in the gateway.",
+    "Some gateway features fall under the LiteLLM Commercial License, not the open source one.",
+    "If you deploy the Docker image, the README shows how to verify its signature with cosign first."
+   ],
+   "sources": [
+    "https://github.com/BerriAI/litellm",
+    "https://raw.githubusercontent.com/BerriAI/litellm/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "SwiftUI Pro",
+   "repo": "github.com/twostraws/SwiftUI-Agent-Skill",
+   "stars": "5.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Gemini, Cursor and other agents that use the Agent Skills format",
+   "short": "An AI skill from Paul Hudson that helps your coding agent write cleaner, modern SwiftUI and catch the mistakes LLMs usually make.",
+   "what": "SwiftUI Pro is an agent skill covering navigation, layout, animation, state management, VoiceOver, performance and deprecated API. Its rules target the SwiftUI mistakes LLMs actually make, such as buttons VoiceOver can't see and deprecated calls. It's built on the author's AGENTS.md file and targets iOS 26 and Swift 6.4 or later.",
+   "who": "Anyone using a coding agent to build iOS or Mac apps in SwiftUI. If you don't write SwiftUI, skip it.",
+   "needs": [
+    "Node, for `npx` (the README suggests `brew install node` if it's missing)",
+    "A coding agent that loads skills"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "You can choose which agents get it and whether it's for one project or all of them.",
+     "code": "npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro"
+    },
+    {
+     "title": "Or install it as a Claude Code plugin",
+     "code": "/plugin marketplace add twostraws/SwiftUI-Agent-Skill\n/plugin install swiftui-pro@swiftui-agent-skill"
+    },
+    {
+     "title": "Run it",
+     "text": "Use `/swiftui-pro` in Claude Code or `$swiftui-pro` in Codex. Add an instruction to narrow it down."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Use the SwiftUI Pro skill to look for performance problems in this project."
+   },
+   "watch": [
+    "The README notes that skills cost tokens every time they load."
+   ],
+   "sources": [
+    "https://github.com/twostraws/SwiftUI-Agent-Skill",
+    "https://raw.githubusercontent.com/twostraws/SwiftUI-Agent-Skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "work-humanizer",
+   "repo": "github.com/phuryn/work-humanizer",
+   "stars": "29",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor and any agent that loads SKILL.md",
+   "short": "Rewrites AI-sounding work writing so it reads like a careful person wrote it, and keeps every fact and commitment.",
+   "what": "work-humanizer edits sales copy, support replies, HR and legal letters, emails, docs and landing pages. It lists every fact and how certain it is, rewrites the piece in a plain voice, then checks the result sentence by sentence against that list. When a draft is thin, interview mode asks you up to five questions and builds the piece from your answers. It can also write from your own notes or a voice memo transcript.",
+   "who": "People who use AI to draft work writing where the exact wording matters. The README says it doesn't get text past AI detectors, so it won't help if that's your goal.",
+   "needs": [
+    "A coding agent that loads skills",
+    "Python, only if you want to run the optional `check.py` sweep yourself"
+   ],
+   "steps": [
+    {
+     "title": "Install with the Skills CLI",
+     "code": "npx skills add phuryn/work-humanizer"
+    },
+    {
+     "title": "Or copy the folder",
+     "text": "Copy `skills/work-humanizer` into `~/.claude/skills/work-humanizer` for Claude Code, `~/.codex/skills/work-humanizer` for Codex, or your agent's skills folder."
+    },
+    {
+     "title": "Use it",
+     "code": "Use work-humanizer on this: <paste text>"
+    },
+    {
+     "title": "Run the mechanical check (optional)",
+     "text": "It looks for dashes, semicolons, stock AI words, filler transitions and sentence length.",
+     "code": "python skills/work-humanizer/check.py draft.md"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Use work-humanizer on this and interview me first: <paste draft>"
+   },
+   "watch": [
+    "The test results in the README come from small samples judged by AI models, and the authors designed the test themselves. The README asks you to read the evidence folder before quoting any number.",
+    "Interview mode was tested with an AI answering for the writer, not real people."
+   ],
+   "sources": [
+    "https://github.com/phuryn/work-humanizer/tree/main/skills/work-humanizer",
+    "https://raw.githubusercontent.com/phuryn/work-humanizer/main/skills/work-humanizer/SKILL.md",
+    "https://raw.githubusercontent.com/phuryn/work-humanizer/main/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "yandex-webmaster",
+   "repo": "github.com/AceDataCloud/Skills",
+   "stars": "17",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Copilot, Gemini CLI, Codex, Cursor and other agentskills.io agents",
+   "short": "Lets your agent read your verified sites and popular search queries from Yandex Webmaster, for Russian-language SEO.",
+   "what": "A read-only skill that calls Yandex's official Webmaster API v4 through a small Python script. It lists your verified sites and their host IDs, then pulls the popular search queries for one site. It's one of many skills in the AceDataCloud collection.",
+   "who": "People doing SEO for sites that get traffic from Yandex. If Yandex doesn't matter to your audience, skip it.",
+   "needs": [
+    "A Yandex OAuth token with `webmaster:hostinfo` access",
+    "Python 3",
+    "Node, for `npx`"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "The README's command installs the whole AceDataCloud collection. The skill lives in `skills/yandex-webmaster`.",
+     "code": "npx skills add acedatacloud/skills --skill '*' --yes"
+    },
+    {
+     "title": "Connect Yandex Webmaster",
+     "text": "The skill expects your token in `$YANDEXWEBMASTER_ACCESS_TOKEN`. AceDataCloud's connector at studio.acedata.cloud injects it for you when the skill runs in their aichat2 runtime."
+    },
+    {
+     "title": "Run the script",
+     "text": "`hosts` lists your verified sites and their host IDs. Copy the exact `host_id` it returns into the second command.",
+     "code": "SCRIPT=\"$SKILL_DIR/scripts/yandex_webmaster.py\"\npython3 \"$SCRIPT\" hosts\npython3 \"$SCRIPT\" popular-queries --host-id 'https:example.com:443' --limit 20"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Which search queries bring the most Yandex traffic to my site?"
+   },
+   "watch": [
+    "The skill needs your Yandex OAuth token. It's told never to print it or put it in a URL.",
+    "The files only explain how the token gets in through AceDataCloud's own connector. They don't cover setting it up in other agents.",
+    "The install command adds every skill in the collection, not just this one."
+   ],
+   "sources": [
+    "https://github.com/AceDataCloud/Skills/tree/main/skills/yandex-webmaster",
+    "https://raw.githubusercontent.com/AceDataCloud/Skills/main/skills/yandex-webmaster/SKILL.md",
+    "https://raw.githubusercontent.com/AceDataCloud/Skills/main/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "smux",
+   "repo": "github.com/ShawnPana/smux",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Claude Code, Codex, Cursor, Copilot and other agents that can run bash, on macOS or Linux",
+   "short": "Lets your agent read and type into other tmux panes, so agents running side by side can message each other.",
+   "what": "smux sets up tmux with Option-key bindings, mouse support and pane labels, and adds the `tmux-bridge` CLI. The skill teaches your agent to use it: read a pane, type into it, send keys, and message another agent, which replies straight into your pane. The CLI makes the agent read a pane before every action.",
+   "who": "People who already run several coding agents in a terminal and want them to talk to each other. If you work in one agent window, you don't need it.",
+   "needs": [
+    "macOS with Homebrew, or Linux",
+    "tmux 3.2+ and jq (the installer adds both)"
+   ],
+   "steps": [
+    {
+     "title": "Install smux",
+     "text": "This installs tmux and jq if missing, a tmux.conf, `tmux-bridge` and `smux-pane`, all under `~/.smux/`.",
+     "code": "curl -fsSL https://shawnpana.com/smux/install.sh | bash"
+    },
+    {
+     "title": "Add the skill to your agents",
+     "code": "npx skills add ShawnPana/smux"
+    },
+    {
+     "title": "Label your pane and find the others",
+     "code": "# 1. Label yourself\ntmux-bridge name \"$(tmux-bridge id)\" claude\n\n# 2. Discover other panes\ntmux-bridge list"
+    },
+    {
+     "title": "Send a message to another agent",
+     "code": "tmux-bridge read codex 20\ntmux-bridge message codex 'Please review the changes in src/auth.ts'\ntmux-bridge read codex 20\ntmux-bridge keys codex Enter"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, in tmux next to a second agent",
+    "text": "Ask it to message the agent in the `codex` pane with \"What is the test coverage for src/auth.ts?\""
+   },
+   "watch": [
+    "The install command pipes a script from shawnpana.com straight into bash. Read the script first.",
+    "The installer replaces your tmux setup with its own tmux.conf.",
+    "The skill lets your agent type into and send keys to any pane, including approving prompts in other sessions."
+   ],
+   "sources": [
+    "https://github.com/ShawnPana/smux/tree/main/skills/smux",
+    "https://raw.githubusercontent.com/ShawnPana/smux/main/skills/smux/SKILL.md",
+    "https://raw.githubusercontent.com/ShawnPana/smux/main/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "retro",
+   "repo": "github.com/shipshitdev/skills",
+   "stars": "37",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex and Cursor",
+   "short": "Reviews a finished agent session, finds where time or tokens were lost, and proposes setup fixes, worst first.",
+   "what": "retro walks through one agent session and lists every friction moment: long searches, repeated failures, user corrections, expensive calls that returned little. It reads your repo's steering files, checks and CI, sorts each moment into a category like guardrail, navigation or skill, and proposes one change per moment ranked by severity. It changes nothing until you pick which ones to apply.",
+   "who": "People who run coding agents on a repo often and want each run to go better than the last. If you only use an agent now and then, it's more process than you need.",
+   "needs": [
+    "A coding agent that loads skills"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "code": "/plugin marketplace add shipshitdev/skills"
+    },
+    {
+     "title": "Install the dev workflow bundle",
+     "text": "retro is part of this bundle.",
+     "code": "/plugin install shipshitdev-dev-workflow@shipshitdev"
+    },
+    {
+     "title": "Or use the Skills CLI",
+     "text": "The README's project install command for Claude Code, Codex and Cursor.",
+     "code": "npx skills add shipshitdev/skills --agent claude-code codex cursor"
+    },
+    {
+     "title": "Run it at the end of a session",
+     "text": "The skill doesn't trigger by itself. Call it with `/retro`, and add `--deep` for a long or messy session."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/retro"
+   },
+   "watch": [
+    "It only proposes changes. Anything it applies, such as new hooks, CI jobs or lint rules, needs your confirmation.",
+    "The README warns not to use `--all` with the Skills CLI, since that installs to 30+ agents."
+   ],
+   "sources": [
+    "https://github.com/shipshitdev/skills/tree/master/bundles/dev-workflow/skills/retro",
+    "https://raw.githubusercontent.com/shipshitdev/skills/master/bundles/dev-workflow/skills/retro/SKILL.md",
+    "https://raw.githubusercontent.com/shipshitdev/skills/master/README.md"
+   ]
+  }
+ ]
+}
