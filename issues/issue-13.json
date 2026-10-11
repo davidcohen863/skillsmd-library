@@ -1,0 +1,432 @@
+{
+ "issue": 13,
+ "date": "11 Oct 2026",
+ "checked": "11 Oct 2026",
+ "blurb": "Every repo and skill from the 11 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #13 had four trending repos and four AI skills, and all eight have guides here. Transformers and PyTorch are for people who work with models in Python. Most of the rest is for anyone using a coding agent. If you make slide decks, try PPT Master first. If your agent overbuilds or edits code it shouldn't touch, add the Karpathy guidelines.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "PPT Master",
+   "repo": "github.com/hugohe3/ppt-master",
+   "stars": "59.9k",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT). You pay for the AI model you use.",
+   "works_with": "Any agent that can read and write files and run commands, such as Claude Code, Cursor, Codex CLI, Gemini CLI, GitHub Copilot and Cline",
+   "short": "Turns a PDF, Word file or pasted text into a PowerPoint deck you can keep editing, with real shapes, charts and tables.",
+   "what": "PPT Master is a workflow (a skill) that runs inside your coding agent. You point it at a document or paste some text, and it plans the slides, designs them and exports a .pptx made of native PowerPoint objects. It can also fill an existing deck with new content, build templates from your references, and add transitions, animations and narration.",
+   "who": "Anyone who makes decks from reports or notes and wants slides they can still edit in PowerPoint. The author says you only need to install Python and an AI tool, with no coding. The README is frank that cheaper models leave more polishing to you, so expect to tidy the result.",
+   "needs": [
+    "Python 3.10 or later",
+    "An agent-capable AI tool. The author develops and tests on Claude Code",
+    "Git, for the recommended clone install (or download the ZIP instead)",
+    "Pandoc, only for older formats like .doc, .odt, .rtf or .tex",
+    "Optional: an image provider API key, or free Pexels or Pixabay keys for better stock photos"
+   ],
+   "steps": [
+    {
+     "title": "Get the project",
+     "text": "Cloning lets you update later. A ZIP download from GitHub works too.",
+     "code": "git clone https://github.com/hugohe3/ppt-master.git\ncd ppt-master"
+    },
+    {
+     "title": "Install the Python dependencies",
+     "code": "pip install -r requirements.txt"
+    },
+    {
+     "title": "Or install it as a skill",
+     "text": "This fetches only the skill files. You still run `pip install -r requirements.txt` from the installed location.",
+     "code": "npx skills add hugohe3/ppt-master"
+    },
+    {
+     "title": "Open the folder in your agent",
+     "text": "In an editor, use File, Open Folder. In a terminal agent, `cd ppt-master` and start it there. Put your source files in the `projects/` folder."
+    },
+    {
+     "title": "Optional: add image keys",
+     "text": "Keys for image generation or Pexels and Pixabay go in a `.env` file. In a clone, start from the example file.",
+     "code": "cp .env.example .env"
+    },
+    {
+     "title": "Update later",
+     "text": "For clone installs. It pulls the latest version and syncs the Python dependencies.",
+     "code": "python3 skills/ppt-master/scripts/update_repo.py"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your agent's chat, inside the ppt-master folder",
+    "text": "Please create a PPT from projects/q3-report/sources/report.pdf\n\nIt confirms a design spec first. To skip that, ask for a quick 5-page deck and say there's no need to confirm. The deck lands in `exports/`."
+   },
+   "watch": [
+    "The pipeline runs on your machine, but your source material goes to whichever AI model you use.",
+    "Your agent needs to read and write files and run commands for this to work.",
+    "Image keys live in a plain `.env` file. Keep it out of anything you share or commit.",
+    "The README links to paid model resellers that sponsor the project. You don't need them if you already have model access.",
+    "Windows needs extra setup steps. The project has a separate Windows guide."
+   ],
+   "sources": [
+    "https://github.com/hugohe3/ppt-master"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Karpathy-Inspired Claude Code Guidelines",
+   "repo": "github.com/multica-ai/andrej-karpathy-skills",
+   "stars": "218.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code (as a plugin or a CLAUDE.md file) and Cursor (as a project rule)",
+   "short": "One CLAUDE.md file with four rules that push your coding agent to ask first, write less code and make smaller diffs.",
+   "what": "A single instruction file built from Andrej Karpathy's notes on where LLMs go wrong when coding. It sets four principles: think before coding, keep it simple, change only what the task needs, and work toward goals you can verify with tests. You install it as a plugin or drop it into your project's CLAUDE.md.",
+   "who": "Anyone whose coding agent makes assumptions without asking, overbuilds, or edits code it wasn't asked to touch. The README says the rules favour caution over speed, so for typo fixes and one-liners you may find it slows things down.",
+   "needs": [
+    "Claude Code for the plugin route, or any project where you keep a CLAUDE.md",
+    "curl, for the file route"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "text": "Run this inside Claude Code. This is the README's recommended route and works across all your projects.",
+     "code": "/plugin marketplace add forrestchang/andrej-karpathy-skills"
+    },
+    {
+     "title": "Install the plugin",
+     "code": "/plugin install andrej-karpathy-skills@karpathy-skills"
+    },
+    {
+     "title": "Or add it to one project",
+     "text": "For a new project with no CLAUDE.md yet:",
+     "code": "curl -o CLAUDE.md https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md"
+    },
+    {
+     "title": "Or append it to an existing CLAUDE.md",
+     "code": "echo \"\" >> CLAUDE.md\ncurl https://raw.githubusercontent.com/forrestchang/andrej-karpathy-skills/main/CLAUDE.md >> CLAUDE.md"
+    },
+    {
+     "title": "Using Cursor",
+     "text": "The repo includes a Cursor project rule at `.cursor/rules/karpathy-guidelines.mdc`. Its CURSOR.md explains how to use it in other projects."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Give it a task like \"Fix the bug\" and see whether it writes a test that reproduces the bug first. The README says it's working when clarifying questions come before the code and your diffs only hold the changes you asked for."
+   },
+   "watch": [
+    "The install commands fetch from `forrestchang/andrej-karpathy-skills`, a different GitHub path from the one in the newsletter. That's what the README says to use.",
+    "The file route downloads text straight into your CLAUDE.md. Read what it adds before you commit it.",
+    "The rules favour caution over speed, and the README says to use judgement on trivial tasks."
+   ],
+   "sources": [
+    "https://github.com/multica-ai/andrej-karpathy-skills"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Transformers",
+   "repo": "github.com/huggingface/transformers",
+   "stars": "167.5k",
+   "level": "Intermediate",
+   "cost": "Free (Apache-2.0)",
+   "works_with": "Python 3.10+ with PyTorch 2.6+, and many training and inference tools such as vLLM, SGLang, DeepSpeed and llama.cpp",
+   "short": "Hugging Face's Python library for running and training text, vision, audio and multimodal models from the Hub.",
+   "what": "Transformers holds the model definitions for a large range of open models, so the same model works across many training and inference tools. Its `pipeline` API runs text generation, speech recognition, image classification and more in a few lines. The README says there are over 1M model checkpoints on the Hugging Face Hub you can use with it.",
+   "who": "Developers and researchers who want to run or fine-tune open models in Python. The README says it isn't a toolbox of building blocks for neural nets, and that for generic training loops you should use another library like Accelerate.",
+   "needs": [
+    "Python 3.10 or later",
+    "PyTorch 2.6 or later",
+    "Disk space and a network connection for model downloads"
+   ],
+   "steps": [
+    {
+     "title": "Make a virtual environment",
+     "text": "The README shows venv. It shows uv too.",
+     "code": "python -m venv .my-env\nsource .my-env/bin/activate"
+    },
+    {
+     "title": "Install Transformers",
+     "code": "pip install \"transformers[torch]\""
+    },
+    {
+     "title": "Run a first pipeline",
+     "text": "The model downloads and caches the first time you run this.",
+     "code": "from transformers import pipeline\n\npipeline = pipeline(task=\"text-generation\", model=\"Qwen/Qwen2.5-1.5B\")\npipeline(\"the secret to baking a really good cake is \")"
+    },
+    {
+     "title": "Or install from source",
+     "text": "For the latest changes. The README warns the latest version may not be stable.",
+     "code": "git clone https://github.com/huggingface/transformers.git\ncd transformers\n\n# pip\npip install '.[torch]'"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "With `transformers serve` running, chat with a model from the command line: `transformers chat Qwen/Qwen2.5-0.5B-Instruct`"
+   },
+   "watch": [
+    "Pipelines download model weights from the Hugging Face Hub the first time. Some models are large.",
+    "The README says the example scripts may not work out of the box for your use case.",
+    "Installing from source gets you the newest code, which may not be stable."
+   ],
+   "sources": [
+    "https://github.com/huggingface/transformers"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "PyTorch",
+   "repo": "github.com/pytorch/pytorch",
+   "stars": "104.2k",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Python, with optional NVIDIA CUDA, AMD ROCm or Intel GPU support",
+   "short": "A Python package for tensor maths on GPUs and building deep neural networks with automatic differentiation.",
+   "what": "PyTorch gives you tensors like NumPy's with strong GPU acceleration, plus deep neural networks built on a tape-based autograd system. It's split into parts like `torch`, `torch.autograd`, `torch.nn` and `torch.utils` for data loading. The README says people use it as a GPU-powered NumPy replacement or as a deep learning research platform.",
+   "who": "Anyone writing or training neural networks in Python. Most people should install the prebuilt binaries. Building from source is for contributors or unusual setups, and the README says it needs at least 10 GB of disk and 30 to 60 minutes.",
+   "needs": [
+    "Python (3.10 or later to build from source)",
+    "For GPU support: NVIDIA CUDA and cuDNN v9.0 or above, AMD ROCm 4.0 or above on Linux, or Intel's GPU prerequisites",
+    "For source builds: a C++20 compiler (gcc 11.3.0 or newer on Linux), or Visual Studio build tools on Windows",
+    "For the Docker route: Docker v23.0 or later"
+   ],
+   "steps": [
+    {
+     "title": "Get the install command for your machine",
+     "text": "The README sends you to pytorch.org/get-started/locally for the pip or Conda command that matches your OS and GPU."
+    },
+    {
+     "title": "Or run a prebuilt Docker image",
+     "code": "docker run --gpus all --rm -ti --ipc=host pytorch/pytorch:latest"
+    },
+    {
+     "title": "Or build from source: get the code",
+     "code": "git clone https://github.com/pytorch/pytorch\ncd pytorch\n# if you are updating an existing checkout\ngit submodule sync\ngit submodule update --init --recursive"
+    },
+    {
+     "title": "Install the build dependencies",
+     "text": "Run this from the pytorch folder. Linux and Windows have extra packages listed in the README.",
+     "code": "pip install --group dev"
+    },
+    {
+     "title": "Build and install",
+     "text": "This is the macOS command. On Linux, the README has you set `CMAKE_PREFIX_PATH` first.",
+     "code": "python -m pip install --no-build-isolation -v -e ."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "pytorch.org",
+    "text": "Start with the tutorials at pytorch.org/tutorials, which the README lists first under Getting Started. The examples repo at github.com/pytorch/examples has code across all domains."
+   },
+   "watch": [
+    "A source build needs at least 10 GB of free disk and 30 to 60 minutes the first time.",
+    "In Docker, data loaders that use multiple processes need more shared memory than the default. The README says to use `--ipc=host` or `--shm-size`.",
+    "The README doesn't list the pip install command itself. It lives on pytorch.org."
+   ],
+   "sources": [
+    "https://github.com/pytorch/pytorch"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "agent-browser",
+   "repo": "github.com/jikig-ai/soleur",
+   "stars": "16",
+   "level": "Advanced",
+   "cost": "Not stated in the README. Source-available under BSL 1.1",
+   "works_with": "Claude Code, Codex, Devin CLI (inside the Soleur plugin)",
+   "short": "Lets your agent drive a browser with Vercel's agent-browser CLI to open pages, fill in forms, take screenshots and pull data.",
+   "what": "A skill from the Soleur plugin that teaches your agent the agent-browser CLI. The agent opens a page, takes an accessibility snapshot that labels elements like `@e1`, then clicks, fills and reads them by those labels. It also covers screenshots, PDFs, parallel sessions and a script that hides credentials in snapshots.",
+   "who": "Developers who want their coding agent to test or automate web pages from the command line. It ships inside Soleur, which has 67 agents and 103 skills, so skip it if you only want a single browser skill.",
+   "needs": [
+    "Claude Code, Codex or Devin CLI",
+    "npm, to install the agent-browser CLI",
+    "Python 3, which runs the snapshot redactor script",
+    "About 300MB of disk for the Chrome for Testing download"
+   ],
+   "steps": [
+    {
+     "title": "Install Soleur in Claude Code",
+     "text": "These are the README's recommended commands. They install only the plugin files, about 10 MiB.",
+     "code": "claude plugin marketplace add jikig-ai/soleur-marketplace\nclaude plugin install soleur@soleur-marketplace"
+    },
+    {
+     "title": "Or install it in Codex",
+     "text": "Then start a new Codex session and review the bundled hooks in `/hooks`.",
+     "code": "codex plugin marketplace add jikig-ai/soleur --sparse .agents/plugins --sparse plugins/soleur\ncodex plugin add soleur@soleur"
+    },
+    {
+     "title": "Or install it in Devin CLI",
+     "code": "devin plugins install jikig-ai/soleur#plugins/soleur -y"
+    },
+    {
+     "title": "Install the agent-browser CLI",
+     "text": "The second line downloads Chrome for Testing.",
+     "code": "npm install --prefix ~/.local -g agent-browser@0.22.3\nagent-browser install"
+    },
+    {
+     "title": "On Linux, set the launch flag",
+     "text": "Needed on Ubuntu 23.10 and later, in containers and in VMs. Run it before the first `agent-browser` command in a session.",
+     "code": "export AGENT_BROWSER_ARGS=\"--no-sandbox\""
+    },
+    {
+     "title": "Restart your agent",
+     "text": "Plugin changes apply on restart."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to fill in a form on a page. The SKILL.md's form example opens the page, takes a snapshot, fills the name and email fields, picks a country, ticks the terms box, clicks submit and saves a screenshot of the confirmation."
+   },
+   "watch": [
+    "This installs all of Soleur, not just this skill, including its hooks. The README asks Codex users to review the hooks.",
+    "Accessibility snapshots include the values in input fields, so an autofilled password can end up in your agent's transcript. The skill routes snapshots through a redactor script.",
+    "The Linux `--no-sandbox` flag turns off Chrome's sandbox for agent-browser's own automation browser. The SKILL.md says it doesn't touch your normal browser.",
+    "Soleur is under BSL 1.1. The README says it is source-available for individual and internal company use, and the one restriction is offering it as a competing hosted service."
+   ],
+   "sources": [
+    "https://github.com/jikig-ai/soleur/tree/main/plugins/soleur/skills/agent-browser",
+    "https://github.com/jikig-ai/soleur"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "agent-config-audit",
+   "repo": "github.com/shipshitdev/skills",
+   "stars": "37",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, Cursor",
+   "short": "Checks your AGENTS.md, CLAUDE.md, hooks and settings for duplicate rules and stale files, then reports back.",
+   "what": "A skill that finds every agent instruction file in your workspace (CLAUDE.md, AGENTS.md, .cursorrules, agent settings and hooks, memory files) and checks them for duplicated rules, stale files and settings drift. It writes a report with critical, moderate and minor findings plus a fix plan. By default it changes nothing and calls no outside services.",
+   "who": "Anyone whose agent keeps making the same mistake despite rules that should stop it, or who has config files spread across several repos. With one short CLAUDE.md you won't get much from it.",
+   "needs": [
+    "Claude Code, Codex or Cursor",
+    "Node.js for `npx`, or Claude Code for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs the whole collection (169 skills) for the three agents named. The README says not to use `--all`, which installs to every agent the CLI knows (30+).",
+     "code": "npx skills add shipshitdev/skills -g --agent claude-code codex cursor --skill '*' -y"
+    },
+    {
+     "title": "Or, in Claude Code, install just the Dev Workflow bundle",
+     "text": "agent-config-audit is in this bundle.",
+     "code": "/plugin marketplace add shipshitdev/skills\n/plugin install shipshitdev-dev-workflow@shipshitdev"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent, at the workspace root",
+    "text": "audit CLAUDE.md\n\nOr ask it to check your agent config for duplicated rules and stale files."
+   },
+   "watch": [
+    "Fix mode edits your agent config files. It only starts when you ask for fixes and confirm the exact plan, and a request to sync configs counts as report mode only.",
+    "It asks before overwriting configs or deleting or merging duplicated rules.",
+    "The repo's old `scripts/install-skills.sh` installer was removed. The README says not to run an old copy."
+   ],
+   "sources": [
+    "https://github.com/shipshitdev/skills/tree/master/bundles/dev-workflow/skills/agent-config-audit",
+    "https://github.com/shipshitdev/skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ask-gemini",
+   "repo": "github.com/humanfia/hoa",
+   "stars": "14",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code (Humanize also has Codex and Kimi setup guides)",
+   "short": "Sends a question to Gemini CLI as an outside expert and brings back an answer backed by web research.",
+   "what": "A skill from the Humanize plugin that passes your question to Gemini CLI and returns its answer. Gemini is always told to research the question with Google Search, so it suits questions that need current information. The copy in this repo sits in a research archive. Humanize itself is mainly a loop where Claude builds and Codex reviews.",
+   "who": "Claude Code users who also have Gemini CLI and want a second, web-researched opinion inside their session. If you don't use Gemini CLI, skip it.",
+   "needs": [
+    "Claude Code. Humanize is a Claude Code plugin",
+    "Gemini CLI installed. The skill stops with a validation error if Gemini is missing",
+    "Codex CLI, for the rest of Humanize (its review loop)"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "text": "The Humanize README in this repo points to the PolyArch marketplace for installs.",
+     "code": "/plugin marketplace add PolyArch/humanize"
+    },
+    {
+     "title": "Install the Humanize plugin",
+     "code": "/plugin install humanize@PolyArch"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "/humanize:ask-gemini What are the latest best practices for X?\n\nYou can add --gemini-model or --gemini-timeout before the question."
+   },
+   "watch": [
+    "Your question is sent to Gemini through Gemini CLI, under whatever Gemini account the CLI uses.",
+    "The default model is `gemini-3.1-pro-preview` with a 3600-second timeout, so a hard question can run a long time.",
+    "Each answer is saved to `.humanize/skill/<timestamp>/output.md` in your project.",
+    "You install the plugin from PolyArch/humanize. That may be newer than the copy in the HOA repo we read."
+   ],
+   "sources": [
+    "https://github.com/humanfia/hoa/tree/main/putnambench/humanize/skills/ask-gemini",
+    "https://github.com/humanfia/hoa/tree/main/putnambench/humanize",
+    "https://github.com/humanfia/hoa"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "next-dev-loop",
+   "repo": "github.com/vercel/next.js",
+   "stars": "143.2k",
+   "level": "Advanced",
+   "cost": "Not stated in the files",
+   "works_with": "Coding agents that load skills. The Next.js repo ships it as a Claude Code plugin",
+   "short": "Has your agent check that a Next.js change works in the running app, using Next.js's own endpoint and a real browser.",
+   "what": "An official Next.js skill for the edit and verify loop during `next dev`. After a change, your agent checks two views of the running app: the `/_next/mcp` endpoint, which knows routes, server logs, errors and compile issues, and the agent-browser CLI, which drives a real Chrome and can inspect the DOM, console, network and React components. The two views cross-check each other.",
+   "who": "Next.js developers on recent versions who let a coding agent edit their app. The requirements are strict: the skill tells your agent to stop if Next.js is older than 16.3, if you use webpack instead of Turbopack, or if agent-browser is too old.",
+   "needs": [
+    "Next.js 16.3 or later with Turbopack",
+    "agent-browser 0.31.1 or later",
+    "A running `next dev` server"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "The Next.js repo ships a Claude Code plugin marketplace called `nextjs`, with one plugin, also called `nextjs`, that holds this skill and the other official Next.js skills. The files we read don't give a copy-paste install command."
+    },
+    {
+     "title": "Install or upgrade agent-browser",
+     "text": "The skill expects the CLI on your PATH.",
+     "code": "npm i -g agent-browser@latest"
+    },
+    {
+     "title": "Upgrade Next.js if needed",
+     "code": "pnpm next upgrade"
+    },
+    {
+     "title": "Start your dev server",
+     "text": "Run `next dev` as usual. If it isn't on port 3000, the skill has your agent set `NEXT_MCP_URL` to your port."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent, with next dev running",
+    "text": "Make a small change to a page, then ask your agent to verify it works in the running app."
+   },
+   "watch": [
+    "agent-browser can save cookies and local storage between sessions so you stay logged in. The skill may pause and open a visible browser for you to log in.",
+    "Don't move or delete the `.next` folder while the dev server runs. The skill says that disconnects the server and throws away its caches.",
+    "The skill refuses to fall back to weaker checks. If your versions are too old, it stops and tells you to upgrade."
+   ],
+   "sources": [
+    "https://github.com/vercel/next.js/tree/canary/skills/next-dev-loop",
+    "https://github.com/vercel/next.js/blob/canary/.claude-plugin/marketplace.json",
+    "https://github.com/vercel/next.js/blob/canary/skills/.claude-plugin/plugin.json"
+   ]
+  }
+ ]
+}
