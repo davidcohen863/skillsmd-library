@@ -1,0 +1,438 @@
+{
+ "issue": 14,
+ "date": "12 Oct 2026",
+ "checked": "12 Oct 2026",
+ "blurb": "Every repo and skill from the 12 October issue that I could source, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #14 had five trending repos and four AI skills, and eight of them have guides here. It's a mixed batch: a live 3D globe, a way to run huge models on a small GPU, the Apollo 11 source code, and tools for coding agents and marketers. If you want something to play with tonight, start with God's Eye View. If your agent sessions keep running out of context, look at billion-context.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "God's Eye View",
+   "repo": "github.com/bilawalsidhu/gods-eye-view",
+   "stars": "52.5k",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT). Most layers need no key. Google Maps and OpenAI keys are metered",
+   "works_with": "Your browser, on Windows, macOS and Linux. Install with Pinokio or from the terminal",
+   "short": "A 3D globe in your browser showing live aircraft, ships, satellites, earthquakes and public cameras, all from public data.",
+   "what": "God's Eye View puts public signals on one photorealistic 3D globe: flight transponders, ship beacons, satellite orbits, seismographs, weather and public cameras. You can click any aircraft to track it, ride along in a cockpit view, and switch the whole planet to night vision or thermal looks. With an OpenAI key you can also control it by voice.",
+   "who": "Anyone curious about open source intelligence, map nerds, and people who want a hackable geospatial base to add their own data to. The README says plainly that it's for exploring and learning, so skip it if you need something for navigation, emergencies or any safety-critical job.",
+   "needs": [
+    "Pinokio 8.2 or later for the one-click route, or",
+    "Node.js 24.x (24.14.0 or later) or 26.x for the terminal route. The setup doctor warns about Node 25",
+    "Git, for the terminal route",
+    "Optional: a free Cesium ion token for photorealistic 3D, an OpenAI key for voice, and free keys from AISStream, NASA FIRMS, TomTom or Mapillary for ships, fires, traffic and street photos"
+   ],
+   "steps": [
+    {
+     "title": "One click: use Pinokio",
+     "text": "Install or update Pinokio to 8.2 or later, open God's Eye View in Pinokio, then click Install and then Start. It installs the dependencies, finds a free local port and opens the app."
+    },
+    {
+     "title": "Or clone it from the terminal",
+     "code": "git clone https://github.com/bilawalsidhu/gods-eye-view.git\ncd gods-eye-view\nnpm ci\nnpm run doctor\nnpm run dev"
+    },
+    {
+     "title": "Open the app",
+     "text": "Go to `http://localhost:4173` and pick Live Contacts, Space Missions, Environmental or Explore Manually from the first-run panel."
+    },
+    {
+     "title": "Add keys when you want them",
+     "text": "Click the POWER UP chip in the bottom-right corner, paste a key and hit SAVE KEYS. The app restarts with the new layer on. If the chip is hidden, add `?setup=1` to the URL."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The app, in your browser",
+    "text": "Take the Live Contacts mission and click an aircraft. Then hit COCKPIT and ride it down, tapping `1` to `7` to switch between CRT, NVG and FLIR looks. With an OpenAI key, say: \"Take me to LAX and select the nearest airborne aircraft.\""
+   },
+   "watch": [
+    "Keys are saved in plain text files on your machine (`.env` for a clone, `pinokio/ENVIRONMENT` for Pinokio). They're owner-only and kept out of Git.",
+    "Google Maps and OpenAI usage is billed. Voice through an API key has a live spend readout, a $2 warning and a $5 hard cap. The ChatGPT sign-in option has no spend cap and the README calls it experimental.",
+    "Restrict browser-side keys (Google Maps, Cesium ion) at the provider. SECURITY.md shows how.",
+    "If you share it on your LAN, anyone who can reach it can use your configured keys. Set provider quotas and billing alerts first.",
+    "On Pinokio 8.0.40, don't type keys into Pinokio's own Configure panel. That release logs submitted values. Use POWER UP inside the app instead.",
+    "Data may be delayed, modeled or wrong. Don't use it for navigation, emergencies or other safety-critical decisions.",
+    "Already installed an older version? Update it. Old versions get refused by public OpenStreetMap servers, so Traffic and ALPR layers stay empty."
+   ],
+   "sources": [
+    "https://github.com/bilawalsidhu/gods-eye-view",
+    "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "AirLLM",
+   "repo": "github.com/lyogavin/airllm",
+   "stars": "36.9k",
+   "level": "Intermediate",
+   "cost": "Free and open source (Apache 2.0)",
+   "works_with": "Python, with Hugging Face models. Runs on Linux and on Apple silicon Macs",
+   "short": "Runs very large open models on a small GPU by loading them one layer at a time, so a 70B model fits in 4GB.",
+   "what": "AirLLM is a Python library that cuts the GPU memory a model needs for inference. It splits a model into layers and saves them to disk, then streams one layer at a time through the GPU. The README says a 70B model runs on a single 4GB card without quantization, and recent versions can also fine-tune huge models with small adapters.",
+   "who": "Developers who want to try big open models on modest hardware and are comfortable in Python. The trade-off is disk space and loading time, so it suits experiments more than fast chat.",
+   "needs": [
+    "Python and pip",
+    "A GPU. For Macs, only Apple silicon is supported, with mlx and torch installed",
+    "Plenty of free disk space in your Hugging Face cache, because the model is split and saved layer by layer",
+    "A Hugging Face token, only for gated models"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "code": "pip install airllm"
+    },
+    {
+     "title": "Load a model and run a prompt",
+     "text": "In Python, start with `from airllm import AutoModel`, then pass a Hugging Face repo ID or a local path. The README's example goes on to tokenize your prompt, call `model.generate` and print the decoded output.",
+     "code": "model = AutoModel.from_pretrained(\"Qwen/Qwen3-32B\")"
+    },
+    {
+     "title": "Optional: turn on compression for speed",
+     "text": "The README says block-wise 4-bit or 8-bit compression can speed inference up to 3x. Install bitsandbytes, then pass `compression='4bit'` or `'8bit'` when you load the model.",
+     "code": "pip install -U bitsandbytes"
+    },
+    {
+     "title": "Gated model? Pass your token",
+     "text": "For models like Llama 2 that need approval on Hugging Face, add `hf_token='HF_API_TOKEN'` to `from_pretrained`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A Python script or notebook",
+    "text": "Run the README's quickstart with the prompt 'What is the capital of United States?' on `Qwen/Qwen3-32B`. There are Colab notebooks for other models too."
+   },
+   "watch": [
+    "The first run splits the model and saves it to disk, so it needs a lot of space. The README says running out of disk is the most likely cause of a `MetadataIncompleteBuffer` error. Set `delete_original=True` to keep only the split copy and save about half the space.",
+    "The newest big models have extra needs. Qwen3.8-Flash-Next needs a `transformers` build from GitHub and about 360GB of disk. Kimi K3 needs flash-attn, a CUDA 12 torch build and `transformers` 4.56.x.",
+    "Models download from Hugging Face. Gated ones need your token."
+   ],
+   "sources": [
+    "https://github.com/lyogavin/airllm",
+    "https://raw.githubusercontent.com/lyogavin/airllm/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ASD-STE100 Skill",
+   "repo": "github.com/danyuchn/asd-ste100-skill",
+   "stars": "",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT)",
+   "works_with": "Claude Code, and other agents through the skills CLI",
+   "short": "An AI skill that rewrites unclear English into Simplified Technical English, so tool descriptions and errors can't be misread.",
+   "what": "This skill applies the rules of ASD-STE100, the controlled English the aerospace industry uses so maintenance instructions can't be misread. It flags each sentence that breaks a rule (passive voice, long sentences, several instructions in one, vague words) and rewrites it without dropping any fact or condition. It also ships a linter script that checks the structural rules.",
+   "who": "People writing text another agent or a non-native reader has to parse with no one to ask: tool descriptions, error messages, system prompts and messages between agents. The author says it's not for creative writing or marketing copy, and it doesn't include the official STE dictionary, so it can't certify compliance.",
+   "needs": [
+    "Node.js, for the `npx skills` install",
+    "Git, for the clone install",
+    "Python, to run the optional linter"
+   ],
+   "steps": [
+    {
+     "title": "Install with the skills CLI",
+     "text": "Run it from your project root. It installs the skill for the current project.",
+     "code": "npx skills add danyuchn/asd-ste100-skill"
+    },
+    {
+     "title": "Or clone it for every Claude Code project",
+     "text": "Best if you want a live copy you update with `git pull`.",
+     "code": "git clone https://github.com/danyuchn/asd-ste100-skill ~/.claude/skills/asd-ste100"
+    },
+    {
+     "title": "Ask for a rewrite",
+     "text": "Paste your text and ask your agent to disambiguate it or apply STE100. You get only the rewritten text back. Add \"show the diff\" to see which rules it applied."
+    },
+    {
+     "title": "Update later",
+     "code": "npx skills update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Rewrite this error message so an agent can't misparse it"
+   },
+   "watch": [
+    "The skills CLI sends anonymous install telemetry (skill name and timestamp). Set `DISABLE_TELEMETRY=1` to opt out.",
+    "It fixes the form of a text, not its substance. The README says a paragraph with nothing to say comes out short, clean and still empty.",
+    "A clean lint result only means the structural checks passed. The linter doesn't compare the rewrite with the original or prove the meaning stayed the same."
+   ],
+   "sources": [
+    "https://github.com/danyuchn/asd-ste100-skill",
+    "https://raw.githubusercontent.com/danyuchn/asd-ste100-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "billion-context",
+   "repo": "github.com/ranxianglei/billion-context",
+   "stars": "",
+   "level": "Advanced",
+   "cost": "Free (MIT plus one attribution term). You still pay your model provider",
+   "works_with": "Claude Code, Codex, OpenCode, pi, Gemini CLI, Kimi, Qwen Code, Copilot CLI, aider, goose and many more coding agents",
+   "short": "A local proxy that compresses your coding agent's conversation so one session can run for days without hitting the context limit.",
+   "what": "billion-context sits between your coding agent and the model API. It adds four tools to the conversation (compress, decompress, search_context and acp_status) that the model calls itself to fold older messages into detailed summaries. The summaries can be expanded again when exact details matter, and the author says it keeps the prompt cache intact.",
+   "who": "Heavy users of coding agents who run very long sessions and keep hitting context limits. It routes all your model traffic through a local proxy and the README calls its status early, so expect rough edges and skip it if that setup sounds like too much.",
+   "needs": [
+    "Node.js with npm",
+    "A supported coding agent and its usual model account or API key"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "On Linux or macOS this installs the `bili` command into `~/.local/bin` without sudo. On Windows, or with nvm or Homebrew Node, a plain `npm install -g billion-context` works.",
+     "code": "npm install -g billion-context --prefix=~/.local"
+    },
+    {
+     "title": "Easiest: launch your agent through it",
+     "text": "One command starts the proxy and your client together. No real config file is edited. Swap `claude` for `codex`, `opencode`, `gemini` and so on.",
+     "code": "bili claude"
+    },
+    {
+     "title": "Or install it as a native plugin",
+     "text": "Available for pi, omp, opencode, dsh, kimi, hermes and zcode. Then start your client as usual. `bili plugin remove <client>` undoes it.",
+     "code": "bili plugin install opencode"
+    },
+    {
+     "title": "Or change the base URL yourself",
+     "text": "Start the proxy with `bili`, then prefix your client's base URL with `http://localhost:8787/bili/`. For example, `https://api.openai.com/v1` becomes `http://localhost:8787/bili/https://api.openai.com/v1`.",
+     "code": "bili"
+    },
+    {
+     "title": "Check it's working",
+     "text": "With the proxy running, these return its health and session stats. A dashboard is at `http://localhost:8787`.",
+     "code": "curl -s http://localhost:8787/__bili/health\ncurl -s http://localhost:8787/__bili/stats"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, launched through bili",
+    "text": "Send one message and watch the log at `~/.local/state/billion-context/bili.log`. You should see a `processTurn` line per request. In a long session, run `/acp-cache` to see the cache hit rate; the README says a healthy session sits at 95 to 97%."
+   },
+   "watch": [
+    "All your model traffic goes through the proxy. For some clients the launcher uses certificate-based interception (MITM) of the model hosts it whitelists.",
+    "It updates itself from npm on startup and every 3 minutes. Turn that off with `\"autoUpdate\": false` in its config or `ACP_AUTO_UPDATE=0`. A separate advisory channel can still force-install a fixed version when a release is known to be broken.",
+    "`bili --host 0.0.0.0` exposes the proxy to other machines with no authentication. Only do that on a trusted network.",
+    "Running the native plugin alongside the older standalone extensions (`billion-context-pi`, `opencode-acp`) compresses twice. Use one or the other.",
+    "In the Claude Desktop app's Code tab, sessions bypass the proxy but still lose native auto-compaction. Terminal sessions are fine.",
+    "Session data and logs stay on disk under `~/.local/share/billion-context/` and `~/.local/state/billion-context/`.",
+    "The license adds one term to MIT: a product whose users can see it and that uses billion-context has to credit it with a link."
+   ],
+   "sources": [
+    "https://github.com/ranxianglei/billion-context",
+    "https://raw.githubusercontent.com/ranxianglei/billion-context/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Apollo-11",
+   "repo": "github.com/chrislgarry/Apollo-11",
+   "stars": "74.5k",
+   "level": "Beginner",
+   "cost": "Free. The code is public domain",
+   "works_with": "Any browser for reading. Virtual AGC (a separate project) to assemble and run it",
+   "short": "The original Apollo 11 guidance computer source code for the Command Module and Lunar Module, transcribed from MIT Museum scans.",
+   "what": "This repo holds the assembly source for the Apollo Guidance Computer that flew Apollo 11: Comanche055 for the Command Module and Luminary099 for the Lunar Module. It was digitized by the Virtual AGC project and the MIT Museum. The aim is to keep the original code, and pull requests fix differences between the transcription and the scans.",
+   "who": "Anyone curious about space history or how software was written in 1969. It's for reading, not installing. To actually run it you need the separate Virtual AGC emulator, which takes more effort.",
+   "needs": [
+    "Nothing to read the code",
+    "Docker, to run the Virtual AGC emulator the easy way"
+   ],
+   "steps": [
+    {
+     "title": "Read the code",
+     "text": "Open the `Comanche055` folder for the Command Module and `Luminary099` for the Lunar Module. `CONTRACT_AND_APPROVALS.agc` lists who signed it off, including Margaret H. Hamilton."
+    },
+    {
+     "title": "Get Virtual AGC to compile and run it",
+     "text": "The README points to Virtual AGC (github.com/rburkey2005/virtualagc) for compiling. It's an emulator that runs the original software. Get that repo first; its README gives the Docker route below."
+    },
+    {
+     "title": "Start the emulator with Docker",
+     "text": "Run this inside the Virtual AGC repo.",
+     "code": "cd Docker\ndocker-compose up -d"
+    },
+    {
+     "title": "Open the interface",
+     "text": "Go to `http://localhost:6080/vnc.html` in your browser, or point a VNC client at `localhost:5900`. Stop it later with `docker-compose down`."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "GitHub, in your browser",
+    "text": "Open the Luminary099 folder and browse the Lunar Module's code, then compare a file with the original scans linked from the README."
+   },
+   "watch": [
+    "The README itself has no install steps. Compiling and running go through the Virtual AGC project, whose own README says its build notes may be out of date and points to its website.",
+    "Virtual AGC isn't a flight or lunar-lander simulator. Its README says don't expect a realistic control panel to appear."
+   ],
+   "sources": [
+    "https://github.com/chrislgarry/Apollo-11",
+    "https://raw.githubusercontent.com/chrislgarry/Apollo-11/HEAD/README.md",
+    "https://raw.githubusercontent.com/rburkey2005/virtualagc/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "drawio-skill",
+   "repo": "github.com/Agents365-ai/drawio-skill",
+   "stars": "10.1k",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT)",
+   "works_with": "Claude Code, Cursor, Copilot, OpenClaw, Codex, Autohand Code, Hermes and other agents that load skills",
+   "short": "Has your agent make editable draw.io diagrams from a description, your code, Terraform, SQL or API schemas.",
+   "what": "This skill produces real `.drawio` files you can keep editing, not flat pictures. It writes the diagram, exports a PNG, checks it for overlaps and clipped labels, and fixes them. It can also build diagrams from code, Terraform, Kubernetes, SQL, OpenAPI and CI files, keep them in sync as the source changes, and test them against architecture rules.",
+   "who": "Developers and architects who want diagrams they can edit by hand later, for docs, decks or reviews. If you only need diagrams as code inside Markdown, the author points you to a Mermaid or PlantUML skill instead.",
+   "needs": [
+    "Python 3",
+    "The draw.io desktop app for exports. Version 30 or later is recommended",
+    "Optional: Graphviz for automatic layout",
+    "On headless Linux: xvfb"
+   ],
+   "steps": [
+    {
+     "title": "Install the draw.io desktop CLI",
+     "text": "On macOS use Homebrew. On Windows and Linux, get the installer or package from the drawio-desktop releases page. Check it with `drawio --version`.",
+     "code": "brew install --cask drawio"
+    },
+    {
+     "title": "Install the skill",
+     "text": "Works for any agent through the skills CLI.",
+     "code": "npx skills add Agents365-ai/drawio-skill -g"
+    },
+    {
+     "title": "Or install it by hand for Claude Code",
+     "text": "Clone once, then link the skill folder. Use `cp -R` instead of `ln -s` if your agent doesn't follow symlinks.",
+     "code": "mkdir -p ~/src\ngit clone https://github.com/Agents365-ai/drawio-skill.git ~/src/drawio-skill\nmkdir -p ~/.claude/skills\nln -s ~/src/drawio-skill/skills/drawio-skill ~/.claude/skills/drawio-skill"
+    },
+    {
+     "title": "Check your setup",
+     "text": "Run from the skill folder. It doesn't launch GUI tools unless you pass `--probe`.",
+     "code": "python3 scripts/diagramctl.py doctor"
+    },
+    {
+     "title": "Update later",
+     "code": "npx skills update drawio-skill -g"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Create a microservices e-commerce architecture with Mobile/Web/Admin clients, API Gateway (auth + rate limiting + routing), Auth/User/Order/Product/Payment services, Kafka message queue, Notification service, and User DB / Order DB / Product DB / Redis Cache / Stripe API"
+   },
+   "watch": [
+    "The SKILL.md sets `disable-model-invocation: true`, so you may need to call the skill by name rather than wait for your agent to pick it up.",
+    "The skill lets your agent run commands, read and write files and fetch web pages.",
+    "AI logos load from the unpkg CDN when the diagram renders. Use `--embed` to keep them offline.",
+    "Don't put secrets in diagram properties. The SKILL.md warns they get embedded in the outputs."
+   ],
+   "sources": [
+    "https://github.com/Agents365-ai/drawio-skill/tree/main/skills/drawio-skill",
+    "https://raw.githubusercontent.com/Agents365-ai/drawio-skill/main/skills/drawio-skill/SKILL.md",
+    "https://raw.githubusercontent.com/Agents365-ai/drawio-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "johnny-suede-write",
+   "repo": "github.com/JasonColapietro/suede-creator-skills",
+   "stars": "127",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT, with some adapted parts under their own licenses)",
+   "works_with": "Claude Code, Codex, Hermes Agent, and Cursor, Copilot or Windsurf through the skills CLI",
+   "short": "Writes copy for pages, emails, social posts, headlines and product listings in your brand voice, then scores it before you ship.",
+   "what": "A writing skill that covers long-form, short-form, docs, social and email. It picks a mode, structure and persuasion framework, writes the copy, runs an SEO pass and an anti-slop pass, and scores the result out of 70. It uses the Suede house voice by default, but a company brief you supply overrides it.",
+   "who": "Founders and marketers who write across several surfaces at once, like a launch page plus emails and social posts. For a single email or one hero section, the skill itself says to use the smaller suede-copy skill instead.",
+   "needs": [
+    "A coding agent that loads skills",
+    "Optional: a company brief, so the copy uses your voice and approved claims"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "This installs the whole pack, which includes this skill.",
+     "code": "/plugin marketplace add JasonColapietro/suede-creator-skills\n/plugin install suede-skills@suede"
+    },
+    {
+     "title": "Or install in Codex",
+     "text": "Restart Codex afterwards.",
+     "code": "codex plugin marketplace add JasonColapietro/suede-creator-skills --ref main\ncodex plugin add suede-skills@suede-codex"
+    },
+    {
+     "title": "Or use the skills CLI with any agent",
+     "code": "npx skills add JasonColapietro/suede-creator-skills"
+    },
+    {
+     "title": "Give it context",
+     "text": "The skill reads files like `README.md`, `PRODUCT.md` and brand notes before asking questions. Then it asks only for what blocks accurate copy, like the reader, the one action you want and which claims are approved."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Rewrite the homepage, retune it to our voice, and give me social variants"
+   },
+   "watch": [
+    "Installing the pack adds every Suede skill, not just this one. The README says to read each skill's SKILL.md before you install it.",
+    "The Codex plugin also registers a read-only MCP server with 9 tools.",
+    "Scores and ship verdicts are advice. The skill finishes what you asked even if a check says hold, and only pauses for serious risks like a security or legal problem.",
+    "For big jobs it asks before spawning a team of agents, and says that mode may use more tokens."
+   ],
+   "sources": [
+    "https://github.com/JasonColapietro/suede-creator-skills/tree/main/skills/johnny-suede-write",
+    "https://raw.githubusercontent.com/JasonColapietro/suede-creator-skills/main/skills/johnny-suede-write/SKILL.md",
+    "https://raw.githubusercontent.com/JasonColapietro/suede-creator-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "abm-ops",
+   "repo": "github.com/shalintripathi/saas-marketing-agents",
+   "stars": "20",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT)",
+   "works_with": "Claude Code, and Codex, Cursor and other agents through the skills CLI",
+   "short": "Builds and tiers a B2B SaaS target account list, sizes it against your sales team and turns intent signals into plays.",
+   "what": "An account-based marketing skill from a pack of 19 marketing skills. It builds a target account list from closed-won evidence, splits it into 1:1, 1:few and 1:many tiers, checks the list against real sales capacity and maps signals like intent data to actions. It measures the program by account coverage and pipeline instead of lead counts.",
+   "who": "B2B SaaS marketers and founders running or planning an ABM program. It plans the accounts and the rules each tier follows but doesn't send anything; outreach, ads and CRM work hand off to other skills in the pack.",
+   "needs": [
+    "A coding agent that loads skills",
+    "A `brand-context.md` file in your project root, filled in from the repo's template. Optional, but the skill reads it first"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "This installs all 19 skills in the pack. They load as `/saas-marketing:<skill>`.",
+     "code": "/plugin marketplace add shalintripathi/saas-marketing-agents\n/plugin install saas-marketing@saas-marketing-agents"
+    },
+    {
+     "title": "Or use the skills CLI",
+     "code": "npx skills add shalintripathi/saas-marketing-agents"
+    },
+    {
+     "title": "Tell it who you are",
+     "text": "Copy `templates/brand-context.md` to `brand-context.md` in your project root and fill in your ICP, positioning, voice and the proof you can cite. The README says this takes about 15 minutes and is the biggest quality jump."
+    },
+    {
+     "title": "Ask for an ABM deliverable",
+     "text": "Describe what you need. The skill routes it to its ABM strategist agent."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, with the pack installed",
+    "text": "Build our target account list and tier it"
+   },
+   "watch": [
+    "Without `brand-context.md`, it works from labelled assumptions and marks missing facts as `[NEEDS INPUT: …]` instead of inventing them. The skill calls account research the highest fabrication risk in the repo, so check any company details it gives you.",
+    "The plugin also ships a `/campaign-board` pane in Claude Code. The README says it hooks only its own command.",
+    "It plans the program but doesn't send outreach or run ads. Those steps belong to other skills."
+   ],
+   "sources": [
+    "https://github.com/shalintripathi/saas-marketing-agents/tree/main/plugins/saas-marketing/skills/abm-ops",
+    "https://raw.githubusercontent.com/shalintripathi/saas-marketing-agents/main/plugins/saas-marketing/skills/abm-ops/SKILL.md",
+    "https://raw.githubusercontent.com/shalintripathi/saas-marketing-agents/HEAD/README.md"
+   ]
+  }
+ ]
+}
