@@ -1,0 +1,354 @@
+{
+ "issue": 15,
+ "date": "13 Oct 2026",
+ "checked": "13 Oct 2026",
+ "blurb": "Every repo and skill from the 13 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #15 had three repos and three AI skills, and all six have guides here. Two are toys and tools for your own machine: PS2 games in the browser and a voice assistant for the Mac. The rest are for people running coding agents, Nuxt sites or Home Assistant. If you're on a Mac with a Claude plan, try Atticus first. If you want your coding agent on other models, look at Free Claude Code.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "PS2 Web Recomp",
+   "repo": "github.com/snuri00/ps2-web-recomp",
+   "stars": "",
+   "level": "Advanced",
+   "cost": "Free and open source (MIT). You need your own copy of the game",
+   "works_with": "Chrome or Edge with WebGPU. Builds have been run on Linux on x86-64",
+   "short": "Turns a PS2 disc you own into a web page that plays the game in your browser, with the game's CPU code recompiled to WebAssembly.",
+   "what": "PS2 Web Recomp translates a PlayStation 2 game's main CPU code into C++ ahead of time and compiles it to WebAssembly. The rest of the console is emulated, and graphics are drawn with WebGPU. Gran Turismo 4 and God of War II play from boot through races and combat, with sound and a memory card saved in the browser.",
+   "who": "People comfortable with a C++ toolchain who own PS2 discs and want to see this recompilation approach working. Skip it if you want a general emulator: only two games have been brought up so far, and another game will most likely stop at something not implemented yet.",
+   "needs": [
+    "git, CMake, Ninja, a C++20 compiler (clang is preferred) and Python 3",
+    "7-Zip, if your disc image is in a `.7z`",
+    "A disc image of a PS2 game you own",
+    "About 300 MB of disk space per game",
+    "A browser with WebGPU. On Linux, Chrome needs two flags turned on (see the steps)",
+    "SDL2 development files, only for the native window build"
+   ],
+   "steps": [
+    {
+     "title": "Clone and port a game",
+     "text": "`port.sh` reads the disc, translates the game's code, runs it headless a few times to find code it missed, then builds the page. The first run installs the Emscripten SDK into `tools/emsdk`.",
+     "code": "git clone https://github.com/snuri00/ps2-web-recomp.git\ncd ps2-web-recomp\nscripts/port.sh mygame \"My Game.iso\"\npython3 scripts/serve.py build/web-mygame games/mygame/disc.iso    # http://localhost:8620/"
+    },
+    {
+     "title": "Open it in your browser",
+     "text": "Go to `http://localhost:8620/`. On Linux, turn on `chrome://flags/#enable-unsafe-webgpu` and `chrome://flags/#enable-vulkan` in Chrome and restart it. Without WebGPU the software renderer takes over, which is fine for menus and too slow for 3D."
+    },
+    {
+     "title": "Check how far a new game got",
+     "text": "Frames from the last exploring run land in `games/mygame/shots`. Use `--press 900:cross` to give your own inputs and `--frames` to set how long each run lasts."
+    },
+    {
+     "title": "Or play it in a native window",
+     "text": "Build only the native runner with `--native-only`, then start it with your disc. `PS2_SCALE=2` or `3` raises the internal resolution.",
+     "code": "build/native-mygame/ps2run games/mygame/disc/SLUS_123.45 --disc games/mygame/disc.iso --window --memcard mygame.ps2"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The game page, in your browser",
+    "text": "Play with the keyboard: Z, X, A and S are cross, circle, square and triangle, Enter is start and the arrow keys are the D-pad. Then use Export card to download your save as a `.ps2` file you can also load in PCSX2."
+   },
+   "watch": [
+    "No game data is included. Use disc images of games you own.",
+    "The generated C++ and WebAssembly are translations of the game, so they belong to the game's owners. The README says to keep them on your own machine and not publish them.",
+    "Anyone who can reach the server can load the game, so keep it to yourself.",
+    "Only Gran Turismo 4 and God of War II have been brought up. Other games will likely hit an unhandled system call or a missing I/O library and stop.",
+    "Saves live in the browser's storage for the address you play from. Export the card if you want a copy."
+   ],
+   "sources": [
+    "https://github.com/snuri00/ps2-web-recomp",
+    "https://raw.githubusercontent.com/snuri00/ps2-web-recomp/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Atticus",
+   "repo": "github.com/SaarthurR/atticus-mac",
+   "stars": "",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT). It uses your paid Claude Pro or Max plan, about 0.18¢ of plan usage per ask",
+   "works_with": "macOS 26 or later, through Claude Code. A separate Windows version exists",
+   "short": "Hold a shortcut, say what you need, and it moves windows, finds files, reads your screen or plays music on your Mac.",
+   "what": "Atticus is a hold-to-talk voice assistant for macOS. Hold Control, Option and Space, speak, and let go. Simple asks like opening an app or moving a window run without any AI. Everything else goes through `claude -p` on the Claude plan you already pay for. It also remembers rules you give it, can watch a window or page for you, and has an optional Meeting Copilot that keeps transcripts.",
+   "who": "Mac users on macOS 26 who already pay for Claude Pro or Max and want to drive their computer by voice. Skip it if you're on an older macOS, don't have a paid Claude plan, or don't want an assistant with Accessibility and screen access.",
+   "needs": [
+    "macOS 26 or later (it uses Apple's on-device speech)",
+    "A paid Claude plan (Pro or Max) and Claude Code. The setup window can install Claude Code and sign you in",
+    "Apple's command line tools: `xcode-select --install`",
+    "Accessibility permission, for clicks, scrolling, menus and typing inside apps"
+   ],
+   "steps": [
+    {
+     "title": "Install the command line tools",
+     "code": "xcode-select --install"
+    },
+    {
+     "title": "Run the installer in Terminal",
+     "text": "It checks your Mac, downloads Atticus to `~/.atticus`, builds `~/Applications/Atticus.app` and opens it.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/SaarthurR/atticus-mac/main/install.sh | bash"
+    },
+    {
+     "title": "Finish setup",
+     "text": "The first launch checks your Claude plan and asks for each macOS permission. After that Atticus lives in the menu bar. Open it from Spotlight to change the shortcut, model, memory and other settings."
+    },
+    {
+     "title": "Uninstall later",
+     "text": "Run this, then delete `~/Applications/Atticus.app`, `~/.atticus`, `~/.config/atticus` and `~/Library/LaunchAgents/com.atticus.app.plist`.",
+     "code": "launchctl bootout gui/$(id -u)/com.atticus.app"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Anywhere on your Mac, holding Control + Option + Space",
+    "text": "\"Code on my big screen, Chrome and Terminal on the laptop.\" Then try \"When I say focus mode, close Slack and open my to-do list.\""
+   },
+   "watch": [
+    "The README tells you to pipe a download straight into bash. Read `install.sh` first.",
+    "It starts at login and updates itself. You can turn updates off in Settings, About & Updates.",
+    "It gets Accessibility access and can read your screen. Safe mode runs the AI's commands in Claude Code's sandbox, asks before anything deletes, sends, buys or changes a file, and always blocks `rm`, `sudo`, disk tools and shutdown.",
+    "Once a day it sends a random ID to PostHog to count users. Turn it off under Settings, Account & Access, Count me as a user.",
+    "Help improve Atticus is off until you agree. If on, failed tasks send what you asked and the steps taken, with emails, numbers and paths removed first.",
+    "Meeting Copilot saves transcripts by default under `~/.config/atticus/meetings/`. AI summaries send the transcript to Claude on your plan. Audio is never saved.",
+    "Voice is turned into text on your Mac by Apple's speech. Audio never leaves your Mac."
+   ],
+   "sources": [
+    "https://github.com/SaarthurR/atticus-mac",
+    "https://raw.githubusercontent.com/SaarthurR/atticus-mac/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Free Claude Code",
+   "repo": "github.com/Alishahryar1/free-claude-code",
+   "stars": "59.7k",
+   "level": "Intermediate",
+   "cost": "Free and open source (AGPL-3.0). Free tiers are set by each provider; paid providers bill you",
+   "works_with": "Claude Code, Codex, Pi, OpenCode, Cline, Hermes, DeepSeek Harness, Grok Build, Muse Code, Aider and VS Code Chat",
+   "short": "A local proxy that lets 11 coding agents use models from 61 providers, including free tiers and local models, from one admin page.",
+   "what": "Free Claude Code (FCC) runs a local server with an Admin UI where you add provider keys and pick models. Launchers like `fcc-claude` and `fcc-codex` start your coding agent pointed at it. If a model fails after retries, FCC tries the next model on your fallback list. It can also connect editors and apps, run Codex sessions in the browser, and take requests from Discord or Telegram.",
+   "who": "Developers who want to run their coding agent on other or cheaper models, mix providers, or use local models through Ollama, LM Studio or llama.cpp. Skip it if you're happy with the single provider your agent ships with.",
+   "needs": [
+    "macOS, Linux or Windows",
+    "At least one coding agent, chosen during install",
+    "At least one provider key. The quick start uses a free NVIDIA NIM key from build.nvidia.com",
+    "Or a local model server: Ollama, LM Studio or llama.cpp"
+   ],
+   "steps": [
+    {
+     "title": "Install on macOS or Linux",
+     "text": "When prompted, choose at least one coding agent. You can also turn on RTK and Headroom to cut token use.",
+     "code": "curl -fsSL \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.sh\" | sh"
+    },
+    {
+     "title": "Or install on Windows (PowerShell)",
+     "code": "& ([scriptblock]::Create((irm \"https://raw.githubusercontent.com/Alishahryar1/free-claude-code/main/scripts/install.ps1\")))"
+    },
+    {
+     "title": "Start FCC",
+     "text": "On Windows and macOS, open Free Claude Code from the desktop or the Start menu or Applications folder. On Linux run this and keep the terminal open. The Admin UI opens after it starts.",
+     "code": "fcc-server"
+    },
+    {
+     "title": "Add a provider key",
+     "text": "Create a key at build.nvidia.com/settings/api-keys. In the Admin UI open NVIDIA NIM in Providers, click Add key, paste it and click Save. Keep the default model or pick another, then click Apply."
+    },
+    {
+     "title": "Run your coding agent",
+     "text": "Each agent has its own launcher, such as `fcc-codex`, `fcc-pi`, `fcc-opencode` or `fcc-aider`.",
+     "code": "fcc-claude"
+    },
+    {
+     "title": "Update or troubleshoot",
+     "text": "Stop all running FCC commands before updating. `fcc-doctor` prints details for a bug report.",
+     "code": "fcc-update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `fcc-claude`, then open the `/model` picker and select one of your FCC models."
+   },
+   "watch": [
+    "The README tells you to pipe the installer straight into a shell. Read `install.sh` or `install.ps1` first.",
+    "It's an independent project. The README says it isn't affiliated with or endorsed by Anthropic.",
+    "Free-tier availability and limits are set by each provider and can change.",
+    "With fallback models on, one failed request may reach and use up quota from more than one provider before it succeeds.",
+    "FCC runs a local proxy. Turn on Proxy Authentication in Admin if you want it protected with a bearer token.",
+    "Some providers connect your own subscription accounts (ChatGPT, GitHub Copilot). Kimi Code and QwenCloud Coding Plan keys are for personal interactive coding use under their own terms.",
+    "The Discord and Telegram bots work on an Allowed Directory you set. Give them a narrow folder.",
+    "Licensed AGPL-3.0, which matters if you plan to modify it and offer it to others over a network."
+   ],
+   "sources": [
+    "https://github.com/Alishahryar1/free-claude-code",
+    "https://raw.githubusercontent.com/Alishahryar1/free-claude-code/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ai-image-prompts-skill",
+   "repo": "github.com/YouMind-OpenLab/ai-image-prompts-skill",
+   "stars": "1.2k",
+   "level": "Beginner",
+   "cost": "Free (MIT). Prompts are community-sourced",
+   "works_with": "OpenClaw, Claude Code, Cursor, Codex, Gemini CLI and Windsurf",
+   "short": "Your agent searches a library of 10,000+ real image prompts and hands back the top three with sample images, for any image model.",
+   "what": "This skill gives your agent a categorized library of image generation prompts collected by YouMind from creators on social media. You describe what you need and it returns up to three matching prompts, each with a sample image. Paste in an article or video script and it will suggest styles, then remix the one you pick to fit your content.",
+   "who": "Marketers, bloggers and creators who make thumbnails, covers, product shots, avatars or posters with image models like Nano Banana, Midjourney, Flux or GPT Image. Skip it if you already write your own prompts and don't want a library.",
+   "needs": [
+    "Node.js, for `npx` and the setup script",
+    "An AI agent that loads skills"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "The README gives the same command for Claude Code, Cursor, Codex, Gemini CLI and Windsurf.",
+     "code": "npx skills i YouMind-OpenLab/ai-image-prompts-skill"
+    },
+    {
+     "title": "Or install it in OpenClaw",
+     "code": "clawhub install ai-image-prompts"
+    },
+    {
+     "title": "Or install with openskills",
+     "code": "npx openskills install YouMind-OpenLab/ai-image-prompts-skill"
+    },
+    {
+     "title": "Fetch the prompt library if it's missing",
+     "text": "The library downloads from GitHub after install. If it didn't, run this from the skill folder.",
+     "code": "node scripts/setup.js"
+    },
+    {
+     "title": "Keep it fresh",
+     "text": "The skill checks for updates on each use. To force a full update:",
+     "code": "pnpm run sync"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI agent",
+    "text": "\"Help me find a YouTube thumbnail for a tech review video\""
+   },
+   "watch": [
+    "On every use it first checks whether its prompt files are over a day old and, if so, pulls the latest from GitHub.",
+    "To show sample images it downloads them from YouMind's CDN with `curl` into `/tmp`, then deletes them.",
+    "Every reply that presents prompts ends with a YouMind attribution line. The SKILL.md makes this mandatory.",
+    "If nothing in the library matches, it writes its own prompt and labels it as AI-generated.",
+    "Prompts come from the community. Check a prompt before using it for commercial work."
+   ],
+   "sources": [
+    "https://github.com/YouMind-OpenLab/ai-image-prompts-skill/tree/main",
+    "https://raw.githubusercontent.com/YouMind-OpenLab/ai-image-prompts-skill/main/SKILL.md",
+    "https://raw.githubusercontent.com/YouMind-OpenLab/ai-image-prompts-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "nuxtjs-seo",
+   "repo": "github.com/harlan-zw/nuxt-seo",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT)",
+   "works_with": "Any AI agent that loads skills, on Nuxt 4.6.1 or later projects",
+   "short": "Helps your agent install, configure and debug Nuxt SEO: robots, sitemap, OG images, Schema.org, link checks and llms.txt.",
+   "what": "Nuxt SEO is one module that installs nine others for a Nuxt site: robots.txt, sitemaps, Schema.org data, OG images, meta tags, a link checker, site config, `llms.txt` and skew protection. This skill tells your agent what the bundle adds, which config key belongs to which module, how to switch one off, and the common traps, like OG images failing in production without `NUXT_APP_SECRET`.",
+   "who": "Nuxt developers setting up or upgrading SEO on a Nuxt 4 site, especially moving from Nuxt SEO v5 to v6. Skip it if you don't use Nuxt. Nuxt 3 sites stay on Nuxt SEO v5, which this skill doesn't cover.",
+   "needs": [
+    "Nuxt `^4.6.1 || ^5.0.0`",
+    "Node `^22.22.3 || ^24.15.0 || >=26.0.0`",
+    "An AI agent that loads skills"
+   ],
+   "steps": [
+    {
+     "title": "Get the skill",
+     "text": "The README points AI agent users to skilld.dev/gh/harlan-zw/nuxt-seo. The skill itself sits in `packages/nuxt-seo/skills/nuxtjs-seo` in the repo."
+    },
+    {
+     "title": "Add the module to your site",
+     "code": "npx nuxt module add seo"
+    },
+    {
+     "title": "Set your site URL and name",
+     "text": "Add only `@nuxtjs/seo` to `modules`, not the submodules.",
+     "code": "export default defineNuxtConfig({\n  modules: ['@nuxtjs/seo'],\n  site: { url: 'https://example.com', name: 'My Site' },\n})"
+    },
+    {
+     "title": "Turn on OG images if you want them",
+     "text": "A fresh install has no OG image renderer. Install one, and set `NUXT_APP_SECRET` in production.",
+     "code": "npx nuxt-og-image enable takumi"
+    },
+    {
+     "title": "Check the setup",
+     "text": "Run the dev server and open the home page. The terminal lists required fixes and tips. In dev, `/__nuxt-seo__/setup.json` shows installed and disabled modules.",
+     "code": "npx nuxt dev"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "After deploying, check how readable your site is for AI agents: `npx @vercel/agent-readability audit https://your-site.com`"
+   },
+   "watch": [
+    "Production OG image requests return 500 without `NUXT_APP_SECRET`. Generate one with `npx nuxt-og-image generate-secret`.",
+    "In dev, `/robots.txt` blocks all crawlers. Check indexing on a production build.",
+    "AI Ready is on by default. It serves Markdown versions of every page and `llms.txt`, and publishes anything in `public/skills/`. MCP tools need a separate opt-in.",
+    "Upgrading from v5 is breaking: remove `nuxt-ai-ready` and `nuxt-skew-protection` from `modules`, and update or remove older submodule pins.",
+    "Skew Protection keeps old build assets in `node_modules/.cache/nuxt-seo/skew-protection`. Preserve that in CI or set `skewProtection.storage`.",
+    "`@nuxtjs/i18n` below v10 fails every build."
+   ],
+   "sources": [
+    "https://github.com/harlan-zw/nuxt-seo/tree/main/packages/nuxt-seo/skills/nuxtjs-seo",
+    "https://raw.githubusercontent.com/harlan-zw/nuxt-seo/main/packages/nuxt-seo/skills/nuxtjs-seo/SKILL.md",
+    "https://raw.githubusercontent.com/harlan-zw/nuxt-seo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "spook",
+   "repo": "github.com/frenck/spook",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT)",
+   "works_with": "Claude Code through its plugin marketplace. Other agents can use the skill folder directly",
+   "short": "Teaches your agent Spook for Home Assistant: its 100+ actions, extra triggers and conditions, and the broken references it reports.",
+   "what": "Spook is a Home Assistant custom integration that finds \"ghosts\": references to entities, devices, areas and labels that no longer exist, plus leftovers like empty areas and unused labels. It reports them in Repairs and adds over a hundred actions, triggers and conditions. This skill gives your agent all of that in a form it can look up, with rules for fixing things safely.",
+   "who": "Home Assistant users who already run Spook and manage their setup from an agent through the API or Home Assistant's MCP server. Skip it if you don't use Spook. The skill only helps when Spook is installed.",
+   "needs": [
+    "Home Assistant with the Spook integration installed (docs at spook.boo)",
+    "An admin user for the registry and repairs actions",
+    "An AI agent connected to your Home Assistant"
+   ],
+   "steps": [
+    {
+     "title": "Install it in Claude Code",
+     "text": "Add the marketplace, then install the plugin.",
+     "code": "/plugin marketplace add frenck/spook\n/plugin install spook@spook"
+    },
+    {
+     "title": "Or use the folder with another agent",
+     "text": "Point your agent at `plugins/spook/skills/spook` in the repo."
+    },
+    {
+     "title": "Check Spook is there",
+     "text": "Spook's actions only exist when it's installed. Look for `spook.boo` or `repairs.list` among the actions, or a `spook` config entry."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your agent, connected to Home Assistant",
+    "text": "Ask it to run `repairs.list` with `domain: spook` and explain the open issues, then fix the references that point at renamed entities."
+   },
+   "watch": [
+    "Spook is not affiliated with, endorsed or supported by the Home Assistant project, and comes without warranty.",
+    "Registry actions (create, delete, rename, labels, areas and more) and some repairs actions need an admin user. That gives your agent a lot of power over your setup.",
+    "The skill tells the agent to fix references rather than rename entity IDs, to leave alone what it didn't create, and to ask before removing leftovers. Orphaned statistics don't come back once deleted.",
+    "Home Assistant's own MCP server doesn't expose every action. Wrap a Spook action in a script and expose that to reach it from there."
+   ],
+   "sources": [
+    "https://github.com/frenck/spook/tree/main/plugins/spook/skills/spook",
+    "https://raw.githubusercontent.com/frenck/spook/main/plugins/spook/skills/spook/SKILL.md",
+    "https://raw.githubusercontent.com/frenck/spook/HEAD/README.md"
+   ]
+  }
+ ]
+}
