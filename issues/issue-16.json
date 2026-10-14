@@ -1,0 +1,491 @@
+{
+ "issue": 16,
+ "date": "14 Oct 2026",
+ "checked": "14 Oct 2026",
+ "blurb": "Every repo and skill from the 14 October issue, with what each one does, who it's for and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #16 had four repos and four AI skills, and all eight have guides here. Two of the repos let an agent work inside a creative app over MCP: SolidCraft for 3D CAD and Blokkily for music. If you want to watch an agent build something, try SolidCraft first. If you use AI skills across several agents, start with the `npx skills` installer.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "xtool",
+   "repo": "github.com/xtool-org/xtool",
+   "stars": "10k",
+   "level": "Advanced",
+   "cost": "Free to download. The API key login needs a paid Apple Developer Program membership; the password login works with any Apple ID",
+   "works_with": "Linux, Windows through WSL, and macOS, with an iOS device over USB",
+   "short": "Builds a Swift package into an iOS app, then signs it and installs it on your device from Linux, Windows or a Mac without Xcode's build system.",
+   "what": "xtool is a command line tool that does Xcode's jobs with open standards. It builds a SwiftPM package into an iOS app, signs it, installs it on a connected device and talks to Apple Developer Services. It also comes with a Swift library, XKit, for doing the same things from your own app.",
+   "who": "iOS developers who want to work on Linux or Windows, or who prefer SwiftPM and their own editor to the Xcode build system. You still need Apple's SDK: on Linux it comes from an Xcode download, and on a Mac Xcode has to be installed. If you're happy in Xcode, you can skip it.",
+   "needs": [
+    "Linux and WSL: the Swift 6.4 toolchain from swift.org",
+    "Linux and WSL: usbmuxd, so xtool can talk to your device",
+    "Linux and WSL: Xcode 27 as `Xcode.xip`, downloaded in your browser with your Apple ID",
+    "Windows: WSL, plus USB passthrough set up with USBIPD",
+    "macOS: Xcode installed and launched once",
+    "An Apple ID, or an App Store Connect API key if you have a paid developer membership",
+    "An iOS device connected by USB"
+   ],
+   "steps": [
+    {
+     "title": "Check Swift (Linux and WSL)",
+     "text": "Install the Swift 6.4 toolchain for your distribution from swift.org, then confirm it's there.",
+     "code": "swift --version"
+    },
+    {
+     "title": "Install usbmuxd if it's missing",
+     "text": "Run `usbmuxd --help` to check. If you get \"command not found\" on Ubuntu or Debian, install it:",
+     "code": "sudo apt-get install usbmuxd"
+    },
+    {
+     "title": "Download xtool (Linux and WSL)",
+     "text": "This fetches the latest AppImage for your architecture and puts it on your PATH. Run `xtool --help` afterwards to check.",
+     "code": "curl -fL \\\n  \"https://github.com/xtool-org/xtool/releases/latest/download/xtool-$(uname -m).AppImage\" \\\n  -o xtool\nchmod +x xtool\nsudo mv xtool /usr/local/bin/"
+    },
+    {
+     "title": "Or install it on a Mac",
+     "text": "With Homebrew. Without it, download `xtool.app` from the latest GitHub release, move it to Applications, launch it and run the script it suggests.",
+     "code": "brew install xtool-org/tap/xtool"
+    },
+    {
+     "title": "Log in",
+     "text": "Pick API Key if you have a paid Apple Developer Program membership, or Password, which works with any Apple ID. On Linux it then asks for the path to `Xcode.xip` and builds an iOS Swift SDK from it.",
+     "code": "xtool setup"
+    },
+    {
+     "title": "Check the SDK (Linux and WSL)",
+     "text": "It should list `darwin`.",
+     "code": "swift sdk list"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `xtool new` to create an xtool SwiftPM project, then `xtool dev` to build and run it. The first-app tutorial on xtool.sh walks you through it."
+   },
+   "watch": [
+    "Password login uses private Apple APIs. The docs suggest a throwaway Apple ID if you want to be extra careful.",
+    "The docs say your credentials are sent only to Apple, and you can build xtool from source to check.",
+    "The Linux install uses sudo to move a downloaded file into `/usr/local/bin`.",
+    "Downloading Xcode means logging in with your Apple ID and accepting Apple's licence in the browser.",
+    "A manual Mac install doesn't update itself. Check GitHub releases yourself, or install with Homebrew.",
+    "On WSL, if you hit `AFCClient.Error.muxError`, the docs link an issue comment that relays the device through iTunes on Windows instead."
+   ],
+   "sources": [
+    "https://github.com/xtool-org/xtool",
+    "https://raw.githubusercontent.com/xtool-org/xtool/HEAD/README.md",
+    "https://raw.githubusercontent.com/xtool-org/xtool/HEAD/Documentation/xtool.docc/Installation-Linux.md",
+    "https://raw.githubusercontent.com/xtool-org/xtool/HEAD/Documentation/xtool.docc/Installation-macOS.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "SolidCraft",
+   "repo": "github.com/bherbruck/solidcraft",
+   "stars": "",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT or Apache-2.0)",
+   "works_with": "Windows, macOS, Linux and the browser. The MCP server works with MCP clients; the docs show Claude Code and Claude Desktop",
+   "short": "Open source parametric CAD in Rust. Sketch, constrain and build solids on a timeline, in a desktop app, a browser, or through an AI agent over MCP.",
+   "what": "SolidCraft is a parametric 3D CAD app. You sketch with constraints and dimensions, then build solids with features like extrude, revolve, fillet and shell on a timeline that rebuilds when you change a parameter. It exports STEP, IGES, 3MF, STL and OBJ and imports STEP and IGES. Its MCP server, `solidcraft-cli mcp`, lets an AI agent model, measure and screenshot parts.",
+   "who": "Makers and engineers who want free parametric CAD, and anyone curious about an agent building real parts. The README calls it early but usable for simple parts, so if you need a mature tool for production work, look elsewhere for now.",
+   "needs": [
+    "A Windows, Mac or Linux computer, or only a browser for the web version",
+    "Rust and Cargo, only if you build from source",
+    "An AI agent that supports MCP, for the agent features"
+   ],
+   "steps": [
+    {
+     "title": "Try it in the browser",
+     "text": "No install needed. The web app is at bherbruck.github.io/solidcraft/app/."
+    },
+    {
+     "title": "Or install the desktop app",
+     "text": "There's an `.msi` installer for Windows, a disk image for macOS, and an AppImage, `.deb`, `.rpm`, Flatpak or Snap for Linux, all on the releases page. With Snap:",
+     "code": "sudo snap install solidcraft"
+    },
+    {
+     "title": "Or build from source",
+     "text": "This opens the desktop app with a sample part.",
+     "code": "cargo run --release -p solidcraft -- --sample"
+    },
+    {
+     "title": "Connect your agent",
+     "text": "Headless, the server runs its own design session with no window. This is the README's Claude Code line. Other clients run `solidcraft-cli` with the argument `mcp`.",
+     "code": "claude mcp add solidcraft -- solidcraft-cli mcp"
+    },
+    {
+     "title": "Watch the agent model",
+     "text": "Start the app with a control port, then connect the server to it.",
+     "code": "solidcraft --control 7878 &\nsolidcraft-cli mcp --connect 127.0.0.1:7878"
+    },
+    {
+     "title": "Add the modelling skills (optional)",
+     "text": "The repo's `skills/` folder has three AI skills, for building a part, editing a design and checking for errors. For Claude Code, copy the folders into `~/.claude/skills/`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your agent, with the SolidCraft MCP server",
+    "text": "Ask it to sketch a 40 by 30 mm rectangle on the XY plane, extrude it 20 mm and fillet an edge with a 3 mm radius. Then have it `measure` the part and take an `iso` screenshot. The docs walk through this same session."
+   },
+   "watch": [
+    "The downloads aren't signed yet, so Windows SmartScreen and macOS warn you the first time.",
+    "The MCP tools can read, write, overwrite and delete files. By default they only reach the open design's folder inside your home folder, SolidCraft's recovery folder and folders you add with `--allow-path`. `--allow-any-path` removes that limit.",
+    "Hidden folders and dotfiles such as `~/.ssh` are out of reach by default. A hard link inside an allowed folder can still lead elsewhere, so don't keep those there.",
+    "It's early software. 75 of 76 public reference parts match their expected measurements, and the last one is a tracked bug."
+   ],
+   "sources": [
+    "https://github.com/bherbruck/solidcraft",
+    "https://raw.githubusercontent.com/bherbruck/solidcraft/HEAD/README.md",
+    "https://raw.githubusercontent.com/bherbruck/solidcraft/HEAD/docs/mcp.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Blokkily",
+   "repo": "github.com/andrewfader/blokkily",
+   "stars": "",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Linux, Windows and macOS. The MCP bridge works with MCP clients; the docs show Claude Code",
+   "short": "An experimental pattern-first music workstation with CLAP and VST3 plugins, plus an MCP bridge so an AI agent can write notes and run playback.",
+   "what": "Blokkily is a DAW built around patterns. You edit the same pattern in a tracker, piano roll or step grid, then arrange patterns across tracks with CLAP, VST3 and SoundFont instruments, samplers, a mixer and audio recording. A composition assistant asks a language model for a phrase, and an MCP server lets an agent control the running app.",
+   "who": "Musicians and tinkerers who like trackers and step sequencers and want to see an agent write parts. It's experimental and Linux is the main platform, so if you need a stable, finished DAW, this isn't it yet.",
+   "needs": [
+    "Linux: Qt 6, FluidSynth, RtAudio, RtMidi, libsndfile, libsamplerate and Rubber Band from your system",
+    "Windows or macOS: only the release package",
+    "To build from source: CMake 3.25+, Qt 6.5+ and the same libraries, cloned with `--recursive`",
+    "For the assistant: a local Ollama (the default), or an API key for Gemini, MiniMax, ChatGPT or OpenRouter"
+   ],
+   "steps": [
+    {
+     "title": "Download a release",
+     "text": "The latest GitHub release has a `.tar.gz` for Linux, a setup `.exe` or zip for Windows, and a `.dmg` for Apple Silicon or Intel Macs. `SHA256SUMS` lists every checksum."
+    },
+    {
+     "title": "Open it on a Mac",
+     "text": "The app is signed ad hoc and not notarized, so macOS blocks the first launch. Control-click it and choose Open, or run:",
+     "code": "xattr -dr com.apple.quarantine /Applications/Blokkily.app"
+    },
+    {
+     "title": "Or build it",
+     "text": "Clone with `--recursive`. The tests need a SoundFont; CMake looks in the usual system folders.",
+     "code": "cmake -S . -B build -G Ninja\ncmake --build build\nctest --test-dir build --output-on-failure\n./build/blokkily"
+    },
+    {
+     "title": "Connect your agent",
+     "text": "The bridge talks to the window over a local socket. If Blokkily isn't running, the first tool call starts it. For Claude Code:",
+     "code": "claude mcp add blokkily -- blokkily --mcp"
+    },
+    {
+     "title": "Or use a JSON config",
+     "text": "For clients that take JSON configuration:",
+     "code": "{ \"mcpServers\": { \"blokkily\": { \"command\": \"blokkily\", \"args\": [\"--mcp\"] } } }"
+    },
+    {
+     "title": "Set up the assistant",
+     "text": "Ctrl+K focuses the prompt bar. It uses a local Ollama unless you pick a cloud backend; for one of those, set its key variable first, such as `BLOKKILY_GEMINI_KEY`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The prompt bar in Blokkily",
+    "text": "Ask for \"a minor pentatonic ascending\" or \"offbeat hats\", look over the proposal and click Apply. Each generation is one undo step."
+   },
+   "watch": [
+    "It's experimental. Comping and MIDI clock input aren't implemented, and per-note expression has no editor.",
+    "With Ollama, nothing leaves your machine. A cloud backend sends the model your session details (tuning, scale, tempo, what's already there) along with your key.",
+    "Only the user running Blokkily can connect to the MCP socket. Set `BLOKKILY_MCP=0` to turn the server off.",
+    "Clip warping links the Rubber Band Library, so a binary built with it is subject to the GPL.",
+    "On Linux, plugin editor windows need X11, or Wayland with XWayland."
+   ],
+   "sources": [
+    "https://github.com/andrewfader/blokkily",
+    "https://raw.githubusercontent.com/andrewfader/blokkily/HEAD/README.md",
+    "https://raw.githubusercontent.com/andrewfader/blokkily/HEAD/docs/mcp.md",
+    "https://raw.githubusercontent.com/andrewfader/blokkily/HEAD/docs/llm-assistant.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "skills",
+   "repo": "github.com/vercel-labs/skills",
+   "stars": "34.8k",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT)",
+   "works_with": "OpenCode, Claude Code, Codex, Cursor and 75 more agents",
+   "short": "One `npx skills` command to install, update and remove AI skills from GitHub and other git hosts across all your coding agents.",
+   "what": "`skills` is the command line tool for the open agent skills ecosystem. It pulls `SKILL.md` folders from a GitHub repo, another git host, a download URL or a local path and installs them into each coding agent it finds, as symlinks to one copy or as separate copies. It also lists, searches, updates and removes skills, starts a new one from a template, and can hand a single skill to an agent without installing it.",
+   "who": "Anyone who uses AI skills with more than one coding agent, or who wants one command to keep them current. If you use a single agent and its own plugin system already does the job, you may not need it.",
+   "needs": [
+    "Node.js, to run `npx`",
+    "Your usual git, GitHub CLI or SSH login, only for private repos"
+   ],
+   "steps": [
+    {
+     "title": "Install a skill set",
+     "text": "It detects which coding agents you have and asks where to install. If it finds none, it asks you to pick.",
+     "code": "npx skills add vercel-labs/agent-skills"
+    },
+    {
+     "title": "See what's in a repo first",
+     "code": "npx skills add vercel-labs/agent-skills --list"
+    },
+    {
+     "title": "Install one skill without prompts",
+     "text": "`-g` installs to your user folder instead of the project, `-a` picks the agent and `-y` skips confirmations.",
+     "code": "npx skills add vercel-labs/agent-skills --skill frontend-design -g -a claude-code -y"
+    },
+    {
+     "title": "Keep them current",
+     "code": "npx skills list\nnpx skills update"
+    },
+    {
+     "title": "Try one without installing",
+     "text": "This writes the skill to a temporary folder and starts the agent with it.",
+     "code": "npx skills use vercel-labs/agent-skills --skill web-design-guidelines --agent claude-code"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `npx skills find typescript` to search for skills by keyword, or `npx skills find` on its own for an interactive search."
+   },
+   "watch": [
+    "It collects anonymous usage data by default. Set `DISABLE_TELEMETRY=1` or `DO_NOT_TRACK=1` to turn it off.",
+    "For private GitHub repos it tries your git credentials, then GitHub CLI, then SSH. The README says it never reads your stored GitHub CLI token.",
+    "Direct download URLs are capped at 10 MiB, 25 MiB extracted and 1,000 files. You can raise the limits with environment variables when you trust the source.",
+    "Without `-g`, skills go into the project folder, where they get committed and shared with your team."
+   ],
+   "sources": [
+    "https://github.com/vercel-labs/skills",
+    "https://raw.githubusercontent.com/vercel-labs/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "tweet-style-importer",
+   "repo": "github.com/yang0/handraw-style",
+   "stars": "5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT, with a request to keep the author's name and repo link)",
+   "works_with": "Codex, Claude Code, Cursor, WorkBuddy and OpenCode",
+   "short": "Takes an X post of AI art, saves its images and adds the look to the handraw-style library as a new numbered style with reference grids.",
+   "what": "This skill is part of handraw-style, a library of 330 numbered hand-drawn styles that turns a style number and a theme into image prompts. Give it a post link and it downloads the post and its full-size images, assigns the next style number, and makes a 1024×1024 four-grid reference, a clean 512×512 single image and a slot on a 16-grid gallery board. It then registers the style, marks it to always pass a reference image to the image model, and rebuilds and checks the gallery.",
+   "who": "People who use handraw-style and want to grow their copy of the library with styles they find on X. It works on the repo's own files, so it does nothing for you without that library. The SKILL.md is written in Chinese.",
+   "needs": [
+    "The handraw-style repo installed as a skill",
+    "Python, to run the import script",
+    "An AI coding agent",
+    "A link to an X post with images"
+   ],
+   "steps": [
+    {
+     "title": "Install the library",
+     "text": "The README's install is a request to your agent, which clones the repo and sets up the styles and assets: \"Install this Skill for me: https://github.com/yang0/handraw-style\"."
+    },
+    {
+     "title": "Import a post",
+     "text": "From the repo folder, run the script with the post's link.",
+     "code": "python scripts/import_tweet_style.py \"https://x.com/username/status/...\""
+    },
+    {
+     "title": "Name the style yourself (optional)",
+     "text": "`--name` sets an English style name and `--traits` a Chinese description of the style.",
+     "code": "python scripts/import_tweet_style.py \"https://x.com/username/status/...\" --name \"Custom Style Name\" --traits \"核心特征描述\""
+    },
+    {
+     "title": "Look at the gallery",
+     "text": "The script rebuilds the gallery and runs the library's checks. Open `skills/handdraw-style-prompter/gallery/index.html` to find the new style."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent, in the repo",
+    "text": "Give it a post link and ask it to add the style to the library. It reports the new number, author, style name and group, with a prompt template in Chinese and English."
+   },
+   "watch": [
+    "It downloads other people's images from X and keeps them in your library. Those images belong to the people who made them.",
+    "A post you already imported isn't fetched again. It checks `downloads/tweet_{id}/` first and returns the existing number.",
+    "It edits library files: the style table, `references/model_capabilities.json` and the gallery boards.",
+    "Neither the README nor the SKILL.md says how the script fetches posts or what it needs installed to do so."
+   ],
+   "sources": [
+    "https://github.com/yang0/handraw-style/tree/master/skills/tweet-style-importer",
+    "https://raw.githubusercontent.com/yang0/handraw-style/master/skills/tweet-style-importer/SKILL.md",
+    "https://raw.githubusercontent.com/yang0/handraw-style/HEAD/README.md",
+    "https://raw.githubusercontent.com/yang0/handraw-style/HEAD/README_en.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "deep-research",
+   "repo": "github.com/daymade/claude-code-skills",
+   "stars": "1.5k",
+   "level": "Advanced",
+   "cost": "Free and open source (MIT). Paid research providers or data plugins it coordinates cost extra",
+   "works_with": "Claude Code, through the daymade-skills plugin marketplace",
+   "short": "Runs research as a saved study, with parallel subagents, original sources behind every claim and a counter-review before the report.",
+   "what": "deep-research writes research reports with strict format control and claim-level citations. A lead agent breaks the question into tasks, sends subagents to gather evidence, opens the original source for every load-bearing claim and runs a counter-review before the report is final. Each study is saved in the project with its sources, claims and rejected leads so later questions can reuse it. It can also coordinate reports from several AI research products and keep their original outputs.",
+   "who": "People who write literature reviews or market and company research and want sources they can check. The process is heavy and keeps its own records, so it's overkill for a quick question.",
+   "needs": [
+    "Claude Code",
+    "A way for your agent to search and open sources",
+    "A writable project folder, where the study records are kept",
+    "Accounts with other research providers, only if you want several routes"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "text": "Inside Claude Code you can run `/plugin marketplace add daymade/claude-code-skills` instead.",
+     "code": "claude plugin marketplace add https://github.com/daymade/claude-code-skills"
+    },
+    {
+     "title": "Install the skill",
+     "text": "The marketplace is called `daymade-skills`. Using the repo path as the name fails.",
+     "code": "claude plugin install deep-research@daymade-skills"
+    },
+    {
+     "title": "Give it a brief",
+     "text": "Provide a report spec or template, then ask for a deep research report. Before it starts, it picks a topic mode (company or general research) and a depth (standard or lightweight)."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Hand it your report template and ask for a market or company research report. It tells you the mode it chose and the as-of date it is working to before it searches."
+   },
+   "watch": [
+    "It can send work to other AI research products and data plugins. The skill says to check per-call charges first, put off any paid route you haven't approved, and tell you if a charge happens anyway.",
+    "It is told to use paid data sources you give it, such as a Crunchbase Pro account, for research on other companies.",
+    "It writes study records, archived sources and notes into your project folder. Its local scripts only record and check files and make no provider calls."
+   ],
+   "sources": [
+    "https://github.com/daymade/claude-code-skills/tree/main/deep-research",
+    "https://raw.githubusercontent.com/daymade/claude-code-skills/main/deep-research/SKILL.md",
+    "https://raw.githubusercontent.com/daymade/claude-code-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "setup",
+   "repo": "github.com/nextwork-projects/ai-video-editor",
+   "stars": "26",
+   "level": "Beginner",
+   "cost": "Free and open source (MIT). Claude usage, optional keys and cloud renders can cost money",
+   "works_with": "Claude Code. Codex, Cursor, Gemini CLI and Copilot through `npx skills`",
+   "short": "Gets the cooked. AI video editor running: installs Python, ffmpeg, Node, a transcription model and the renderer, then saves your editing style.",
+   "what": "This is the setup skill for cooked., an editor that cuts your talking-head video in the style of 3 to 6 example videos. On a first run it opens the editor's window in your browser and installs everything in the background: Python packages, ffmpeg, Node, git, a free local transcription model and the Remotion renderer. Then it walks you through optional Gemini and ElevenLabs keys and cloud renders, and asks about your style once.",
+   "who": "Creators who want an AI editor for talking-head videos and don't mind a big install. It's written for people who may never have used a terminal. You need Claude Code, or another agent with a shell.",
+   "needs": [
+    "Claude Code and a Claude account (a paid plan or an API key)",
+    "A Mac, Windows or Linux computer with internet",
+    "About 1.5 GB of space for the tools, most of it the renderer",
+    "Optional: Gemini and ElevenLabs API keys",
+    "Optional: a Modal, GitHub or AWS account for cloud renders"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin",
+     "text": "Inside Claude Code. If it asks, type `/reload-plugins`.",
+     "code": "/plugin marketplace add nextwork-projects/ai-video-editor-cooked\n/plugin install ai-editor@nextwork"
+    },
+    {
+     "title": "Or use another agent",
+     "text": "The skills share code across the repo, so if your agent copies single skill folders, clone the whole repo too.",
+     "code": "npx skills add nextwork-projects/ai-video-editor-cooked"
+    },
+    {
+     "title": "Run setup",
+     "text": "Say \"set up the editor\", or press Start setup in the editor's window. It checks your computer and installs what's missing. Anything that needs your password, you paste into your own terminal."
+    },
+    {
+     "title": "Add keys, or skip them",
+     "text": "Never paste a key into the chat. Setup saves it from your clipboard and sends one free test request. Say \"finish setup\" later to add a key you skipped."
+    },
+    {
+     "title": "Open the editor",
+     "text": "When the doctor check prints `Ready.`, open the editor from any terminal:",
+     "code": "nextwork-editor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The editor window",
+    "text": "Paste 3 to 6 links to videos edited the same way and press Analyse this format. Then drop in your clip, or pick Use the sample take, and press Make my video."
+   },
+   "watch": [
+    "It installs a lot: about 1.5 GB, including a 500 MB transcription model and about 700 MB for the renderer.",
+    "Remotion is free for individuals and companies of up to 3 people. Bigger companies need a Remotion company licence.",
+    "Keys are kept in `~/.config/creator-teardown/.env`, readable only by you.",
+    "Everything runs on your computer unless you pick a cloud render. Modal's Starter plan includes $30 of free credit a month, and AWS Lambda costs money on your own account.",
+    "If your Mac has no Homebrew, setup gives you Homebrew's install script to run in your own terminal. Read it before you run it.",
+    "How much of your Claude plan a video uses hasn't been measured yet."
+   ],
+   "sources": [
+    "https://github.com/nextwork-projects/ai-video-editor/tree/main/plugins/ai-editor/skills/setup",
+    "https://raw.githubusercontent.com/nextwork-projects/ai-video-editor/main/plugins/ai-editor/skills/setup/SKILL.md",
+    "https://raw.githubusercontent.com/nextwork-projects/ai-video-editor/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "refresh-semantic-model",
+   "repo": "github.com/data-goblin/power-bi-agentic-development",
+   "stars": "1k",
+   "level": "Advanced",
+   "cost": "Free (GPL-3.0). Table and partition refreshes need Power BI Premium, Premium Per User or Fabric capacity",
+   "works_with": "Claude Code and GitHub Copilot CLI, through the plugin marketplace",
+   "short": "Has your agent trigger, watch, check and troubleshoot Power BI semantic model refreshes with the Fabric CLI and the Enhanced Refresh API.",
+   "what": "This skill teaches your agent to refresh a Power BI semantic model or dataset: the whole model, chosen tables or single partitions. It runs a baseline DAX query first, triggers the refresh with the `fab` CLI, watches the status and runs the query again to confirm new data arrived. It also covers the refresh types, two-phase refreshes for large models, cancelling, and the usual failures.",
+   "who": "Power BI and Fabric developers who look after model refreshes. You need workspace contributor access and the Fabric CLI, so it won't help if you only use the Power BI portal.",
+   "needs": [
+    "Workspace contributor permissions or higher",
+    "The Fabric CLI (`fab`), logged in",
+    "Premium, Premium Per User or Fabric capacity for table, partition and other enhanced options",
+    "`uv`, if you use the bundled refresh script"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "code": "claude plugin marketplace add data-goblin/power-bi-agentic-development"
+    },
+    {
+     "title": "Install the semantic-models plugin",
+     "text": "The skill ships inside it.",
+     "code": "claude plugin install semantic-models@power-bi-agentic-development"
+    },
+    {
+     "title": "Or use Copilot CLI",
+     "text": "Add the marketplace, then install a plugin by name with `copilot plugin install`.",
+     "code": "copilot plugin marketplace add data-goblin/power-bi-agentic-development"
+    },
+    {
+     "title": "Log in to Fabric",
+     "code": "fab auth login"
+    },
+    {
+     "title": "Ask for a refresh",
+     "text": "Your agent looks up the workspace and model IDs, takes a baseline, triggers the refresh and checks the result."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to run a two-phase refresh on a large model: a `dataOnly` refresh with `partialBatch`, then a `calculate` refresh, comparing row counts before and after."
+   },
+   "watch": [
+    "The README warns the plugins change weekly and versions 26.26 to 26.38 are a breaking transition. Pin 26.25 or earlier if you need the old structure.",
+    "Refreshes run against your real workspace. A `clearValues` refresh empties tables, and a `dataOnly` refresh clears calculated tables until a `calculate` refresh rebuilds them.",
+    "Pro capacity allows 8 refreshes a day and only full-model refreshes.",
+    "A refresh that succeeds with no new data usually means the upstream source or ETL hasn't run yet.",
+    "You may not copy these skills into your own products, courses or tools. Any reuse needs attribution and a link to the project."
+   ],
+   "sources": [
+    "https://github.com/data-goblin/power-bi-agentic-development/tree/main/plugins/semantic-models/skills/refresh-semantic-model",
+    "https://raw.githubusercontent.com/data-goblin/power-bi-agentic-development/main/plugins/semantic-models/skills/refresh-semantic-model/SKILL.md",
+    "https://raw.githubusercontent.com/data-goblin/power-bi-agentic-development/HEAD/README.md"
+   ]
+  }
+ ]
+}
