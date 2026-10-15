@@ -1,0 +1,359 @@
+{
+ "issue": 17,
+ "date": "15 Oct 2026",
+ "checked": "15 Oct 2026",
+ "blurb": "Every repo and skill from the 15 October issue that we could write up, with what each one does and the setup steps from its own README or SKILL.md.",
+ "intro": "Issue #17 had five repos and three AI skills, and six of them have guides here. Most are for people who build with coding agents: iFixAi audits an agent before you ship it, and CLI-Anything and Harness give your agent more to work with. Start with iFixAi's no-key mock run, or install spotatui if you just want music in your terminal.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "iFixAi",
+   "repo": "github.com/ifixai-ai/iFixAi",
+   "stars": "28k",
+   "level": "Intermediate",
+   "cost": "Free and open source (Apache 2.0). You pay your own model providers for the agent under test and the judge",
+   "works_with": "Any terminal or CI, plus a plugin for Claude Code and Codex and a slash command for Cursor, VS Code, Windsurf, Cline, Continue, Gemini and Zed",
+   "short": "Runs a quick audit of your AI agent and grades it A to F on whether it sticks to its job, its permissions and your policies.",
+   "what": "iFixAi sends a set of inspections to your agent or model and has a second model grade the answers. The default run has 10 checks, such as whether a role only uses the tools it's allowed and whether the agent admits a failure. You get a letter grade plus JSON and Markdown reports in `./ifixai-results/`, and `--full-run` runs all 60 inspections.",
+   "who": "People building agents that act for users, such as support or ops agents, who want a repeatable check before shipping. It gives the fullest picture when you point it at your deployed agent's HTTP endpoint. If you only chat with a model, you can skip it.",
+   "needs": [
+    "Python 3.10 or newer",
+    "An API key for the model or agent you're testing",
+    "A key from a second provider if you want a grade you can cite, because the judge has to come from a different vendor",
+    "`uv`, if you use the scaffolded slash command"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI",
+     "text": "Swap `openai` for the provider you'll test, such as `anthropic` or `gemini`.",
+     "code": "pip install \"ifixai[openai]\""
+    },
+    {
+     "title": "Run the setup wizard",
+     "text": "Pick the provider, model, judge and suite with the arrow keys. It finds API keys already in your environment and writes `ifixai.yaml`.",
+     "code": "ifixai setup"
+    },
+    {
+     "title": "Run the audit",
+     "text": "No flags needed. Reports land in `./ifixai-results/`.",
+     "code": "ifixai run"
+    },
+    {
+     "title": "Or try it with no keys first",
+     "text": "This uses a built-in mock. Expect a failing scorecard: the default fixture has defects planted on purpose so you can see what failures look like.",
+     "code": "ifixai run --provider mock --api-key not-used --eval-mode self"
+    },
+    {
+     "title": "Or add it to Claude Code",
+     "text": "Then ask \"run iFixAi on my setup\" or type `/ifixai:ifixai`.",
+     "code": "/plugin marketplace add ifixai-ai/iFixAi\n/plugin install ifixai@ifixai-community"
+    },
+    {
+     "title": "Or add a slash command to another agent",
+     "text": "Use your agent's slug, such as `claude`, `codex`, `vscode` or `zed`. Then run `/ifixai-skill` in that agent.",
+     "code": "uvx ifixai install --agents cursor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Point it at your deployed agent: `ifixai run --provider http --endpoint <agent-url> --grounding sut`."
+   },
+   "watch": [
+    "Each run calls both your agent and a judge model, so it costs money. The README puts a full 60-inspection run at roughly $10 to $18 in judge calls at OpenRouter list prices, and the default 10-check run at about a sixth of that. The agent under test is billed separately.",
+    "A grade is only citable when a different vendor's model does the judging. With one key, add `--eval-mode self` and treat the result as a smoke test.",
+    "If you run without your own `--fixture`, the bundled defects show up as failures on your scorecard.",
+    "It sends pseudonymous usage telemetry. The README says it never sends your code, prompts, findings or IP address. Turn it off with `--no-telemetry`, `IFIXAI_TELEMETRY=0` or `DO_NOT_TRACK=1`.",
+    "Keep `ifixai.yaml` out of version control. It stores the name of your key's environment variable, not the key itself."
+   ],
+   "sources": [
+    "https://github.com/ifixai-ai/iFixAi",
+    "https://raw.githubusercontent.com/ifixai-ai/iFixAi/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "CLI-Anything",
+   "repo": "github.com/HKUDS/CLI-Anything",
+   "stars": "52.9k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). Building a new CLI uses your coding agent's model",
+   "works_with": "Claude Code, Codex, Cursor, OpenClaw, Pi, OpenCode, Hermes, GitHub Copilot CLI and other agents that read skills",
+   "short": "Gives your coding agent a command line for apps like GIMP, Blender or LibreOffice, from a ready-made hub or generated from source.",
+   "what": "CLI-Anything wraps existing software in a command line that an agent can drive, with JSON output and an interactive mode. CLI-Hub is a package manager for the ready-made CLIs people have already built. When the app you want isn't there, the plugin runs a 7-phase pipeline that reads the app's source code and builds, tests and installs a new CLI for it.",
+   "who": "People who want their agent to work in desktop or self-hosted apps without clicking through a GUI. Generating a new CLI needs the app's source code and a strong model. If you only want an existing CLI, the hub is enough.",
+   "needs": [
+    "Python 3.10 or newer",
+    "The app the CLI controls, such as GIMP or Blender, installed separately",
+    "A coding agent, if you want to generate new CLIs",
+    "On Windows with Claude Code: Git for Windows or WSL, so `bash` and `cygpath` are available"
+   ],
+   "steps": [
+    {
+     "title": "Install CLI-Hub",
+     "code": "pip install cli-anything-hub"
+    },
+    {
+     "title": "Find and install a CLI",
+     "text": "`cli-hub search <query>` searches by keyword, and `cli-hub info gimp` shows details.",
+     "code": "cli-hub list\ncli-hub install gimp"
+    },
+    {
+     "title": "Let your agent use the hub",
+     "text": "This installs the CLI-Hub meta-skill so your agent can find and install CLIs on its own.",
+     "code": "npx skills add HKUDS/CLI-Anything --skill cli-hub-meta-skill -g -y"
+    },
+    {
+     "title": "To build new CLIs in Claude Code, add the marketplace",
+     "code": "/plugin marketplace add HKUDS/CLI-Anything"
+    },
+    {
+     "title": "Install the plugin",
+     "code": "/plugin install cli-anything"
+    },
+    {
+     "title": "Generate a CLI",
+     "text": "Point it at the app's source folder or repo. Run `/cli-anything:refine ./gimp` afterwards to fill gaps.",
+     "code": "/cli-anything ./gimp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "With the meta-skill installed, ask: \"Find appropriate CLI software in CLI-Hub and complete the task: ...\" and add your task."
+   },
+   "watch": [
+    "Installing a CLI doesn't install the app behind it. You still need GIMP, Blender or whichever program it drives.",
+    "The README says generating a CLI needs a frontier-class model. Smaller models may produce incomplete CLIs that need manual fixes.",
+    "It works from source code. For apps that only ship compiled binaries, the README says quality drops a lot.",
+    "One run may not cover everything. The README suggests running refine one or more times.",
+    "Generated CLIs install onto your PATH with `pip install -e .`, and your agent runs them as commands on your machine."
+   ],
+   "sources": [
+    "https://github.com/HKUDS/CLI-Anything",
+    "https://raw.githubusercontent.com/HKUDS/CLI-Anything/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "spotatui",
+   "repo": "github.com/LargeModGames/spotatui",
+   "stars": "",
+   "level": "Beginner",
+   "cost": "Free to install. Spotify needs a Premium account and Qobuz a paid account; the other sources need no paid account",
+   "works_with": "macOS, Linux, WSL and Windows, in the terminal or a desktop app in preview",
+   "short": "A fast music player for your terminal that plays Spotify, local files, internet radio, YouTube, Qobuz and Subsonic in one queue.",
+   "what": "spotatui is a Rust music player for the terminal, with a desktop app in preview. It started as a fork of spotify-tui and logs in to Spotify with its own built-in client, so you don't need a developer app or client ID. It has synced lyrics, an audio visualizer, playlist sync, Lua plugins, a CLI, and an AI DJ that can run in the app or through your coding agent over MCP.",
+   "who": "Anyone who lives in the terminal and wants music without switching windows. Spotify is optional, since six other sources work without it. If you're happy with the Spotify app, you can skip it.",
+   "needs": [
+    "Spotify Premium, if you want Spotify",
+    "`yt-dlp` on your PATH, for YouTube",
+    "A paid Qobuz account, or a Subsonic or Navidrome server account, for those sources",
+    "macOS and the Music app, for Apple Music"
+   ],
+   "steps": [
+    {
+     "title": "Install on macOS, Linux or WSL",
+     "text": "This pipes a script from the web into your shell.",
+     "code": "curl -fsSL https://spotatui.com/install.sh | bash"
+    },
+    {
+     "title": "Or install on Windows",
+     "code": "winget install spotatui"
+    },
+    {
+     "title": "Or install with Rust",
+     "text": "This build includes Spotify only unless you add the extra features listed in the installation guide.",
+     "code": "cargo install --locked spotatui"
+    },
+    {
+     "title": "Start it",
+     "text": "The first launch asks which sources you want. If you pick Spotify, it shows a code and opens Spotify's pairing page so you can confirm.",
+     "code": "spotatui"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Press `/` to search, choose the Songs panel with the arrow keys, then press `Enter` twice to play a track. `?` lists every key."
+   },
+   "watch": [
+    "The main install pipes a script from spotatui.com straight into `bash`. Read the script first.",
+    "The terminal app updates itself. If a package manager installed it, set `behavior.disable_auto_update: true`.",
+    "The README links a privacy policy that lists the data spotatui sends and how to turn each part off."
+   ],
+   "sources": [
+    "https://github.com/LargeModGames/spotatui",
+    "https://raw.githubusercontent.com/LargeModGames/spotatui/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "harness",
+   "repo": "github.com/autonomous-ai/openharness",
+   "stars": "1.2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Each harness it starts spends your agent's tokens",
+   "works_with": "Claude Code and Codex, with the Harness app on macOS or Linux",
+   "short": "Lets your coding agent start other agents, like Codex for a second opinion, in sessions you can watch and join in the Harness app.",
+   "what": "Harness runs coding agents in their own sessions, called harnesses, and shows each one in its desktop, web and phone apps. This skill teaches your agent the `harness` commands to start a harness, wait for it, read its answer and close it. The skill tells the agent to use this only for parallel work, long jobs, a second model's view or work in its own folder.",
+   "who": "People who already run several coding agents and want one to hand work to another, such as a Codex review of a Claude Code branch. If you use a single agent for quick tasks, you don't need it.",
+   "needs": [
+    "The Harness app or CLI on your machine",
+    "The agent you want to start, such as `claude` or `codex`, installed and signed in to its own provider",
+    "On Linux, tmux and curl. The installer adds them with `apt-get`, which asks for your password"
+   ],
+   "steps": [
+    {
+     "title": "Install Harness",
+     "text": "The skill says this needs no account. It pipes a script from the web into your shell.",
+     "code": "curl -fsSL https://harness.autonomous.ai/cli/install.sh | bash"
+    },
+    {
+     "title": "Start it on this computer",
+     "code": "harness start"
+    },
+    {
+     "title": "Add the marketplace in Claude Code",
+     "code": "claude plugin marketplace add autonomous-ai/openharness --sparse .claude-plugin plugins"
+    },
+    {
+     "title": "Install the skill",
+     "code": "claude plugin install harness@openharness"
+    },
+    {
+     "title": "Let agents start agents",
+     "text": "Turn on \"Agents can start other agents\" in Settings, Experimental. Until you do, `harness new` refuses. The command form needs you to be signed in.",
+     "code": "harness settings agents-start-agents on"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask your agent to get a second opinion from Codex: start a harness named `reviewer` that reviews the branch against main without editing files, wait for it, read its findings, then close it."
+   },
+   "watch": [
+    "The install pipes a script from harness.autonomous.ai into `bash`. Read the script first.",
+    "Every harness your agent starts spends your tokens.",
+    "Once Harness runs, it adds its commands to Claude Code's and Codex's permission rules so they run without asking, and Codex runs them outside its sandbox.",
+    "Agents may only give work to or close harnesses they started. The limits are 4 live harnesses and 20 starts in 10 minutes.",
+    "The skill tells agents never to answer a harness's permission prompts or to ask one to publish, deploy, delete or push. Those stay with you.",
+    "`harness login` is only needed to reach your other machines or your phone."
+   ],
+   "sources": [
+    "https://github.com/autonomous-ai/openharness/tree/main/plugins/harness/skills/harness",
+    "https://raw.githubusercontent.com/autonomous-ai/openharness/main/plugins/harness/skills/harness/SKILL.md",
+    "https://raw.githubusercontent.com/autonomous-ai/openharness/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "geometry-script",
+   "repo": "github.com/carson-katri/geometry-script",
+   "stars": "340",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, with Blender 5.2 or newer",
+   "short": "Has your agent build, edit and debug Blender geometry node trees, shaders and materials as Python with the Geometry Script add-on.",
+   "what": "Geometry Script is a Blender extension that turns a decorated Python function into a Geometry Nodes group, with every node available as a typed function. The skill teaches your agent to write those scripts, run them and fix them from the short error report. It also covers shader groups, materials, worlds and compositor node groups.",
+   "who": "Blender users whose node trees have grown too big to manage by hand, or who want an agent to generate geometry from a description. You need Blender 5.2 or newer. If you don't use Blender, skip it.",
+   "needs": [
+    "Blender 5.2 or newer",
+    "The Geometry Script extension installed in Blender",
+    "Claude Code",
+    "Optional: Blender's MCP server, so the agent can run scripts in your open Blender"
+   ],
+   "steps": [
+    {
+     "title": "Install the Blender extension",
+     "text": "Drag the install box for your Blender version from the README into Blender. Or download the matching ZIP from the `nightly` release and use Preferences, Get Extensions, Install from Disk."
+    },
+    {
+     "title": "Install the skill in Claude Code",
+     "code": "/plugin install geometry-script --marketplace carson-katri/geometry-script"
+    },
+    {
+     "title": "On Claude Code before 2.1.275, add the marketplace first",
+     "code": "/plugin marketplace add carson-katri/geometry-script\n/plugin install geometry-script@geometry-script"
+    },
+    {
+     "title": "Keep it current",
+     "text": "Or turn on auto-update for the marketplace in `/plugin`.",
+     "code": "/plugin marketplace update geometry-script"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to build a node tree that scatters small cubes on a grid, attach it to an object, and check the vertex and instance counts in the report."
+   },
+   "watch": [
+    "The skill runs scripts through Blender's MCP server when it's connected, or in background Blender otherwise. Either way your agent runs Python inside Blender.",
+    "Installing from the drag box asks to allow online access in Blender and to add the Geometry Script repository.",
+    "Blender quietly converts some socket types, so a wrong link can still build. Check the report's stats."
+   ],
+   "sources": [
+    "https://github.com/carson-katri/geometry-script/tree/main/skills/geometry-script",
+    "https://raw.githubusercontent.com/carson-katri/geometry-script/main/skills/geometry-script/SKILL.md",
+    "https://raw.githubusercontent.com/carson-katri/geometry-script/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "memwal",
+   "repo": "github.com/MystenLabs/MemWal",
+   "stars": "117",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "TypeScript apps, the Vercel AI SDK, and OpenClaw or NemoClaw through a plugin",
+   "short": "Helps your agent add Walrus Memory to an app, so an AI agent keeps memory that carries across apps, sessions and workflows.",
+   "what": "Walrus Memory is an SDK for agent memory. It stores memories on Walrus, encrypts them with SEAL, records ownership on the Sui blockchain and finds them again by meaning. The skill is a single-file reference covering installing, configuring, the API and troubleshooting, so your agent can wire it into your app.",
+   "who": "Developers building agents in TypeScript who want memory that lives outside one app and that they control. The SKILL.md says it's not for throwaway chat context or large files. Walrus Memory is in beta.",
+   "needs": [
+    "Node.js 18 or newer and pnpm",
+    "A delegate key and an account ID, generated at memory.walrus.xyz",
+    "Optional: `ai` and `zod` for the Vercel AI SDK integration"
+   ],
+   "steps": [
+    {
+     "title": "Install the SDK",
+     "code": "pnpm add @mysten-incubation/memwal"
+    },
+    {
+     "title": "Get your credentials",
+     "text": "Generate a delegate key and account ID at memory.walrus.xyz, or staging.memory.walrus.xyz for testing. Keep them in server environment variables."
+    },
+    {
+     "title": "Give your agent the skill",
+     "text": "The README points agents to `SKILL.md` in the repo root as the full integration guide. Share it with your coding agent."
+    },
+    {
+     "title": "Create a client",
+     "code": "import { MemWal } from \"@mysten-incubation/memwal\";\n\nconst memwal = MemWal.create({\n  key: process.env.MEMWAL_PRIVATE_KEY!,\n  accountId: process.env.MEMWAL_ACCOUNT_ID!,\n  serverUrl: process.env.MEMWAL_SERVER_URL ?? \"https://relayer.memory.walrus.xyz\",\n  namespace: \"my-app\",\n});"
+    },
+    {
+     "title": "Or use it with OpenClaw",
+     "text": "Then add the plugin's config to `~/.openclaw/openclaw.json` as the SKILL.md shows.",
+     "code": "openclaw plugins install @mysten-incubation/oc-memwal"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your code",
+    "text": "Store a fact with `rememberAndWait(\"User prefers dark mode and works in TypeScript.\")`, then call `recall({ query: \"What are the user's preferences?\" })`."
+   },
+   "watch": [
+    "Walrus Memory is in beta and still changing.",
+    "The delegate key is a private key. The SKILL.md says it belongs on the server only, never in browser code.",
+    "Your text goes to a relayer, which embeds, encrypts and uploads it. Use staging for prototypes and production for real data, and don't mix their credentials.",
+    "Forgetting a memory removes it from search, but the stored blob stays on Walrus until its storage period ends.",
+    "`remember()` always adds a new entry, so saving the same text twice gives two results. Recall has no relevance cutoff unless you set `maxDistance`."
+   ],
+   "sources": [
+    "https://github.com/MystenLabs/MemWal/tree/dev",
+    "https://raw.githubusercontent.com/MystenLabs/MemWal/dev/SKILL.md",
+    "https://raw.githubusercontent.com/MystenLabs/MemWal/dev/README.md"
+   ]
+  }
+ ]
+}
