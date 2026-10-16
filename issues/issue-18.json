@@ -1,0 +1,147 @@
+{
+ "issue": 18,
+ "date": "16 Oct 2026",
+ "checked": "16 Oct 2026",
+ "blurb": "The repos from the 16 October issue that we could write up, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #18 had five repos and no AI skills, and three of them have guides here. Two are for Claude Code users: Anthropic's official plugin directory and Ruflo, a much bigger harness for running teams of agents. Start with the plugin directory if you use Claude Code, or grab flipflop if you just want to send files between your own devices.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Claude Code Plugins Directory",
+   "repo": "github.com/anthropics/claude-plugins-official",
+   "stars": "39.7k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code",
+   "short": "Anthropic's curated marketplace of Claude Code plugins, which you can browse and install from inside Claude Code.",
+   "what": "This repo is a plugin marketplace for Claude Code. Plugins in `/plugins` are built and maintained by Anthropic, and the ones in `/external_plugins` come from partners and the community. A plugin can bundle slash commands, agents, skills and MCP server settings.",
+   "who": "Claude Code users who want vetted add-ons in one place. If you use another coding agent, it won't help you, since the install runs through Claude Code's plugin system.",
+   "needs": [
+    "Claude Code"
+   ],
+   "steps": [
+    {
+     "title": "Browse the directory",
+     "text": "Inside Claude Code, open `/plugin` and go to Discover to look through what's available."
+    },
+    {
+     "title": "Install a plugin by name",
+     "text": "Replace `{plugin-name}` with the plugin you picked.",
+     "code": "/plugin install {plugin-name}@claude-plugins-official"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Open `/plugin`, go to Discover, and install one plugin that fits your work."
+   },
+   "watch": [
+    "The README tells you to trust a plugin before you install, update or use it. Anthropic says it doesn't control the MCP servers, files or other software inside plugins and can't verify that they work as intended or won't change.",
+    "Third-party plugins live in `/external_plugins`. Check each plugin's homepage before installing one."
+   ],
+   "sources": [
+    "https://github.com/anthropics/claude-plugins-official",
+    "https://raw.githubusercontent.com/anthropics/claude-plugins-official/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Ruflo",
+   "repo": "github.com/ruvnet/ruflo",
+   "stars": "75.4k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex and other clients that support MCP",
+   "short": "A harness around Claude Code and Codex that adds agent swarms, memory across sessions and a console to watch runs and costs.",
+   "what": "Ruflo, formerly Claude Flow, wraps your coding agent with extra agents, swarm coordination, memory and hooks. The full CLI install adds 98 agents, 60+ commands, 30 skills, an MCP server, hooks and a daemon to your project. A lighter path installs only the Claude Code plugins you choose, and a console shows workflows, agents, tokens and cost.",
+   "who": "People who already work daily in Claude Code or Codex and want several agents coordinating on bigger jobs. It changes a lot about how your agent behaves, so if you want a simple setup, try a single plugin first or skip it.",
+   "needs": [
+    "Claude Code 2.1.287 or later for the plugin path",
+    "`npx`, for the CLI install and the MCP server",
+    "On Windows, Git-Bash, WSL or MSYS for the one-line installer, or use the `npx` command instead"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace in Claude Code",
+     "text": "Run these inside Claude Code. This is the lite path, with no files written to your workspace.",
+     "code": "/plugin marketplace add ruvnet/ruflo"
+    },
+    {
+     "title": "Install core, the console and mods",
+     "code": "/plugin install ruflo-core@ruflo\n/plugin install ruflo-console@ruflo\n/plugin install ruflo-mods@ruflo\n/reload-plugins"
+    },
+    {
+     "title": "Open the console",
+     "code": "/ruflo"
+    },
+    {
+     "title": "Or do the full install in your project",
+     "text": "The setup wizard runs the same on every platform. It adds `.claude/`, `.claude-flow/`, `CLAUDE.md`, helpers and settings to your project.",
+     "code": "npx ruflo@latest init wizard"
+    },
+    {
+     "title": "Connect another MCP client",
+     "text": "For Codex or another client with local stdio MCP servers, set the command to `npx` with the arguments `[\"-y\", \"ruflo@latest\", \"mcp\", \"start\"]`. The equivalent command is below.",
+     "code": "npx -y ruflo@latest mcp start"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The Ruflo console in Claude Code",
+    "text": "In `/ruflo`, set Settings, Claude control to write + ask, then ask: \"Create a mission to add a dark mode toggle. Show me the mission and its status.\" Approve the create action when it asks."
+   },
+   "watch": [
+    "Mods run with your account's permissions and aren't sandboxed. The README says to read their code before installing.",
+    "The full CLI install writes files and hooks into your project, and the hooks route tasks in the background.",
+    "Console control lets the AI run console actions. The default is read + ask. Network, spending and destructive actions still need your confirmation in auto mode.",
+    "The README also offers `curl -fsSL https://cdn.jsdelivr.net/gh/ruvnet/ruflo@main/scripts/install.sh | bash`. That pipes a download straight into your shell, so read the script first.",
+    "Federation lets your agents exchange work with agents on other machines. The README says PII is stripped before anything leaves your node."
+   ],
+   "sources": [
+    "https://github.com/ruvnet/ruflo",
+    "https://raw.githubusercontent.com/ruvnet/ruflo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "flipflop",
+   "repo": "github.com/andunieee/flipflop",
+   "stars": "",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Linux, macOS, Windows and Android",
+   "short": "Pairs your devices once, then lets any of them send files, links or text to the others over Bluetooth, LAN or the internet.",
+   "what": "flipflop sets up a trusted tunnel between two or more devices. After that, one device can send files to another at any time, nearby or far away. It's built on Iroh.",
+   "who": "Anyone who moves files, links or notes between their own devices, or a family's devices. There's no iOS build, so iPhone users can't use it.",
+   "needs": [
+    "A Linux, macOS, Windows or Android device on each end",
+    "For building from source: Rust with `cargo`, and for Android, `just`, `cargo-apk`, the Android SDK and NDK"
+   ],
+   "steps": [
+    {
+     "title": "Download a build",
+     "text": "Get the latest Linux, macOS or Windows build or the Android APK from the releases page at github.com/andunieee/flipflop/releases/latest. On Windows, run the executable directly or use the `-setup.exe` installer."
+    },
+    {
+     "title": "Or build it yourself",
+     "text": "The first line builds the desktop app and the second installs on Android.",
+     "code": "cargo run --release          # desktop\njust android-install         # Android (needs cargo-apk, Android SDK + NDK)"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Two of your devices",
+    "text": "Set up a tunnel between your laptop and your phone, then send a link or some plain text from one to the other."
+   },
+   "watch": [
+    "Windows shows a \"Windows protected your PC\" warning when you run it, according to the README.",
+    "There's no iOS version.",
+    "The README is short and doesn't explain pairing or security in detail, so expect to work some things out in the app."
+   ],
+   "sources": [
+    "https://github.com/andunieee/flipflop",
+    "https://raw.githubusercontent.com/andunieee/flipflop/HEAD/README.md"
+   ]
+  }
+ ]
+}
