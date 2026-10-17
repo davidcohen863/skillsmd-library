@@ -1,0 +1,340 @@
+{
+ "issue": 19,
+ "date": "17 Oct 2026",
+ "checked": "17 Oct 2026",
+ "blurb": "Every repo and skill from the 17 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #19 had two repos and four AI skills. Job seekers should start with AI Job Search, which turns your coding agent into an application assistant on your own machine. If you write for the web, try ai-seo; if you make slides or docs, diagram-design is the one to install first.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "AI Job Search",
+   "repo": "github.com/MadsLorentzen/ai-job-search",
+   "stars": "49k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Claude Code has no free tier, so you need a Claude Pro, Max or Team plan or Anthropic API credits",
+   "works_with": "Claude Code. The portal search skills also work in Codex, Antigravity and Gemini CLI through `AGENTS.md`",
+   "short": "A job search kit for Claude Code that scores postings against your profile, tailors your CV and cover letter, and preps you for interviews.",
+   "what": "You copy the repo, fill in your profile, and run slash commands in Claude Code. `/scrape` searches job portals and sorts matches by fit. `/apply` scores a posting, drafts a LaTeX CV and cover letter, has a second agent review them, then compiles and checks the PDFs. More commands handle interview prep, follow-ups and a tracker dashboard.",
+   "who": "Job seekers who are happy working in a terminal and want tailored applications without writing each one from scratch. The bundled portal searches are mostly Danish, so outside Denmark you'll lean on the LinkedIn and freehire searches or build your own with `/add-portal`. If you don't want to install LaTeX or pay for Claude Code, skip it.",
+   "needs": [
+    "Claude Code with a paid Claude plan or Anthropic API credits",
+    "Python 3.10 or newer",
+    "Bun, for the job search tools",
+    "A LaTeX install with `lualatex` and `xelatex`, such as TeX Live, MacTeX, TinyTeX or MiKTeX",
+    "Optional: `pip install pypdf` for the CV's ATS check"
+   ],
+   "steps": [
+    {
+     "title": "Get your own copy",
+     "text": "Forks of this repo are always public. For your own job search, the README says to make a private repo with this one as `upstream` instead (SETUP.md section 8 shows how). Fork only if you plan to contribute.",
+     "code": "gh repo fork MadsLorentzen/ai-job-search --clone"
+    },
+    {
+     "title": "Install the job search tools",
+     "text": "Run this inside the repo folder. On Windows use `python tools\\install_portal_clis.py`. Add `--dry-run` to see what it would install first.",
+     "code": "python3 tools/install_portal_clis.py"
+    },
+    {
+     "title": "Set up your profile",
+     "text": "Start Claude Code with `claude`, then run this. It reads your `documents/` folder, takes a CV pasted into the chat, or interviews you.",
+     "code": "/setup"
+    },
+    {
+     "title": "Search for jobs",
+     "text": "Use `/rank` afterwards if you get more results than you want to read.",
+     "code": "/scrape"
+    },
+    {
+     "title": "Apply to a job",
+     "text": "If the site blocks the fetch, paste the full job description after `/apply` instead.",
+     "code": "/apply https://jobindex.dk/job/1234567"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "After `/setup`, run `/scrape`, pick a match, then run `/apply` on it to get a tailored CV and cover letter."
+   },
+   "watch": [
+    "`/setup` writes your name, contact details, work history and salary expectations into tracked files. A fork is always public, so use a private repo.",
+    "Job postings come in from outside. The workflow is told to ignore instructions in them, but the README says this is not a sandbox, so check what was written before you send anything.",
+    "The `linkedin-search` tool uses LinkedIn's public job endpoints. The README says automated access breaks LinkedIn's terms, so it's for personal use at low volume.",
+    "Portal tools you copy from other people's forks run pre-approved on your machine. The README says to read all their code first.",
+    "`/gmail-sync` reads your Gmail through a connector and `/notion-sync` writes to Notion. Both are optional, and `/gmail-sync` asks before it writes anything.",
+    "The README says the project has no crypto token or paid sponsorship. Treat any such claim as a scam."
+   ],
+   "sources": [
+    "https://github.com/MadsLorentzen/ai-job-search",
+    "https://raw.githubusercontent.com/MadsLorentzen/ai-job-search/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Android skills",
+   "repo": "github.com/android/skills",
+   "stars": "8.2k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "Gemini and Antigravity by default, plus Claude Code and Codex as a plugin",
+   "short": "The official Android team's AI skills, which teach your coding agent Android patterns where models tend to get things wrong.",
+   "what": "This repo from the Android GitHub organisation holds skills: markdown files that give an agent the steps for a specific Android task, based on guidance from developer.android.com. The team focuses on areas where their evaluations show models do badly, and skips basics like plain Jetpack Compose that models already handle. Your agent picks a skill up by itself when your request matches it.",
+   "who": "Android developers who use a coding agent on their apps. If you don't build for Android, there's nothing here for you.",
+   "needs": [
+    "The Android CLI, for the first install route",
+    "Or Claude Code or Codex, for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "Install every skill with the Android CLI",
+     "text": "This installs into the folders of every agent it finds. Without `--all` you only get the `android-cli` skill. Use `--agent` to name agents yourself.",
+     "code": "android skills add --all"
+    },
+    {
+     "title": "Or install one skill into this project",
+     "code": "android skills add r8-analyzer --project=."
+    },
+    {
+     "title": "Or install as a Claude Code plugin",
+     "code": "/plugin install android-skills --marketplace android/skills"
+    },
+    {
+     "title": "Or install as a Codex plugin",
+     "text": "Run the second command after this one: `codex plugin add android-skills@android-skills`.",
+     "code": "codex plugin marketplace add android/skills"
+    },
+    {
+     "title": "Keep them current",
+     "text": "To update one skill, name it, as in `android skills update wear-compose-m3`.",
+     "code": "android skills update --all"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Make my app UI edge-to-edge.\""
+   },
+   "watch": [
+    "If you have no agent folders and name no agent, the skills go into `~/.gemini/antigravity/skills` for Gemini and Antigravity.",
+    "The README reminds you that AI makes mistakes, so check what the agent changes.",
+    "The repo doesn't take public contributions. Send feedback and skill requests as GitHub issues."
+   ],
+   "sources": [
+    "https://github.com/android/skills",
+    "https://raw.githubusercontent.com/android/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ai-seo",
+   "repo": "github.com/coreyhaines31/marketingskills",
+   "stars": "54.9k",
+   "level": "Beginner",
+   "cost": "Free (MIT). The paid monitoring tools it mentions are optional",
+   "works_with": "Claude Code, Codex, Cursor, Windsurf and any agent that supports the Agent Skills spec",
+   "short": "Helps your agent make your content easier for AI search engines to find, quote and cite in their answers.",
+   "what": "This skill turns your agent into an AI search adviser. It starts with an audit: check your key queries in Google AI Overviews, ChatGPT and Perplexity, see who gets cited, and test your pages for clear answer blocks, sources, schema and crawler access. Then it works through structure, authority and presence on third-party sites, with notes on files like `llms.txt`.",
+   "who": "Marketers, founders and writers who want their site to show up in AI answers. It's part of a 50-skill marketing pack, so you can install just this one. If you only need a classic technical SEO audit, the pack's `seo-audit` skill is the better fit.",
+   "needs": [
+    "Node.js, to run `npx skills`, or Claude Code or Codex for the plugin route"
+   ],
+   "steps": [
+    {
+     "title": "Install just this skill",
+     "text": "The CLI asks which agents to install into. To get the whole pack, leave off `--skill ai-seo`.",
+     "code": "npx skills add coreyhaines31/marketingskills --skill ai-seo"
+    },
+    {
+     "title": "If you run it from inside Claude Code",
+     "text": "Run from inside an agent session, the CLI may only install to `.agents/skills/`, which Claude Code doesn't read. Name the agent instead.",
+     "code": "npx skills add coreyhaines31/marketingskills -a claude-code"
+    },
+    {
+     "title": "Or install the pack as a Claude Code plugin",
+     "text": "Then run `/plugin install marketing-skills`. This installs all the marketing skills.",
+     "code": "/plugin marketplace add coreyhaines31/marketingskills"
+    },
+    {
+     "title": "Add your product context (optional)",
+     "text": "The skill first reads `.agents/product-marketing.md` if it exists. The pack's `product-marketing` skill creates it, so the agent asks fewer questions."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"How do I show up in AI answers? Audit our site's AI visibility for our top queries.\""
+   },
+   "watch": [
+    "The stats in the skill change fast. The skill itself says to re-check them before quoting them to a client.",
+    "It points to paid tools such as Semrush, Ahrefs, Otterly and Peec AI for tracking. The skill also gives a manual monthly check if you don't want any.",
+    "The README lists paid partners who fund the library. It says they don't change what the core skills recommend."
+   ],
+   "sources": [
+    "https://github.com/coreyhaines31/marketingskills/tree/main/skills/ai-seo",
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/main/skills/ai-seo/SKILL.md",
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "diagram-design",
+   "repo": "github.com/cathrynlavery/diagram-design",
+   "stars": "56k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, GitHub Copilot, Gemini CLI, Cline, Windsurf, Amp and other Agent Skills hosts",
+   "short": "Has your agent draw clean, on-brand diagrams as a single HTML file, from flowcharts and timelines to org charts and Venn diagrams.",
+   "what": "Diagram Design gives your agent a design system and 45 diagram types, with a reference file for each. You describe the diagram, the agent picks a type, states its plan, and writes one self-contained HTML file with inline SVG that opens in a browser. It can also pull your colours and fonts from your website, and redraw existing draw.io, Mermaid and Excalidraw files.",
+   "who": "Anyone who wants diagrams for a blog post, a deck or a doc that look like a designer made them. The README says Mermaid is still the better fit for diagrams that live in Git and change often, because this output has no text source to diff.",
+   "needs": [
+    "Node.js, to run `npx skills`, or Claude Code, Codex or Copilot for the plugin route",
+    "For PNG export only: Python with Playwright and Chromium"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "This works for most Agent Skills hosts. Update it later with `npx skills update diagram-design`.",
+     "code": "npx skills add cathrynlavery/diagram-design"
+    },
+    {
+     "title": "Or add the Claude Code marketplace",
+     "text": "Then run `/plugin install diagram-design@diagram-design`. The plugin also adds the slash commands for export, import and profiles.",
+     "code": "/plugin marketplace add cathrynlavery/diagram-design"
+    },
+    {
+     "title": "Or install it in Codex",
+     "text": "Then run `codex plugin add diagram-design@diagram-design`.",
+     "code": "codex plugin marketplace add cathrynlavery/diagram-design"
+    },
+    {
+     "title": "Match your brand (optional)",
+     "text": "On the first diagram in a project, the skill asks whether to customise the style. Ask your agent: \"Onboard diagram-design to https://yoursite.com\". It shows the proposed colours and fonts before it writes them."
+    },
+    {
+     "title": "Set up PNG export (optional)",
+     "text": "SVG export needs nothing extra. PNG export needs this one-time setup.",
+     "code": "pip install playwright && playwright install chromium"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Make me an architecture diagram of my app: frontend, backend, database, Redis cache.\""
+   },
+   "watch": [
+    "Each diagram loads its fonts from Google Fonts, the only network request it makes. Ask for system fonts if you want no requests at all.",
+    "Brand onboarding fetches your website. PRIVACY.md in the repo lists what the skill sends over the network.",
+    "The README says official builds only come from this repo. A plugin listing under any name other than LittleMight is an unofficial copy.",
+    "Results depend on the model you use, and the same prompt can come out laid out differently twice."
+   ],
+   "sources": [
+    "https://github.com/cathrynlavery/diagram-design/tree/main/skills/diagram-design",
+    "https://raw.githubusercontent.com/cathrynlavery/diagram-design/main/skills/diagram-design/SKILL.md",
+    "https://raw.githubusercontent.com/cathrynlavery/diagram-design/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "meridian-doc-consultant",
+   "repo": "github.com/google/meridian",
+   "stars": "1.6k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "Any agent that supports `npx skills`, plus Antigravity",
+   "short": "Answers your questions about Google's Meridian marketing mix modeling by looking up and citing the official docs.",
+   "what": "Meridian is Google's open source framework for marketing mix modeling, which measures how each channel drives sales or other KPIs. This skill has your agent answer questions about Meridian concepts, parameters and best practices. It finds the right pages on developers.google.com/meridian, reads them and cites the URLs. It doesn't write code or run models; Meridian has other skills for that.",
+   "who": "Analysts and marketers who use Meridian, or are weighing it up, and want answers they can check against the docs. If you don't do marketing mix modeling, skip it.",
+   "needs": [
+    "Node.js, to run `npx skills`",
+    "Web access for your agent, so it can fetch pages from developers.google.com/meridian"
+   ],
+   "steps": [
+    {
+     "title": "Install all the Meridian skills",
+     "text": "This installs the doc consultant along with the model building, visualisation, budget and scenario planner skills.",
+     "code": "npx skills add google/meridian"
+    },
+    {
+     "title": "Or install only this one",
+     "code": "npx skills add google/meridian --skill meridian-doc-consultant"
+    },
+    {
+     "title": "Or install it in Antigravity",
+     "code": "agy plugin install https://github.com/google/meridian/tree/main/skills"
+    },
+    {
+     "title": "Ask a Meridian question",
+     "text": "Your agent uses the skill when you ask about a Meridian topic. Its answer lists the doc pages it read."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"In Meridian, what are knots and how should I set them?\""
+   },
+   "watch": [
+    "The docs aren't in the repo or the Python package. Without web access the skill gives you the page links and doesn't present unverified details as documented guidance.",
+    "The skill tells the agent not to give numbers or recommendations from general knowledge, only from pages it actually read."
+   ],
+   "sources": [
+    "https://github.com/google/meridian/tree/main/skills/meridian_doc_consultant",
+    "https://raw.githubusercontent.com/google/meridian/main/skills/meridian_doc_consultant/SKILL.md",
+    "https://raw.githubusercontent.com/google/meridian/main/skills/README.md",
+    "https://raw.githubusercontent.com/google/meridian/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "answer-me-with-html",
+   "repo": "github.com/QingYunA/answer-me-with-html",
+   "stars": "3.5k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode, Pi and DeepSeek Harness",
+   "short": "Turns a complex answer into a one-page visual explainer, with diagrams and tables, from a short Markdown draft your agent writes.",
+   "what": "When a question needs a picture, the agent writes a short Markdown draft and a bundled CLI turns it into one HTML page with flow charts, sequence diagrams, tables and charts. The README says this takes about an eighth of the tokens of hand-written HTML. Pages are single offline files saved in `~/.answer-me-with-html/pages/`, and it can also make narrated explainer videos.",
+   "who": "People who ask their agent to explain systems, compare options or review code, and find long walls of terminal text hard to follow. For quick one-line answers it doesn't make a page.",
+   "needs": [
+    "Node.js 20 or newer"
+   ],
+   "steps": [
+    {
+     "title": "Install with one command",
+     "text": "It asks which agents to install into.",
+     "code": "npx skills add QingYunA/answer-me-with-html"
+    },
+    {
+     "title": "Or add the Claude Code marketplace",
+     "text": "Then run `/plugin install answer-me-with-html@answer-me-with-html`.",
+     "code": "/plugin marketplace add QingYunA/answer-me-with-html"
+    },
+    {
+     "title": "Ask a question",
+     "text": "No setup is needed after install. The agent decides when a page is worth making, or you can say \"explain it in HTML\"."
+    },
+    {
+     "title": "Stop the browser opening (optional)",
+     "text": "Settings change with a command. This one stops pages opening in the browser.",
+     "code": "/answer-me-with-html config open off"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Explain the TCP three-way handshake\""
+   },
+   "watch": [
+    "The skill tells your agent to make pages often, without being asked. Turn the browser opening off if that gets in the way.",
+    "If Node.js is missing, the skill has your agent offer to install it, and it should only do that after you agree.",
+    "Pages pile up in `~/.answer-me-with-html/`. Clear them with `am clean`.",
+    "The CLI checks GitHub for updates in the background at most once a day. The README says nothing about you is sent.",
+    "Code blocks can quote your real files. The skill says to check before you share a page that holds private code.",
+    "The README's recommended install has your agent read and follow an INSTALL.md from the web. Read that file yourself first, or use one of the commands above."
+   ],
+   "sources": [
+    "https://github.com/QingYunA/answer-me-with-html/tree/main/skills/answer-me-with-html",
+    "https://raw.githubusercontent.com/QingYunA/answer-me-with-html/main/skills/answer-me-with-html/SKILL.md",
+    "https://raw.githubusercontent.com/QingYunA/answer-me-with-html/HEAD/README.md"
+   ]
+  }
+ ]
+}
