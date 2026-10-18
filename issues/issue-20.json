@@ -1,0 +1,442 @@
+{
+ "issue": 20,
+ "date": "18 Oct 2026",
+ "checked": "18 Oct 2026",
+ "blurb": "Every repo and skill from the 18 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #20 had three repos and four AI skills. If you run more than one coding agent, start with Orca, or with ai-memory if you keep re-explaining a project every time you switch agents. For diagrams, the drawio skill is the quickest one to install.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Orca",
+   "repo": "github.com/stablyai/orca",
+   "stars": "95.8k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, OpenCode, Pi and any other CLI agent",
+   "short": "A desktop app that runs several coding agents side by side, each in its own git worktree, with a phone app to check on them.",
+   "what": "Orca is a desktop app for macOS, Windows and Linux where each agent works in its own isolated git worktree. You can send one prompt to five agents, compare what they did and merge the best result. It also has terminal splits, a built-in editor, GitHub and Linear boards, SSH worktrees on a remote machine, and comments you can leave on diff lines and send back to the agent.",
+   "who": "People who already use one or more terminal coding agents and want to run them in parallel and keep track of them in one place. If you only ever run one agent in one terminal, you probably don't need it.",
+   "needs": [
+    "macOS, Windows or Linux",
+    "At least one CLI coding agent installed. The README says anything that runs in a terminal runs in Orca",
+    "A git repository to work in, since each agent gets its own worktree"
+   ],
+   "steps": [
+    {
+     "title": "Download the desktop app",
+     "text": "Get it from onorca.dev/download, or grab a build for your system from the latest GitHub release."
+    },
+    {
+     "title": "Or install with Homebrew on macOS",
+     "code": "brew install --cask stablyai/orca/orca"
+    },
+    {
+     "title": "Or install from the AUR on Arch Linux",
+     "text": "Use `stably-orca-git` instead if you want to build from source.",
+     "code": "yay -S stably-orca-bin"
+    },
+    {
+     "title": "Add the phone app (optional)",
+     "text": "The iOS app is on the App Store and Android has an APK on onorca.dev. Pair it with the desktop app to get notified when an agent finishes and to send follow-ups."
+    },
+    {
+     "title": "Run agents in parallel",
+     "text": "Open a repo, start your agents in their own worktrees, then compare the results and merge the one you want."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Orca",
+    "text": "Send one prompt to several agents, each in its own worktree, then compare the results and merge the winner."
+   },
+   "watch": [
+    "Orca collects anonymous usage data. The README links its privacy and telemetry docs, which say what is collected and how to opt out.",
+    "The Computer Use feature lets agents operate desktop apps and visible UI on your machine. Only turn it on when a task needs it.",
+    "The phone app pairs with your desktop through a relay. Its code is in the repo's `cloud/` folder.",
+    "The account switcher shows your Claude and Codex usage and rate-limit resets, and swaps accounts without logging in again."
+   ],
+   "sources": [
+    "https://github.com/stablyai/orca",
+    "https://raw.githubusercontent.com/stablyai/orca/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ai-memory",
+   "repo": "github.com/akitaonrails/ai-memory",
+   "stars": "10.1k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). The default setup makes no LLM calls and needs no API key. Adding an LLM provider is optional",
+   "works_with": "Claude Code, Codex, Cursor, Gemini CLI, OpenCode and more than twenty other agents",
+   "short": "Shared long-term memory for coding agents, so you can quit one agent mid-task and pick up in another without explaining it all again.",
+   "what": "Hooks record your prompts, tool calls and session boundaries, clean them at a privacy boundary, and turn each session into pages in a git-backed Markdown wiki. The next session, in any supported agent and on any machine pointed at the same server, starts with a short brief and a handoff note saying where you left off, what failed and what is still open. A team can share one server, and handoffs between people stay personal.",
+   "who": "People who switch between coding agents or machines and are tired of repeating the project background. It's also for teams that want one shared project memory. If you use a single agent on one laptop and its built-in memory is enough, skip it.",
+   "needs": [
+    "Linux, macOS or Windows (WSL2 is supported; native Windows is marked experimental)",
+    "A supported coding agent",
+    "`git`, which hook capture uses to read the repository you work in",
+    "Optional: Docker or Podman for the container setup"
+   ],
+   "steps": [
+    {
+     "title": "Install on Linux or macOS",
+     "text": "The script downloads the release for your system, checks its SHA-256 checksum and links `~/.local/bin/ai-memory`. No root needed.",
+     "code": "curl -fsSL https://github.com/akitaonrails/ai-memory/releases/latest/download/install.sh | sh"
+    },
+    {
+     "title": "Or install on Windows",
+     "text": "Run this in PowerShell. No admin needed.",
+     "code": "irm https://github.com/akitaonrails/ai-memory/releases/latest/download/install.ps1 | iex"
+    },
+    {
+     "title": "Run setup",
+     "text": "It creates the data folder with an access token, starts a per-user service and wires up every agent it finds. It shows the plan and asks first. Add `--plan` to only see the plan.",
+     "code": "ai-memory setup"
+    },
+    {
+     "title": "Or wire it as a Claude Code plugin",
+     "text": "You still install the binary as above. Codex has a matching `codex plugin` command in the README.",
+     "code": "claude plugin marketplace add akitaonrails/ai-memory && claude plugin install ai-memory@ai-memory"
+    },
+    {
+     "title": "Start your agent through ai-memory",
+     "text": "The README calls this the preferred way to launch. The first time, it installs that agent's hooks and MCP if they're missing.",
+     "code": "ai-memory run claude"
+    },
+    {
+     "title": "Remove it if you change your mind",
+     "text": "This removes only what ai-memory installed.",
+     "code": "ai-memory uninstall --apply"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Restart your agent after setup and ask \"What do you remember about this project?\" Later, ask \"where did we leave off?\" to continue from the last handoff."
+   },
+   "watch": [
+    "The install pipes a downloaded script straight into your shell. Read the script first. The README links docs/install.md, which shows how to verify it.",
+    "Hooks capture every prompt and tool call. The README says capture is cleaned at a privacy boundary before anything is stored, and you can exclude paths per repository.",
+    "Setup starts a background service and edits your agents' config files. It writes timestamped backups next to any file it touches.",
+    "The Docker quick start runs with no authentication. It only listens on your own machine, but the README says local processes and browser pages can reach it.",
+    "On a shared server, what one person's sessions learn is available to everyone's agents for that project.",
+    "An LLM provider is optional and adds better summaries and semantic search. For what is stored and what leaves your machine, the README points to DATA_HANDLING.md."
+   ],
+   "sources": [
+    "https://github.com/akitaonrails/ai-memory",
+    "https://raw.githubusercontent.com/akitaonrails/ai-memory/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "esp32sim",
+   "repo": "github.com/mikroverk/esp32sim",
+   "stars": "",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Your browser, or the command line on your own machine",
+   "short": "An ESP32 emulator in Rust that boots real, unmodified firmware for the S3, C3 and C6 chips, in a browser tab or from the command line.",
+   "what": "esp32sim emulates ESP32 chips at the instruction level. It boots the real mask ROM, the real bootloader and an unmodified app image. The ESP32-S3 support is marked mature, and the C3 and C6 are drafts. It models several boards with displays and a virtual WiFi access point that can reach the real network. The same emulator also runs in the browser through WebAssembly.",
+   "who": "Embedded developers who write ESP-IDF firmware and want to test it without a board, or debug it with tracing and breakpoints. If you don't work with microcontrollers, skip it.",
+   "needs": [
+    "Nothing to try the live demo in a browser",
+    "A Rust toolchain with `cargo` to build the command line tool",
+    "ESP-IDF to build your own firmware. It also provides the mask ROM files, or the repo's fetch script can download them",
+    "Python 3 if you want to serve the browser version yourself"
+   ],
+   "steps": [
+    {
+     "title": "Try it in the browser first",
+     "text": "No install. Open mikroverk.github.io/esp32sim to run Linux on the S3, a touch panel demo and the C3 and C6 demos, or load your own firmware."
+    },
+    {
+     "title": "Build the emulator",
+     "text": "Run this in your copy of the repo.",
+     "code": "cargo build --release"
+    },
+    {
+     "title": "Get the ROM files without ESP-IDF",
+     "text": "This puts the S3, C3 and C6 ROMs in `web/wasm/fw/`. Then pass `--rom web/wasm/fw/esp32s3_rev0_rom.elf` when you run.",
+     "code": "tools/fetch-demo-assets.sh --no-linux"
+    },
+    {
+     "title": "Run an ESP-IDF project",
+     "text": "This boots the IDF hello_world example built for the S3. It prints the boot logs and `Hello world!` on UART0.",
+     "code": "H=examples/hello_world/build\n./target/release/esp32sim --board none --boot rom --console uart0 \\\n    --bootloader $H/bootloader/bootloader.bin --ptable $H/partition_table/partition-table.bin \\\n    --app $H/hello_world.bin --elf $H/hello_world.elf --elf $H/bootloader/bootloader.elf --max-seconds 26"
+    },
+    {
+     "title": "Use the C3 or C6",
+     "text": "The `esp32sim-c3` and `esp32sim-c6` commands take the same flags. The README has a hello_world command for each."
+    },
+    {
+     "title": "Serve the browser version yourself (optional)",
+     "text": "Then open http://127.0.0.1:8790/?wasm&fw=hello.",
+     "code": "tools/wasm-build.sh\ntools/fetch-demo-assets.sh\npython3 -m http.server -d web 8790"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your browser",
+    "text": "Open the live demo, boot Linux on the ESP32-S3, log in and type on the console."
+   },
+   "watch": [
+    "The C3 and C6 support is marked draft. Each has its own doc in the repo that lists what works and what doesn't.",
+    "With `--wifi`, the default `--net nat` passes the firmware's TCP and UDP traffic to your real network. Use `--net none` to block it.",
+    "The fetch script downloads the mask ROMs, xterm.js and a 16 MB Linux image. Add `--no-linux` to skip the image.",
+    "On the S3, a full display redraw on the demo board can't keep up with real time, which the README says costs about 0.3 seconds of lag per redraw."
+   ],
+   "sources": [
+    "https://github.com/mikroverk/esp32sim",
+    "https://raw.githubusercontent.com/mikroverk/esp32sim/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "drawio",
+   "repo": "github.com/jgraph/drawio-mcp",
+   "stars": "5.6k",
+   "level": "Beginner",
+   "cost": "Not stated in the README. The README describes draw.io itself as a free online diagram editor",
+   "works_with": "Claude Code, Codex CLI, GitHub Copilot CLI, Cursor and OpenCode",
+   "short": "Your coding agent draws flowcharts, architecture, ER and sequence diagrams as draw.io files, with optional PNG, SVG or PDF export.",
+   "what": "When you ask for a diagram, the agent writes it as Mermaid or draw.io XML and saves a native `.drawio` file, then opens it. Ask for png, svg or pdf and it exports with the diagram embedded, so the image stays editable in draw.io. Ask for url and it opens the diagram in the draw.io web editor.",
+   "who": "Anyone who wants diagrams from their coding agent without drawing them by hand. To get Mermaid layouts and image export you need the draw.io desktop app; without it the agent writes XML.",
+   "needs": [
+    "A supported coding agent",
+    "Optional: the draw.io desktop app, for Mermaid conversion, auto-layout and PNG, SVG or PDF export",
+    "Optional: Node.js, for the url output"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace in Claude Code",
+     "text": "Then run `/plugin install drawio@drawio`.",
+     "code": "/plugin marketplace add jgraph/drawio-mcp"
+    },
+    {
+     "title": "Or install in Codex CLI",
+     "text": "Then run `codex plugin add drawio@drawio`.",
+     "code": "codex plugin marketplace add jgraph/drawio-mcp"
+    },
+    {
+     "title": "Or install in GitHub Copilot CLI",
+     "text": "Then run `copilot plugin install drawio@drawio`.",
+     "code": "copilot plugin marketplace add jgraph/drawio-mcp"
+    },
+    {
+     "title": "Cursor and OpenCode",
+     "text": "In Cursor, install it from the Marketplace (Customize, then drawio, then Install). OpenCode needs no plugin: it finds the skill folder in `.claude/skills/` or `.opencode/skills/`."
+    },
+    {
+     "title": "Install draw.io Desktop for exports (optional)",
+     "text": "On Linux the skill looks for `drawio` on your PATH. On macOS it uses the app in /Applications."
+    },
+    {
+     "title": "Ask for a diagram",
+     "text": "Name a format in the request to change the output, for example png, svg, pdf or url."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/drawio:drawio png flowchart for login"
+   },
+   "watch": [
+    "The Claude Code and Cursor plugins also bundle the hosted draw.io MCP App Server. Diagrams drawn with it are sent to mcp.draw.io.",
+    "The url output opens your diagram at app.diagrams.net. Stick to the default `.drawio` file or desktop export if you want nothing to leave your machine.",
+    "The skill fetches its Mermaid and XML reference files from GitHub while it works.",
+    "It runs shell commands to convert, export and open files."
+   ],
+   "sources": [
+    "https://github.com/jgraph/drawio-mcp/tree/main/plugins/claude-code/skills/drawio",
+    "https://raw.githubusercontent.com/jgraph/drawio-mcp/main/plugins/claude-code/skills/drawio/SKILL.md",
+    "https://raw.githubusercontent.com/jgraph/drawio-mcp/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "seo-audit-agent",
+   "repo": "github.com/omnara-ai/omnara",
+   "stars": "2.9k",
+   "level": "Intermediate",
+   "cost": "Omnara is free to self-host (Apache 2.0). Omnara Cloud has no platform fee: you can bring your own keys and machines for free, or pay as you go for its models and sandboxes. The optional OpenAI add-on is billed by OpenAI",
+   "works_with": "Your coding agent, using the Omnara CLI (`npx omnara`)",
+   "short": "Your coding agent sets up a hosted Omnara agent that audits a web page for SEO, answer engines and AI search citations, then sends a PDF.",
+   "what": "The skill walks your agent through deploying an SEO audit agent on Omnara. It signs you in, picks a model and a machine pool, creates the agent profile from the example's `agent.yaml`, and runs a first audit. The agent renders the page, runs Lighthouse, checks the buyer questions and writes a report. The PDF and a Markdown copy arrive in the conversation in about 10 minutes.",
+   "who": "Marketers, agencies and site owners who want a repeatable page audit they can run from a console, Slack, Discord or their own app. If you don't want an Omnara account or a hosted agent, skip it.",
+   "needs": [
+    "Node.js 22 or newer, for the Omnara CLI",
+    "An Omnara Cloud account with an organization, or a self-hosted Omnara instance",
+    "A machine pool. On Omnara Cloud the first project comes with `default-pool`",
+    "Optional: a Google API key with the Chrome UX Report API enabled, for real-user speed data",
+    "Optional: an OpenAI API key, for measured AI search citations"
+   ],
+   "steps": [
+    {
+     "title": "Get the example",
+     "text": "The skill and its `agent.yaml` live in `examples/seo-audit-agent` in the Omnara repo.",
+     "code": "git clone https://github.com/omnara-ai/omnara.git"
+    },
+    {
+     "title": "Ask your coding agent to deploy it",
+     "text": "Point it at `examples/seo-audit-agent/SKILL.md` and ask it to set up the SEO audit agent. It asks you only where a choice is needed."
+    },
+    {
+     "title": "Approve the sign-in",
+     "text": "The agent runs this. It opens an approval page in your browser and shows a code. Approve once the codes match.",
+     "code": "npx omnara login"
+    },
+    {
+     "title": "Pick the first page and add-ons",
+     "text": "Give a page URL and, if you like, the search query it should win. Both add-ons are optional, and every check works without keys."
+    },
+    {
+     "title": "Watch the first audit",
+     "text": "The agent gives you a link to the Omnara console. The PDF and Markdown report arrive as files in that conversation."
+    },
+    {
+     "title": "Choose where to use it",
+     "text": "Keep it in the Omnara console, connect it to Slack or Discord, or call it from your own app through Omnara's API."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your Omnara agent",
+    "text": "Audit https://acme.com/pricing for the query 'invoice software for small business'."
+   },
+   "watch": [
+    "If you paste an API key into the chat, the skill tells your agent to write it to a `.env` file. Delete that file or move its contents somewhere safe afterwards, as the skill reminds you.",
+    "The OpenAI add-on is billed by OpenAI for each search and its tokens.",
+    "Your coding agent runs Omnara CLI commands that create secrets, an agent profile and integrations in your Omnara account.",
+    "Without a URL from you, the default first page is the homepage of your email address's domain. With a personal address such as gmail.com it asks you for a URL.",
+    "If you self-host Omnara, the README says the local defaults are intentionally insecure and points to its self-hosting guide for real deployments."
+   ],
+   "sources": [
+    "https://github.com/omnara-ai/omnara/tree/main/examples/seo-audit-agent",
+    "https://raw.githubusercontent.com/omnara-ai/omnara/main/examples/seo-audit-agent/SKILL.md",
+    "https://raw.githubusercontent.com/omnara-ai/omnara/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "using-n8n-mcp-skills",
+   "repo": "github.com/czlonkowski/n8n-skills",
+   "stars": "6.4k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Claude.ai, ChatGPT and other SKILL.md hosts, plus Codex, Cursor and Copilot as an agent plugin",
+   "short": "The entry skill of a 14-skill pack that sends your agent to the right n8n guide when it builds, tests or debugs workflows through n8n-mcp.",
+   "what": "This router skill tells your agent which of the pack's skills owns the task in front of it, from expressions and node setup to Code nodes, error handling and AI agents. It gives the agent a working summary of every n8n-mcp tool from the first turn. It also sets three rules: load the matching skill before any n8n action, validate and then re-check the workflow's connections before activating, and keep secrets in n8n's credential system.",
+   "who": "People who build n8n automations with a coding agent through the n8n-mcp server. If you don't use n8n-mcp, this pack isn't for you.",
+   "needs": [
+    "The n8n-mcp MCP server, installed and configured",
+    "A coding agent with n8n-mcp set up in its MCP config",
+    "For the tools that manage workflows: a connected n8n instance. The hosted server signs in through OAuth; a self-hosted server needs `N8N_API_URL` and `N8N_API_KEY` in its environment"
+   ],
+   "steps": [
+    {
+     "title": "Set up n8n-mcp first",
+     "text": "Follow the installation guide in the n8n-mcp repo, which the README links."
+    },
+    {
+     "title": "Install the pack as a Claude Code plugin",
+     "text": "The README recommends this method. It also installs the hooks that load the router at the start of each session.",
+     "code": "/plugin install czlonkowski/n8n-skills"
+    },
+    {
+     "title": "Or add it as a marketplace",
+     "text": "Then run `/plugin install` and pick \"n8n-mcp-skills\" from the list.",
+     "code": "/plugin marketplace add czlonkowski/n8n-skills"
+    },
+    {
+     "title": "Or copy the skills by hand",
+     "text": "Clone the repo with `git clone https://github.com/czlonkowski/n8n-skills.git`, copy the skills, then reload Claude Code.",
+     "code": "cp -r n8n-skills/skills/* ~/.claude/skills/"
+    },
+    {
+     "title": "Other hosts",
+     "text": "For Claude.ai, zip each skill folder or take the prebuilt zips from the latest release and upload them under Settings, Capabilities, Skills. For ChatGPT and other SKILL.md hosts, unzip the release bundle and upload all the `.skill` files at once."
+    },
+    {
+     "title": "Ask for a workflow",
+     "text": "The skills load on their own when your request matches."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Build and validate a webhook to Slack workflow\""
+   },
+   "watch": [
+    "Test runs fire real nodes, so Code, HTTP requests, database writes and sends all happen. The skill tells your agent to ask you before running a workflow with side effects.",
+    "The hooks only run in the Claude Code and Codex plugin installs. Everywhere else the skills still load by description, without the reminders.",
+    "A self-hosted n8n-mcp server needs your n8n API key in its environment.",
+    "Letting an agent reach a workflow you built in the n8n UI means turning on that workflow's MCP access, which is a lasting change. The skill tells the agent to ask first."
+   ],
+   "sources": [
+    "https://github.com/czlonkowski/n8n-skills/tree/main/skills/using-n8n-mcp-skills",
+    "https://raw.githubusercontent.com/czlonkowski/n8n-skills/main/skills/using-n8n-mcp-skills/SKILL.md",
+    "https://raw.githubusercontent.com/czlonkowski/n8n-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "sprite-gen",
+   "repo": "github.com/aldegad/sprite-gen",
+   "stars": "2.8k",
+   "level": "Advanced",
+   "cost": "Free (Apache-2.0). Image and video calls run on your own logins or API keys, and calls made on an API key are billed per call",
+   "works_with": "Codex and Claude, as a skill, or on its own as a Python CLI",
+   "short": "Turns one drawing into game sprites, as a transparent atlas with a manifest or as motion loops, using image and video models on your own logins.",
+   "what": "Give it one base image and it generates sprite rows with GPT or Grok, removes the background to real transparency, cuts each pose into a clean frame and builds an atlas with a `manifest.json` your game engine can read. A second route sends the still to a video model and cuts a seamless transparent loop for each motion. It also makes ordinary images, title logos, palette swaps, repeating backgrounds and engine exports, and has a review page for picking frames.",
+   "who": "Game developers and artists who want sprite sheets and loops they can drop into an engine. It's a big tool with a lot of options, so expect some reading before your first set.",
+   "needs": [
+    "Python 3.11 or newer with working `venv`",
+    "A `codex` ChatGPT login for the default image provider, or a `grok` login or `XAI_API_KEY`",
+    "`ffmpeg` and `img2webp` for the video route",
+    "Optional: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` for pixel art, or `ELEVENLABS_API_KEY` for sound, each billed per call"
+   ],
+   "steps": [
+    {
+     "title": "Install it as a skill",
+     "text": "This uses Codex's skill installer.",
+     "code": "python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \\\n  --repo aldegad/sprite-gen --path . --name sprite-gen"
+    },
+    {
+     "title": "Or set up the CLI in a copy of the repo",
+     "text": "The README says the virtual environment is the only supported interpreter. Then run `pip install -e .` and check it with `sprite-gen --help`.",
+     "code": "python3 -m venv .venv && source .venv/bin/activate"
+    },
+    {
+     "title": "Install RIFE for walk and run loops (optional)",
+     "text": "It repairs jump frames in walk and run loops. Without it those loops are cut as filmed, with a warning.",
+     "code": "sprite-gen rife install"
+    },
+    {
+     "title": "Ask for sprites or an image",
+     "text": "The agent checks your access, asks only for the provider and motion choices you haven't given, runs the pipeline and hands over the files."
+    },
+    {
+     "title": "Or make motion loops from one still",
+     "text": "This needs `ffmpeg`, `img2webp` and a Grok login or `XAI_API_KEY`.",
+     "code": "sprite-gen video-set --base side=still.png --states idle,walk,run,jump,attack --out-dir set/"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "sprite-gen logo --provider codex --text \"STARFALL\" --style \"painted fantasy\" --out-dir logo/"
+   },
+   "watch": [
+    "Calls made on an API key are billed per call, and the tool says so before the request goes out. A codex signed in with an API key bills that key.",
+    "If codex can't run, because you're not signed in or its usage is used up, it stops and asks you what to do instead of switching provider on its own.",
+    "`sprite-gen rife install` downloads a pinned rife-ncnn-vulkan build into your user data folder and checks its SHA-256. Linux without a GPU also needs `libvulkan1 mesa-vulkan-drivers`.",
+    "The README says walk and run loops stay experimental unless motion QA passes, and the direction detector can be wrong even at high confidence, so check the still before you mirror it."
+   ],
+   "sources": [
+    "https://github.com/aldegad/sprite-gen",
+    "https://raw.githubusercontent.com/aldegad/sprite-gen/main/SKILL.md",
+    "https://raw.githubusercontent.com/aldegad/sprite-gen/HEAD/README.md"
+   ]
+  }
+ ]
+}
