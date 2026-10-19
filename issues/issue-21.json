@@ -1,0 +1,305 @@
+{
+ "issue": 21,
+ "date": "19 Oct 2026",
+ "checked": "19 Oct 2026",
+ "blurb": "The repos and skills from the 19 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #21 had three repos and four AI skills, and this page covers five of them. Most are for people who already work with a coding agent. If you want to try an agent in your terminal, start with OpenCode. If you build web pages, the Core Web Vitals skill is the quickest one to put to work.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenCode",
+   "repo": "github.com/anomalyco/opencode",
+   "stars": "217.1k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Your terminal, plus a desktop app (beta) for macOS, Windows and Linux",
+   "short": "An open source AI coding agent for your terminal, with a build agent for changes and a read-only plan agent for exploring code.",
+   "what": "OpenCode is an open source AI coding agent. It comes with two built-in agents and the `Tab` key switches between them. The default, build, has full access for development work. The other, plan, is read-only: it can't edit files unless you allow it, and it asks before it runs bash commands. A general subagent handles complex searches and multistep tasks, and you can call it with `@general`. There is also a desktop app in beta.",
+   "who": "Developers who want a coding agent that runs in the terminal and is open source. The plan agent is a good way to look around an unfamiliar codebase before you let anything change it.",
+   "needs": [
+    "A terminal",
+    "One of: npm, bun, pnpm or yarn, Homebrew, pacman or paru on Arch, mise, or Nix. You can also use the install script"
+   ],
+   "steps": [
+    {
+     "title": "Install with the script",
+     "text": "The README calls this the YOLO option. Read the script before you pipe it into bash.",
+     "code": "curl -fsSL https://opencode.ai/v2/install | bash"
+    },
+    {
+     "title": "Or install with npm",
+     "text": "bun, pnpm and yarn also work.",
+     "code": "npm i -g @opencode/cli@latest"
+    },
+    {
+     "title": "Or install with Homebrew",
+     "text": "The README recommends this tap on macOS and Linux because it is always up to date. The official formula, `brew install opencode`, is updated less often.",
+     "code": "brew install anomalyco/tap/opencode-v2"
+    },
+    {
+     "title": "Other package managers",
+     "text": "On Arch, use `sudo pacman -S opencode` for stable or `paru -S opencode-beta` for the latest from the AUR. On any OS, `mise use -g opencode`. With Nix, `nix run github:anomalyco/opencode`."
+    },
+    {
+     "title": "Remove old versions first",
+     "text": "The README says to remove any version older than 0.1.x before installing."
+    },
+    {
+     "title": "Or get the desktop app (beta)",
+     "text": "Download it from opencode.ai/download, or install it on macOS with Homebrew.",
+     "code": "brew install --cask opencode-desktop"
+    },
+    {
+     "title": "Switch agents",
+     "text": "Press `Tab` to move between build and plan. Configuration is covered in the docs at opencode.ai/docs."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "OpenCode, with the plan agent selected",
+    "text": "Explain how this project is laid out and where I should start reading."
+   },
+   "watch": [
+    "The install script is piped straight into bash. Read it before you run it.",
+    "The default build agent has full access to your project. Use plan if you want file edits denied and a prompt before every bash command.",
+    "The desktop app is marked beta.",
+    "The README doesn't say which AI models it uses or what they cost. Check the docs before you start."
+   ],
+   "sources": [
+    "https://github.com/anomalyco/opencode",
+    "https://raw.githubusercontent.com/anomalyco/opencode/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "whatsapp-mcp",
+   "repo": "github.com/finereli/whatsapp-mcp",
+   "stars": "",
+   "level": "Intermediate",
+   "cost": "Free (MIT). It runs on a Cloudflare Workers Paid plan, which the README puts at a few dollars a month",
+   "works_with": "Claude Code, Claude Desktop and any MCP client",
+   "short": "A small server in your own Cloudflare account that lets your AI agent search and read your WhatsApp chats. It can't send messages.",
+   "what": "You deploy it to your own Cloudflare account and link your phone to it once, the way you'd link WhatsApp Web. After that, your agent can list chats, read one chat, search across all of them and save names for phone numbers. It doesn't stay connected. It connects when your agent asks for something and once a day, collects what WhatsApp queued, stores it and hangs up. Your messages sit in a SQLite database in your Cloudflare account.",
+   "who": "People who want an agent to answer questions about their own WhatsApp history, like what someone said about the flights. It is for one person and one WhatsApp account per deployment. If you're not comfortable deploying to Cloudflare from a terminal, or with an unofficial WhatsApp connection, skip it.",
+   "needs": [
+    "A Cloudflare account on the Workers Paid plan",
+    "Node 20 or later",
+    "Your phone with WhatsApp",
+    "An MCP client"
+   ],
+   "steps": [
+    {
+     "title": "Clone and install",
+     "code": "git clone https://github.com/finereli/whatsapp-mcp\ncd whatsapp-mcp\nnpm install"
+    },
+    {
+     "title": "Create the token store",
+     "text": "Paste the id it prints into `wrangler.jsonc`.",
+     "code": "npx wrangler kv namespace create OAUTH_KV"
+    },
+    {
+     "title": "Set a password",
+     "text": "It protects the page that links your phone. Use 12 or more characters.",
+     "code": "npx wrangler secret put OWNER_PASSWORD"
+    },
+    {
+     "title": "Deploy",
+     "text": "Wrangler prints your URL, something like `https://whatsapp-mcp.your-name.workers.dev`.",
+     "code": "npm run deploy"
+    },
+    {
+     "title": "Link WhatsApp",
+     "text": "Open your URL and scan the QR code in WhatsApp under Settings, Linked Devices, Link a Device. On the phone itself you can use the phone number option instead. The first link imports your history, and you can close the page while it runs."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "In Claude Code, run this, then type `/mcp` and sign in with your password. Point other clients at the same `/mcp` URL.",
+     "code": "claude mcp add --transport http whatsapp https://your-url/mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI agent",
+    "text": "Summarize what I missed in the family group this week."
+   },
+   "watch": [
+    "It isn't official. It uses the WhatsApp Web protocol through the Baileys library, which the README says is against WhatsApp's terms. The author calls the risk low for a read-only linked device, but not zero.",
+    "Each deployment holds your full message history and a live login to your WhatsApp account.",
+    "The first import is whatever history WhatsApp hands a new device. It may not be everything, and it only happens once per link.",
+    "Photos, voice notes and documents show up only as labels like `[image]`. Nothing is downloaded or transcribed.",
+    "The author hasn't tried the free Workers plan. On it, the README says to remove the `limits` block and expect the first import to be fragile.",
+    "Some chats show up as phone numbers. Your agent can fill in names using a contacts tool it already has."
+   ],
+   "sources": [
+    "https://github.com/finereli/whatsapp-mcp",
+    "https://raw.githubusercontent.com/finereli/whatsapp-mcp/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "huashu-motion",
+   "repo": "github.com/alchaincyf/huashu-motion",
+   "stars": "594",
+   "level": "Intermediate",
+   "cost": "Free (MIT). The README says the music is generated on your machine without calling any paid service",
+   "works_with": "Claude Code, Codex, WorkBuddy, Grok Bot, Muse, Dots and other agents that support Agent Skills",
+   "short": "Your coding agent makes launch films, explainers and motion graphics as code, scores them, and lets you click a frame to change it.",
+   "what": "Each film is one `index.html` built with HTML and GSAP and rendered frame by frame in your own Chrome. The agent reads your product, offers three directions as key frames, writes the film and its soundtrack, then opens a studio in your browser. You click a spot on a frame, write what to change, and the agent changes only that. It exports MP4, MOV with transparency, WebM or GIF.",
+   "who": "Anyone who wants a short product video or animated explainer and is happy to work through a coding agent and a terminal. It draws everything in code, so it won't make footage of real people. Use your own clips for that.",
+   "needs": [
+    "Node 22 or later",
+    "Google Chrome, Chromium or Edge",
+    "FFmpeg, for export and the soundtrack",
+    "A coding agent that can run commands",
+    "Optional: about 55 MB of free instrument samples (`om samples build`)",
+    "Optional narration: macOS system voices need nothing. Kokoro voices need uv, Python 3.12 and a model of about 325 MB. Word timing needs `whisper-cli`"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "code": "npx skills add alchaincyf/huashu-motion"
+    },
+    {
+     "title": "Or clone and link it",
+     "text": "For Codex, link into `~/.codex/skills/` instead. The skill's `bin/om` then runs the CLI from your clone.",
+     "code": "git clone https://github.com/alchaincyf/huashu-motion.git\nln -s \"$PWD/huashu-motion/skills/huashu-motion\" ~/.claude/skills/huashu-motion"
+    },
+    {
+     "title": "Check what is missing",
+     "text": "Run `om doctor`. It lists any requirement you still need, and your agent can install them."
+    },
+    {
+     "title": "Ask for a film",
+     "text": "The agent asks a few questions, shows three directions and then builds the film."
+    },
+    {
+     "title": "Edit in the studio",
+     "text": "In the studio, press C, click the frame and write your note. Every version is kept, so you can undo."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Make a 30-second launch film for my product, site is xxx.com"
+   },
+   "watch": [
+    "It has only been tested on macOS so far.",
+    "It drives your installed Chrome and runs a local studio server on 127.0.0.1. Codex's sandbox blocks the preview and the browser, so you have to approve them.",
+    "The agent runs many shell commands while it works.",
+    "It keeps your preferences and notes from past films in `~/.huashu-motion/experience.md` on your machine.",
+    "The instrument samples and the narration models are downloaded the first time you use them.",
+    "Results depend on the model. The author mainly uses one model and says taste differs between models."
+   ],
+   "sources": [
+    "https://github.com/alchaincyf/huashu-motion/tree/main/skills/huashu-motion",
+    "https://raw.githubusercontent.com/alchaincyf/huashu-motion/main/skills/huashu-motion/SKILL.md",
+    "https://raw.githubusercontent.com/alchaincyf/huashu-motion/HEAD/README.md",
+    "https://raw.githubusercontent.com/alchaincyf/huashu-motion/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "webperf-core-web-vitals",
+   "repo": "github.com/nucliweb/webperf-snippets",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cursor, OpenCode, Gemini CLI, VS Code extensions and other Agent Skills agents",
+   "short": "Your agent measures LCP, CLS and INP with tested scripts and picks the next check from the result.",
+   "what": "The skill gives your agent seven fixed JavaScript snippets for Core Web Vitals: LCP, CLS and INP, plus LCP subparts, the LCP trail, LCP image entropy and LCP video candidates. The agent runs them and reads the result object they return, so it doesn't write measuring code on the fly. Workflows cover a full audit, an LCP deep dive, a CLS investigation and INP debugging, and the next snippet depends on what the last one found.",
+   "who": "Web developers who want their agent to find out why a page is slow and point at the cause. If you only want a score now and then, the snippets also run by hand in the DevTools console.",
+   "needs": [
+    "A coding agent that supports Agent Skills",
+    "Chrome DevTools MCP, so the agent can run the snippets in your browser",
+    "Or, without it: the webperf-snippets CLI with Playwright and Chromium"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs all six webperf skills into `~/.claude/skills/`, including this one.",
+     "code": "npx skills add nucliweb/webperf-snippets"
+    },
+    {
+     "title": "Or install from a clone",
+     "text": "Use `npm run install-skills` for the current project only, or `npm run install-global` for every project.",
+     "code": "git clone https://github.com/nucliweb/webperf-snippets.git\ncd webperf-snippets\nnpm run install-skills"
+    },
+    {
+     "title": "Connect Chrome DevTools MCP",
+     "text": "With it, the agent runs each snippet in your browser and reads what it returns."
+    },
+    {
+     "title": "Or use the CLI instead",
+     "text": "Install it with `npm install --save-dev webperf-snippets playwright`, then `npx playwright install chromium`. It loads the page in headless Chromium.",
+     "code": "npx webperf-snippets <url> --snippet <Name> --json"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Audit this page for Core Web Vitals"
+   },
+   "watch": [
+    "With Chrome DevTools MCP, the agent runs JavaScript in your browser, including on pages where you are signed in.",
+    "Some steps in the CLS and INP workflows point to snippets in the webperf-interaction skill, which the skill marks as pending.",
+    "The snippets are tested in Chrome. Most also work in other Chromium browsers and Firefox, and Safari has limited support."
+   ],
+   "sources": [
+    "https://github.com/nucliweb/webperf-snippets/tree/main/.claude/skills/webperf-core-web-vitals",
+    "https://raw.githubusercontent.com/nucliweb/webperf-snippets/main/.claude/skills/webperf-core-web-vitals/SKILL.md",
+    "https://raw.githubusercontent.com/nucliweb/webperf-snippets/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "lucian-uxui",
+   "repo": "github.com/Seokwoooo/lucian-uxui",
+   "stars": "10",
+   "level": "Beginner",
+   "cost": "Free (MIT). The elements are MIT too",
+   "works_with": "Claude Code, Codex, Cursor and other agents that support Agent Skills",
+   "short": "Your coding agent builds pages from a library of 400 dependency-free UI elements and ports them into your framework and theme.",
+   "what": "Lucian UX/UI Prompt is a library of interactive UI elements, each one plain HTML, CSS and JS with light and dark themes, keyboard and touch support and reduced motion. The skill searches the library for each part of the page you ask for, fetches only the elements it picks and ports them to React, Next, Vue, Svelte, Astro or plain HTML. It maps the colors to your theme and ends with a list of the elements it used.",
+   "who": "People building landing pages, sign-in screens, dashboards and similar UI with a coding agent who want ready-made interactive parts. It is not for backend work.",
+   "needs": [
+    "A coding agent that supports Agent Skills",
+    "Node.js 18 or later. Without Node, the agent falls back to curl",
+    "Network access to lucianlabs.dev, or raw.githubusercontent.com as a fallback"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "code": "npx skills add Seokwoooo/lucian-uxui"
+    },
+    {
+     "title": "Or install it as a Claude Code plugin",
+     "text": "Then run `/plugin install lucian-uxui@lucian-uxui`.",
+     "code": "/plugin marketplace add Seokwoooo/lucian-uxui"
+    },
+    {
+     "title": "Or copy it by hand",
+     "text": "Copy `skills/lucian-uxui` into `~/.claude/skills/` for Claude Code or `~/.agents/skills/` for Codex. For one project, use `.claude/skills/` or `.agents/skills/`."
+    },
+    {
+     "title": "Ask for a page and name the skill",
+     "text": "To use a specific element from the gallery, give its number, like #056."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Add a sign-in screen with lucian-uxui. Keep my existing auth handlers."
+   },
+   "watch": [
+    "The CLI downloads the catalog and elements from lucianlabs.dev. The README says it never sends anything about your project.",
+    "It caches files in `~/.cache/lucian-uxui` and checks the catalog again every 6 hours.",
+    "Each ported element keeps a one-line license comment at the top, which the MIT license requires."
+   ],
+   "sources": [
+    "https://github.com/Seokwoooo/lucian-uxui/tree/main/skills/lucian-uxui",
+    "https://raw.githubusercontent.com/Seokwoooo/lucian-uxui/main/skills/lucian-uxui/SKILL.md",
+    "https://raw.githubusercontent.com/Seokwoooo/lucian-uxui/HEAD/README.md"
+   ]
+  }
+ ]
+}
