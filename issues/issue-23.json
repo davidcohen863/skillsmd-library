@@ -1,0 +1,313 @@
+{
+ "issue": 23,
+ "date": "21 Oct 2026",
+ "checked": "21 Oct 2026",
+ "blurb": "The repos from the 21 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #23 had six repos, and this page covers five of them. All five are for people who already use a coding agent. If you only try one, make it Graphify: two commands and your agent can query a map of your codebase. If you write docs or landing pages, Anatomy is the fun one.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Anatomy",
+   "repo": "github.com/wheresryan22/anatomy",
+   "stars": "18k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Antigravity, OpenCode, Codex, MiniMax Code",
+   "short": "An AI skill that explains a technical idea by drawing it as a working machine: interactive isometric figures in SVG, WebGL and 3D.",
+   "what": "You ask for a figure that explains an idea, and the skill has your agent invent a physical object whose working is the concept. In the README's example, a cache key becomes a pin-tumbler lock that only turns when every pin matches. The agent builds the figure from dozens of shaded parts, adds a title and a live readout, and checks its own work in headless Chrome. You get a standalone HTML page, a single SVG file or React/Next.js components.",
+   "who": "Anyone writing docs, blog posts or landing pages who wants a diagram people will play with. Skip it if you need charts: the README says it has no axes or data plots, and it doesn't draw people or exact maps.",
+   "needs": [
+    "A coding agent that loads Agent Skills: Claude Code, Antigravity, OpenCode, Codex or MiniMax Code",
+    "Node.js 20.10 or later. The skills CLI itself (version 1.7.1) asks for Node 22.20 or later",
+    "Chrome or Chromium for the checks",
+    "React 18 or later, only if you want React output"
+   ],
+   "steps": [
+    {
+     "title": "Install with the skills CLI",
+     "text": "It asks which agents to set up. Add `-a claude-code`, `-a antigravity`, `-a opencode`, `-a codex` or `-a minimax-code` to skip the question. Leave out `-g` to install for one project only.",
+     "code": "npx skills add wheresryan22/anatomy -g"
+    },
+    {
+     "title": "Or clone it with git",
+     "text": "Clone it into your agent's skills folder so `SKILL.md` ends up at `<skills folder>/anatomy/SKILL.md`. This is the Claude Code path. The README lists the folder for each of the other agents.",
+     "code": "git clone https://github.com/wheresryan22/anatomy.git ~/.claude/skills/anatomy"
+    },
+    {
+     "title": "Reload if it doesn't show",
+     "text": "If the skills folder didn't exist when your session started, run `/reload-skills` in Claude Code. In the other agents, restart if `/anatomy` isn't listed."
+    },
+    {
+     "title": "Ask for a figure",
+     "text": "Type `/anatomy` and say what the figure should explain. In Codex, type `$anatomy` instead. The README says to name the idea and give the real numbers, or name the object you want, and say where the figure will live and which theme."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/anatomy explain how a token bucket rate limiter works, interactive"
+   },
+   "watch": [
+    "It is slow by design. A figure takes a long session, and a full 3D orbit audit takes 15 to 20 minutes for 30 parts.",
+    "The skills CLI copies the whole repository, examples included, which is about 10 MB.",
+    "The checks start headless Chrome. In Codex the sandbox may block that. The figure still gets built and only the checks fail. The README lists ways around it, and warns that `--sandbox danger-full-access` lifts every limit for that session.",
+    "The 3D mode is in beta.",
+    "Shaders need WebGL. Without it the SVG still reads."
+   ],
+   "sources": [
+    "https://github.com/wheresryan22/anatomy",
+    "https://raw.githubusercontent.com/wheresryan22/anatomy/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "magpie",
+   "repo": "github.com/yetone/magpie",
+   "stars": "18.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). You pay your own model providers",
+   "works_with": "Claude Code, Codex, Gemini CLI, OpenCode, Cursor CLI and many more coding agents",
+   "short": "Pick the model behind each of your coding agents from one menu bar app, and fail over to another account when a quota runs out.",
+   "what": "magpie runs a local gateway at `127.0.0.1:3425` that speaks the OpenAI, Anthropic and Gemini APIs and translates between them. You add providers once, with an API key, a local model or a plan you're signed in to, and then pick a model for each agent from one list. magpie edits the one key that matters in each agent's own config. Routing groups move to the next account or model when a quota runs out.",
+   "who": "People who use more than one agent, more than one provider or more than one account. The README says that if you use one agent on its vendor's own plan and that's enough, you don't need it.",
+   "needs": [
+    "macOS, Windows or Linux. It also runs in Docker and on Termux",
+    "At least one model provider: an API key, a local model, or a plan you're signed in to"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "Download the app from usemagpie.ai, or use the install script. Read the script before you pipe it into sh. The README also lists `go install github.com/yetone/magpie@latest` and a Docker image.",
+     "code": "curl -fsSL https://usemagpie.ai/install.sh | sh"
+    },
+    {
+     "title": "Add a provider",
+     "text": "Open magpie and go to Providers, then Add provider. Pick a preset and paste a key, or sign in with a subscription. From the terminal, a preset needs only the key.",
+     "code": "magpie provider add deepseek sk-…"
+    },
+    {
+     "title": "Pick a model for an agent",
+     "text": "Use the Agents page, or the terminal. Start a new session in that agent and it is on the new model.",
+     "code": "magpie claude deepseek/deepseek-v4-pro"
+    },
+    {
+     "title": "Check what's left on each plan",
+     "code": "magpie quota"
+    },
+    {
+     "title": "Point other tools at the gateway",
+     "text": "Anything that takes a base URL can use it. This is the Anthropic pair from the README, which also gives the OpenAI and Gemini ones.",
+     "code": "export ANTHROPIC_BASE_URL=http://127.0.0.1:3425     ANTHROPIC_API_KEY=magpie"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `magpie tui` to manage the whole thing from a terminal, or `magpie codex moonshot/kimi-k2.5` to put Codex on Kimi."
+   },
+   "watch": [
+    "The install script is piped straight into sh. Read it before you run it.",
+    "magpie reads your agents' sign-ins (Claude Code's and Codex's files, and the Keychain) to find your subscriptions. Turn it off in Settings, Privacy, Subscription accounts, or with `magpie accounts discovery off`.",
+    "Once a day a released build reports a random id, its version and system, and which agents, providers and models it is used with. The README says it sends no names, URLs, accounts, keys, prompts or usage. Turn it off in Settings, Privacy, or with `DO_NOT_TRACK=1`.",
+    "It rewrites your agents' config files. The README says it keeps their comments, order and formatting.",
+    "Plugins run on Bun, which is downloaded the first time one needs it. Gateway middleware plugins see everything every agent sends and gets back.",
+    "The repository doesn't take pull requests. Feedback goes to Discord."
+   ],
+   "sources": [
+    "https://github.com/yetone/magpie",
+    "https://raw.githubusercontent.com/yetone/magpie/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Graphify",
+   "repo": "github.com/Graphify-Labs/graphify",
+   "stars": "130.8k",
+   "level": "Beginner",
+   "cost": "Free to run locally. Graphify Cloud is a paid layer with a 14-day free trial",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot and 20+ more",
+   "short": "Maps your codebase, docs and PDFs into a knowledge graph your coding agent can query instead of grepping through files.",
+   "what": "You type `/graphify .` in your coding agent and it maps the project into a graph. Code is parsed locally with tree-sitter across about 40 languages, with no LLM. Docs, PDFs and images get a semantic pass from your agent's model or an API key you set. You get an HTML graph to click through, a `GRAPH_REPORT.md` with the key concepts, and a `graph.json` you can query with `graphify query`, `graphify path` and `graphify explain`. Each edge is tagged as read from the source or inferred.",
+   "who": "Developers who work in large or unfamiliar codebases with a coding agent. A small project you already know well won't gain much.",
+   "needs": [
+    "Python 3.10 or later",
+    "uv (recommended) or pipx",
+    "A supported coding agent"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI",
+     "text": "The PyPI package is `graphifyy` with two y's. The README says other `graphify` packages on PyPI are not theirs. `pipx install graphifyy` also works.",
+     "code": "uv tool install graphifyy"
+    },
+    {
+     "title": "Register the skill",
+     "text": "This detects your assistant. For another one, add a platform, for example `graphify install --platform codex`. Add `--project` to install into the current repository instead.",
+     "code": "graphify install"
+    },
+    {
+     "title": "Build the graph",
+     "text": "Run this in your coding agent. In Codex, use `$graphify` instead. The output goes to `graphify-out/`.",
+     "code": "/graphify ."
+    },
+    {
+     "title": "Query it",
+     "code": "/graphify query \"what connects auth to the database?\""
+    },
+    {
+     "title": "Make your agent use it every time (optional)",
+     "text": "This writes a hook or instruction file that tells your agent to check the graph before searching files.",
+     "code": "graphify claude install"
+    },
+    {
+     "title": "Remove it",
+     "text": "Add `--purge` to also delete `graphify-out/`.",
+     "code": "graphify uninstall"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/graphify explain \"RateLimiter\""
+   },
+   "watch": [
+    "Code stays on your machine, but docs, PDFs and images are sent to your agent's model or to the API backend you configure. Use `--code-only` to skip them.",
+    "Every query is logged to `~/.cache/graphify-queries.log`. Set `GRAPHIFY_QUERY_LOG_DISABLE=1` to opt out.",
+    "The always-on setup writes hooks or instruction files such as `AGENTS.md` into your project.",
+    "Codex needs `multi_agent = true` under `[features]` in `~/.codex/config.toml` for parallel extraction.",
+    "The README promotes Graphify Cloud, a paid service. You don't need it for the local tool."
+   ],
+   "sources": [
+    "https://github.com/Graphify-Labs/graphify",
+    "https://raw.githubusercontent.com/Graphify-Labs/graphify/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "earshot",
+   "repo": "github.com/Leonxlnx/earshot",
+   "stars": "2k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code and other MCP clients, plus a CLI and Python API",
+   "short": "Lets a coding agent hear audio: describe a sound, find a moment in a recording, score a film's soundtrack, and make sound effects in code.",
+   "what": "earshot turns sound into text an agent can reason about. It can say what a file sounds like, check how well it fits a description, find the best moment in a long recording, tell a real recording from a synthesized one, and score a launch film's sound against seven professional ones. It can also make sounds as code and improve them by listening, and it ships a bank of 201 sound effects. It runs locally on CPU as a CLI, a Python API and an MCP server.",
+   "who": "People who use an agent to make videos, product demos or games in code and want the sound checked too. If you don't work with audio, skip it.",
+   "needs": [
+    "Python 3.10 or later",
+    "ffmpeg and ffprobe on your PATH",
+    "About 1.1 GB of disk for two open models, downloaded on first use",
+    "A Gemini API key, only for the optional audio LLM critique"
+   ],
+   "steps": [
+    {
+     "title": "Clone it",
+     "code": "git clone https://github.com/Leonxlnx/earshot && cd earshot"
+    },
+    {
+     "title": "Make a virtual environment",
+     "code": "python -m venv .venv"
+    },
+    {
+     "title": "Install CPU PyTorch",
+     "text": "On Windows, use `.venv/Scripts/python`.",
+     "code": ".venv/bin/python -m pip install torch --index-url https://download.pytorch.org/whl/cpu"
+    },
+    {
+     "title": "Install earshot",
+     "code": ".venv/bin/python -m pip install -e \".[mcp,llm,dev]\""
+    },
+    {
+     "title": "Check the install",
+     "text": "Use `earshot doctor --fetch` if you want to download the models up front.",
+     "code": ".venv/bin/python -m earshot doctor --load"
+    },
+    {
+     "title": "Add it to your agent as an MCP server",
+     "text": "This is the Claude Code command. Change the path to where you cloned it. Other clients can use the same command in their `.mcp.json`.",
+     "code": "claude mcp add earshot --scope user -e EARSHOT_THREADS=3 -- /path/to/earshot/.venv/bin/python -m earshot mcp"
+    },
+    {
+     "title": "Add the AI skills (optional)",
+     "text": "Copy or symlink `skills/earshot` and `skills/real-sound` into `~/.claude/skills/` or a project's `.claude/skills/`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "earshot describe enter.ogg"
+   },
+   "watch": [
+    "The first model use downloads about 1.1 GB into `.cache/hf` inside the repo. After that it loads from the cache and never contacts the Hub. Set `EARSHOT_OFFLINE=1` to block downloads.",
+    "Each CLI call loads the models first, which takes about 20 to 40 seconds. The MCP server keeps them loaded.",
+    "On a slow machine, start Claude Code with `MCP_TIMEOUT=60000`.",
+    "The `llm` command uploads audio to Gemini, and only runs with your own key and the `--yes-upload` flag.",
+    "The README's own limits: it can't judge taste, emotion, licences or speech content, and its critic can be pleased without the sound getting better. A human listen is still the final check.",
+    "The reference recordings for `--refset` are licensed and not in the repo. Bring your own with `--refs`."
+   ],
+   "sources": [
+    "https://github.com/Leonxlnx/earshot",
+    "https://raw.githubusercontent.com/Leonxlnx/earshot/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Coucou",
+   "repo": "github.com/Louis-CFM/coucou",
+   "stars": "5.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT code). Chat features use your own API keys",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI, Antigravity, Copilot CLI, OpenCode, Amp and more",
+   "short": "A small companion in your Mac's notch, or the top of the screen on Windows and Linux, that shows your agent sessions and lets you approve them.",
+   "what": "Coucou shows each coding agent session live: what it reads, edits and runs. Claude Code permission requests appear with Allow, Deny and Always, and you can answer its questions from the notch. An iPhone app and an Android app let you approve from your phone. Since 0.4 the Mac app also does dictation, call notes and a chat with several AI providers.",
+   "who": "People who run coding agents in the background and want to approve them without switching windows. Most of the extras are Mac only, so Windows and Linux users get less.",
+   "needs": [
+    "macOS 15 or later, Windows 10 or 11, or Linux",
+    "iOS 18 or later for the iPhone app, or Android 11 or later for the Android app",
+    "An Anthropic API key for chat, and other keys only for the services you add"
+   ],
+   "steps": [
+    {
+     "title": "Install on macOS with Homebrew",
+     "code": "brew tap louis-cfm/coucou https://github.com/Louis-CFM/coucou"
+    },
+    {
+     "title": "Then install the app",
+     "text": "Or download `Coucou.zip` from Releases, move Coucou.app to Applications and click Open when macOS asks.",
+     "code": "brew install --cask coucou"
+    },
+    {
+     "title": "Or install on Windows or Linux",
+     "text": "On Windows, download the `.msi` or setup `.exe` from the README's links. On Linux, use the AppImage, or install the `.deb` with this command (the `.rpm` works with `dnf`).",
+     "code": "sudo apt install ./Coucou-Linux-*.deb"
+    },
+    {
+     "title": "Install the hooks",
+     "text": "In Settings, click Install hooks. For Claude Code, Coucou backs up `~/.claude/settings.json`, merges its hooks and shows you the diff before it writes anything."
+    },
+    {
+     "title": "Add your phone (optional)",
+     "text": "iPhone: join the TestFlight beta, turn on Settings, General, iPhone in the Mac app, and use the same Apple Account on both. Android: install the APK from the release page, turn on Settings, Android phone on Windows or Linux, and scan the pairing code on the same Wi-Fi."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Coucou settings",
+    "text": "Open Settings, General, Demo and click Try demo mode. It walks through a scripted session with no API key and nothing written to disk."
+   },
+   "watch": [
+    "It edits your agents' settings files to add hooks. It backs them up and shows the diff first.",
+    "You can approve agent actions from your phone. The iPhone app asks for Face ID on every Allow, and Android needs your fingerprint or screen lock.",
+    "The Windows installer isn't code-signed yet, so SmartScreen shows a warning the first time.",
+    "The WhatsApp pill is experimental and uses an unofficial gateway. The README warns that WhatsApp may restrict an account that abuses it.",
+    "The Notetaker records your microphone and what your Mac plays. The README says to tell people in the call that you are recording.",
+    "Flow dictation needs the Accessibility and Microphone permissions.",
+    "No telemetry and no account. Keys are kept in your system keychain."
+   ],
+   "sources": [
+    "https://github.com/Louis-CFM/coucou",
+    "https://raw.githubusercontent.com/Louis-CFM/coucou/HEAD/README.md"
+   ]
+  }
+ ]
+}
