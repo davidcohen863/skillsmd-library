@@ -1,0 +1,526 @@
+{
+ "issue": 25,
+ "date": "23 Oct 2026",
+ "checked": "23 Oct 2026",
+ "blurb": "The repos and skills from the 23 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #25 had six repos and three AI skills, and this page covers all nine. Two of them are desktop apps anyone can use: Filee converts files by drag and drop, and WordCraft is an open-source word processor. If you only try one, make Filee. If you use a coding agent, the logo-design skill is the easiest one to get something out of.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenDots",
+   "repo": "github.com/CopilotKit/OpenDots",
+   "stars": "5.9k",
+   "level": "Advanced",
+   "cost": "Free template (MIT). Chat needs CopilotKit Intelligence, hosted or local, and a model API key. Prices are not stated in the README",
+   "works_with": "Web and mobile. Any OpenAI-compatible model provider, MCP servers, Composio and Slack",
+   "short": "A template for always-on AI coworkers you host yourself, each with its own computer, pages, chat, voice calls and Slack.",
+   "what": "OpenDots is a starting point for your own agent workspace. You define Dots, which are specialist agents with a name, role, instructions and allowed tools. Each one can have its own computer with a browser, files and a terminal. They write pages into Spaces, take voice calls and answer in Slack. It is a template you run and customize. CopilotKit doesn't host it for you.",
+   "who": "Developers who want to build an agent workspace for themselves and are happy to run the infrastructure. Skip it if you want a finished product. It is an early alpha for a single owner, with no shared editing or invitations.",
+   "needs": [
+    "Node.js 24 and npm",
+    "A CopilotKit Intelligence project: the hosted service with a CopilotKit sign-in, the local Docker evaluation, or a licensed self-hosted deployment",
+    "An `OPENAI_API_KEY` and `OPENAI_MODEL` for an OpenAI-compatible model",
+    "Optional: a speech provider for calls, a `COMPOSIO_API_KEY` for connected apps, and the OpenBot services for Dot computers"
+   ],
+   "steps": [
+    {
+     "title": "Clone and start it",
+     "code": "git clone https://github.com/CopilotKit/OpenDots.git\ncd OpenDots\nnpm ci\ncp .env.example .env\nnpm run dev"
+    },
+    {
+     "title": "Open it",
+     "text": "Go to `http://127.0.0.1:5173`. You can create Spaces, write pages and set up Dots before you connect anything."
+    },
+    {
+     "title": "Connect hosted Intelligence",
+     "text": "Sign in, then pick or create a project in the `OpenDots` folder. This writes `CPK_INTELLIGENCE_API_KEY` to `.env`. Keep the generated `CPK_TELEMETRY_ID` with it. For a local setup, follow the Local Intelligence evaluation in docs/SETUP.md instead.",
+     "code": "npx copilotkit@latest login\nnpx copilotkit@latest project select"
+    },
+    {
+     "title": "Add a model",
+     "text": "Put `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`, then restart `npm run dev`. Don't run `copilotkit onboard` in this folder. It adds a second, generic CopilotKit setup."
+    },
+    {
+     "title": "Go further",
+     "text": "docs/SETUP.md covers Slack, calls, the browser service and Docker. docs/COMPUTERS.md covers giving each Dot its own computer."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "OpenDots chat",
+    "text": "Ask Scout to open a website, summarize it, save notes, and verify the file."
+   },
+   "watch": [
+    "It's an alpha template. Slack and spoken compute delegation still need checking against live services.",
+    "With hosted Intelligence, your messages, tool calls and run events go to CopilotKit's cloud. Local Intelligence keeps them on your machine but still needs a CopilotKit sign-in and internet access.",
+    "Your model provider receives the conversation, including page content and tool results.",
+    "Web research sends queries and URLs to Parallel by default. Set `WEB_SEARCH_PROVIDER=disabled` to turn it off.",
+    "It sends usage telemetry. Set `COPILOTKIT_TELEMETRY_DISABLED=true` or `DO_NOT_TRACK=1` to opt out.",
+    "Connected apps act on your real email, calendar and other accounts. Start with read-only requests and a test account.",
+    "MCP tools that aren't read-only wait for you to approve them in chat."
+   ],
+   "sources": [
+    "https://github.com/CopilotKit/OpenDots",
+    "https://raw.githubusercontent.com/CopilotKit/OpenDots/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "WordCraft",
+   "repo": "github.com/storytold/wordcraft",
+   "stars": "15.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT or Apache-2.0)",
+   "works_with": "macOS, Windows, Linux, FreeBSD and the browser. Claude Code and other agents through its CLI and MCP server",
+   "short": "An open-source word processor in pure Rust with the ribbon, styles, track changes and mail merge. It opens and saves .docx files.",
+   "what": "WordCraft is a word processor with a familiar ribbon, styles, tables, track changes, references and mail merge. It reads and writes .docx and exports PDF with selectable text. Spelling and grammar work offline. A command-line tool converts and inspects documents, and an MCP server lets AI agents edit them.",
+   "who": "Anyone who wants a free, offline word processor that handles .docx, and developers who want an agent to write or convert documents. Skip it for now if you rely on charts or SmartArt in your files. The team calls it alpha and about 60% ready for real work.",
+   "needs": [
+    "macOS, Windows, Linux or FreeBSD, or a modern browser for the web version",
+    "To build from source: Git and Rust's `cargo`"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "Get your file from the latest release on GitHub. Windows has `.msi` installers and portable zips for x64, ARM64 and 32-bit. macOS has a universal `.dmg`. Linux has an AppImage, Flatpak, `.deb`, `.rpm` and a tarball. `SHA256SUMS.txt` lists a checksum for every file."
+    },
+    {
+     "title": "Or install it on Arch Linux",
+     "text": "Community members maintain the AUR packages.",
+     "code": "yay -S wordcraft-bin"
+    },
+    {
+     "title": "Or run it from source",
+     "text": "This opens the desktop app with the sample document.",
+     "code": "git clone https://github.com/storytold/wordcraft\ncd wordcraft\ncargo run --release -p wordcraft -- --sample"
+    },
+    {
+     "title": "Convert files from the command line",
+     "text": "It handles docx, pdf, odt, rtf, html, md, tex, txt and png.",
+     "code": "wordcraft-cli convert report.docx report.pdf"
+    },
+    {
+     "title": "Connect your coding agent",
+     "text": "This adds the headless MCP server. You can confine the agent to folders with `--automation-read-root DIR --automation-write-root DIR`.",
+     "code": "claude mcp add wordcraft -- wordcraft-cli mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "Turn a Word file into plain text or a PDF: `wordcraft-cli text report.docx`, then `wordcraft-cli convert report.docx report.pdf`."
+   },
+   "watch": [
+    "It's alpha. The team estimates it is about 60% ready for real work. Charts and SmartArt don't yet survive a round trip, and native printing is still to come.",
+    "On Windows, if the app flashes and quits, the README shows how to switch the graphics backend with `WGPU_BACKEND`.",
+    "On Wayland, file drag and drop works only through XWayland, which is the default.",
+    "An agent connected over MCP can open and save documents. Use the read and write root options to keep it inside chosen folders.",
+    "The Gentoo and AUR packages come from community members, not the WordCraft team."
+   ],
+   "sources": [
+    "https://github.com/storytold/wordcraft",
+    "https://raw.githubusercontent.com/storytold/wordcraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Filee",
+   "repo": "github.com/KnifeLemon/Filee",
+   "stars": "10.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Windows 10 and 11, macOS 13 or newer (preview), Linux x64 and ARM64",
+   "short": "Converts files between 255 formats offline: hold a key, drag files and drop them on a format that pops up at your cursor.",
+   "what": "Filee is a file converter you use by dragging. Hold Ctrl (Option on a Mac), drag files, and a donut of formats opens at your cursor. Drop them on one and the result is saved next to the original. It handles images, PDFs, Office files, HWP, e-books, archives, fonts, CAD and 3D files without Office or LibreOffice. A `filee` command does the same from a terminal.",
+   "who": "Anyone who converts files often and doesn't want to upload them to a website. Mac users should know the macOS version is a preview.",
+   "needs": [
+    "Windows 10 or 11, macOS 13 or newer, or Linux (Ubuntu 22.04 or newer) with Python 3",
+    "On Linux, X11 for drag gestures. On Wayland, use the drop zone and the right-click menu",
+    "Video, audio and some document formats need an optional engine (FFmpeg, LibreOffice, Pandoc, calibre or Ghostscript), which Filee downloads when needed"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "Get the package for your system from the latest release on GitHub."
+    },
+    {
+     "title": "Install on Windows",
+     "text": "Run `Filee-<version>-win-Setup.exe`, or unzip the `win-Portable.zip` and run `Filee.exe`. Setup can add the Explorer menu, the `filee` command and optional engines."
+    },
+    {
+     "title": "Install on a Mac",
+     "text": "Unpack the `osx-arm64` or `osx-x64` package and run `./install.sh`, or open the `.dmg` and drag Filee to Applications. Only `install.sh` adds the `filee` command."
+    },
+    {
+     "title": "Install on Linux",
+     "text": "Unpack the package and run `./install.sh`. It needs no root."
+    },
+    {
+     "title": "Convert something",
+     "text": "Hold Ctrl (Option on a Mac), drag files and drop them on a format. Press Tab or turn the mouse wheel to flip the donut to less common formats."
+    },
+    {
+     "title": "Or use the command line",
+     "code": "filee convert photo.heic --to jpg"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "Convert a folder of PNGs to WebP at quality 80: `filee convert *.png --to webp --quality 80 -o converted`."
+   },
+   "watch": [
+    "The macOS build isn't notarized, so allow the first start in System Settings, Privacy & Security, Open Anyway.",
+    "Windows releases are signed, but SmartScreen can still warn about a new release. Choose More info, then Run anyway.",
+    "Files never leave your computer. Filee checks GitHub for updates every few hours, which you can turn off in Settings, About.",
+    "Links dragged from a browser are downloaded without your browser's sign-in.",
+    "On an old, unpatched Windows 10 PC, Filee may not start at all. Install Windows updates first. The README has a PowerShell fix if you can't."
+   ],
+   "sources": [
+    "https://github.com/KnifeLemon/Filee",
+    "https://raw.githubusercontent.com/KnifeLemon/Filee/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Logo Design Skill",
+   "repo": "github.com/kaankiziltug/logo-design-skill",
+   "stars": "4.2k",
+   "level": "Beginner",
+   "cost": "Free (MIT for the skill, scripts and templates)",
+   "works_with": "Claude Code, Claude.ai, Gemini CLI, Codex CLI, Cursor, GitHub Copilot, OpenCode and other agents that load AI skills",
+   "short": "Turns your AI agent into a careful logo designer, from the brief to tested SVG concepts, a full icon set and brand guidelines.",
+   "what": "This AI skill walks your agent through a designer's process: brief, research, concepts, testing and delivery. It comes with a library of 1,400+ real SVG logos to study and Python tools that audit an SVG, build test sheets and export favicons and app icons. It always stops after showing three concepts and a recommendation, and builds the full kit only after you pick one.",
+   "who": "Founders and makers who need a logo and want something better than a first guess. It works best with a model that can see images, because it checks its own drafts as PNGs.",
+   "needs": [
+    "A coding agent that supports AI skills",
+    "Python 3.8 or newer (standard library only)",
+    "For PNG and ICO export, one of: `cairosvg`, `rsvg-convert`, Inkscape, a Chromium browser or macOS Quick Look"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "code": "/plugin marketplace add kaankiziltug/logo-design-skill\n/plugin install logo-design@logo-design-skill"
+    },
+    {
+     "title": "Or copy it into another agent",
+     "text": "Clone the repo, then copy the `skills/logo-design` folder into your agent's skills folder. This is the Codex CLI line. For Gemini CLI use `~/.gemini/skills/logo-design`.",
+     "code": "git clone https://github.com/kaankiziltug/logo-design-skill.git\ncp -r logo-design-skill/skills/logo-design ~/.codex/skills/logo-design"
+    },
+    {
+     "title": "Or upload it to the Claude app",
+     "text": "Download `logo-design.zip` from the Releases page and upload it under Settings, Capabilities, Skills. If there's a size limit, use `logo-design-lite.zip`."
+    },
+    {
+     "title": "Ask for a logo",
+     "text": "Start a new session and describe the brand. The skill picks itself up from your request."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Design a logo for Harbor, a savings app for first-time savers. It should feel calm and safe."
+   },
+   "watch": [
+    "It stops at the concept checkpoint on purpose. Pick a direction and ask for the kit to get colours, lockups, icons and guidelines.",
+    "The logos in the reference library belong to their owners. They are there for study and aren't covered by the MIT licence.",
+    "The skill runs its own Python scripts to render and test drafts."
+   ],
+   "sources": [
+    "https://github.com/kaankiziltug/logo-design-skill",
+    "https://raw.githubusercontent.com/kaankiziltug/logo-design-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Claude How To",
+   "repo": "github.com/luongnv89/claude-howto",
+   "stars": "43.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code 2.1 or newer",
+   "short": "A guided course for Claude Code with diagrams and copy-paste templates, from slash commands to hooks, MCP, subagents and plugins.",
+   "what": "This is a tutorial for Claude Code in 10 modules: slash commands, memory, checkpoints, the CLI, skills, hooks, MCP, subagents, advanced features and plugins. Each module has Mermaid diagrams and ready-made files you copy into your project. It includes a self-assessment and quizzes you run inside Claude Code.",
+   "who": "People who have installed Claude Code and want to learn the features in order. The full path takes 11 to 13 hours. Skip it if you use a different coding agent, since everything here is for Claude Code.",
+   "needs": [
+    "Claude Code 2.1 or newer",
+    "Git",
+    "For the MCP example, a GitHub personal access token"
+   ],
+   "steps": [
+    {
+     "title": "Clone the guide",
+     "code": "git clone https://github.com/luongnv89/claude-howto.git\ncd claude-howto"
+    },
+    {
+     "title": "Add your first slash command",
+     "text": "Replace the path with your own project. Then type `/optimize` in Claude Code.",
+     "code": "mkdir -p /path/to/your-project/.claude/commands\ncp 01-slash-commands/optimize.md /path/to/your-project/.claude/commands/"
+    },
+    {
+     "title": "Set up project memory",
+     "code": "cp 02-memory/project-CLAUDE.md /path/to/your-project/CLAUDE.md"
+    },
+    {
+     "title": "Install a skill",
+     "code": "cp -r 03-skills/code-review-specialist ~/.claude/skills/"
+    },
+    {
+     "title": "Follow the path",
+     "text": "LEARNING-ROADMAP.md lists the modules in order with time estimates. Run `/lesson-quiz` with a topic after each one."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Run `/self-assessment` to find your level and get a personal roadmap."
+   },
+   "watch": [
+    "The hook examples are shell scripts copied into `~/.claude/hooks` and made executable. Read them before you install them.",
+    "The MCP example puts a GitHub personal access token in a request header.",
+    "It's a guide for one product. Everything assumes Claude Code."
+   ],
+   "sources": [
+    "https://github.com/luongnv89/claude-howto",
+    "https://raw.githubusercontent.com/luongnv89/claude-howto/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Omnara",
+   "repo": "github.com/omnara-ai/omnara",
+   "stars": "3.2k",
+   "level": "Advanced",
+   "cost": "Free to self-host (Apache 2.0). Omnara Cloud has no platform fee: free with your own keys and machines, or pay as you go for its models and sandboxes",
+   "works_with": "Any OpenAI- or Anthropic-compatible model, macOS and Linux machines, many sandbox providers, Slack, Discord, GitHub, and MCP clients",
+   "short": "An open-source platform for running AI agents as a service on any model and any machine. Self-host it or use Omnara Cloud.",
+   "what": "Omnara runs AI agents for you through one API. Each agent has a model, tools, secrets and machines where it runs commands, and every step is saved so it can pick up after a crash. You launch agents from the CLI, a TypeScript SDK, Slack, Discord, GitHub or a schedule, and you can make each tool ask a person before it runs.",
+   "who": "Developers and teams who want hosted agents without being tied to one model company, or who want agent history in their own database. Skip it if you only need one coding agent in your own terminal.",
+   "needs": [
+    "Node.js 22 or newer for the CLI",
+    "For Omnara Cloud: an account at app.omnara.com",
+    "For self-hosting: Docker with Compose, plus a model provider and a machine you connect",
+    "For the TypeScript SDK: an API key exported as `OMNARA_TOKEN`"
+   ],
+   "steps": [
+    {
+     "title": "Sign in to Omnara Cloud",
+     "text": "Sign in at app.omnara.com. Your first project comes with a model provider and a pool of sandboxes."
+    },
+    {
+     "title": "Write the agent config",
+     "text": "Save this as `agent.yaml`.",
+     "code": "version: v1\ninstruction: |\n  You are an engineering assistant. Use your machine to run commands.\nmodel:\n  provider_config: omnara-openrouter\n  name: anthropic/claude-fable-5.1\nmachine_sources:\n  - machine_pool_name: default-pool"
+    },
+    {
+     "title": "Launch it",
+     "text": "If you're not logged in, this opens your browser to sign in. Then chat with `npx omnara agents chat <agent-id>` or watch it in the dashboard.",
+     "code": "npx omnara agents launch --file agent.yaml \\\n  --name \"Machine assistant\" \\\n  --message \"Report this machine's operating system and free disk space.\""
+    },
+    {
+     "title": "Or self-host it",
+     "text": "Then open `http://localhost:8000` and sign up. Add a model provider and a model, connect a machine and share both with your project.",
+     "code": "git clone https://github.com/omnara-ai/omnara.git\ncd omnara\ndocker compose -f compose.yaml --profile app up -d"
+    },
+    {
+     "title": "Point the CLI at your own instance",
+     "text": "In `agent.yaml`, use your own provider and model names and replace the `machine_pool_name` entry with `machine_name: <your machine>`.",
+     "code": "npx omnara config --api-url http://localhost:8000/api/v1 --issuer-url http://localhost:8000\nnpx omnara login"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Help me set up Omnara by following https://www.omnara.com/SKILL.md"
+   },
+   "watch": [
+    "Agents run shell commands and edit files on the machines you connect. Each tool can run straight away, ask a person first or be blocked.",
+    "The local self-host defaults are intentionally insecure. Follow the self-hosting guide before any real deployment.",
+    "On Omnara Cloud, agent history is stored by Omnara. Self-hosted, it stays in your own Postgres.",
+    "Sandboxes on a self-hosted instance only work once it has a public URL.",
+    "The setup prompt has your agent follow a SKILL.md from omnara.com. Read it before you hand it over."
+   ],
+   "sources": [
+    "https://github.com/omnara-ai/omnara",
+    "https://raw.githubusercontent.com/omnara-ai/omnara/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ui-humanizer",
+   "repo": "github.com/gabrielgreco1/skills",
+   "stars": "41",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code and Codex. HTML/CSS, Tailwind, React and shadcn interfaces",
+   "short": "Takes the 'made with AI' look out of sites, apps, dashboards, docs and slides, with a design process and a detector script.",
+   "what": "This AI skill finds and removes the habits that make an interface look AI-made: an uppercase label above every heading, a gradient word in the title, cards with a side stripe, pulsing chips, emoji as icons, Tailwind purple and pills everywhere. It is built from 51 replies to a thread on the subject. It runs a full process (brief, sketch before code, references, design system, build and audit) and ships a dependency-free detector script.",
+   "who": "People building landing pages or apps with a coding agent who keep getting the same template look. If you only want a quick check, ask for an audit and it lists the problems without editing.",
+   "needs": [
+    "A coding agent that loads AI skills",
+    "Python 3 for the detector script",
+    "A browser the agent can drive, if you want it to search for visual references and take screenshots"
+   ],
+   "steps": [
+    {
+     "title": "Get the skills repo",
+     "code": "git clone https://github.com/gabrielgreco1/skills.git"
+    },
+    {
+     "title": "Copy the skill in",
+     "text": "Copy the `ui-humanizer` folder from the repo into `~/.claude/skills/`. The README also shows the skills CLI (`npx skills add gabrielgreco1/skills`) with `--skill` and the skill's name."
+    },
+    {
+     "title": "Ask your agent",
+     "text": "Ask it to build or review a page and make it look less like AI. It stops for your approval after the sketch and again after the references."
+    },
+    {
+     "title": "Run the detector yourself",
+     "text": "Replace `<arquivo-ou-pasta>` with a file or folder. Check each hit, because some are legitimate.",
+     "code": "python3 -I ~/.claude/skills/ui-humanizer/scripts/audit.py <arquivo-ou-pasta>"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Audit this landing page for things that make it look AI-made and suggest a fix for each."
+   },
+   "watch": [
+    "The skill and its reference files are written in Portuguese. It covers copy tells in Portuguese and English.",
+    "In the references phase it searches Pinterest, Dribbble, Awwwards and similar sites in the browser.",
+    "It tells the agent never to invent clients, numbers, testimonials, logos or awards, and to use clear placeholders when real material is missing.",
+    "A project's own design system wins over this skill."
+   ],
+   "sources": [
+    "https://github.com/gabrielgreco1/skills/tree/main/ui-humanizer",
+    "https://raw.githubusercontent.com/gabrielgreco1/skills/main/ui-humanizer/SKILL.md",
+    "https://raw.githubusercontent.com/gabrielgreco1/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "openscreen-demo",
+   "repo": "github.com/getopenscreen/openscreen",
+   "stars": "4.8k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). OpenScreen is free for personal and commercial use",
+   "works_with": "Claude Code, Codex, Cursor and other MCP clients. macOS, Windows and Linux",
+   "short": "Has your agent record, edit and export a demo video of a feature with OpenScreen, then attach it to a pull request or draft an X post.",
+   "what": "OpenScreen is a free desktop app for recording your screen and turning it into polished demos. This AI skill drives it through its MCP tools: it writes a storyboard, records the app window, cuts dead time, adds zooms and callouts, exports an MP4 and checks it frame by frame. A pull request video runs 10 to 30 seconds. A launch demo runs 20 to 60 seconds and comes with a drafted post for X.",
+   "who": "Developers who want a short video on their pull requests or a launch clip without editing it by hand. You need a desktop session the app can record, so it won't work from a remote shell.",
+   "needs": [
+    "The OpenScreen app: macOS 13 or newer, Windows 10 version 1903 or newer, or Linux with xdg-desktop-portal and PipeWire",
+    "8 GB of RAM at least, 16 GB recommended",
+    "A coding agent that supports MCP servers",
+    "For pull request videos: `gh` 2.99.0 or newer and push access to the repo"
+   ],
+   "steps": [
+    {
+     "title": "Install OpenScreen",
+     "text": "On Windows, the Microsoft Store is the recommended route. On macOS, download the `.dmg` from the Releases page and drag it to Applications. Linux has `.deb`, `.rpm`, `.pacman` and AppImage packages.",
+     "code": "winget install --source msstore OpenScreen"
+    },
+    {
+     "title": "Grant permissions on a Mac",
+     "text": "In System Settings, Privacy & Security, give OpenScreen Screen Recording and Accessibility. Recording won't start without both."
+    },
+    {
+     "title": "Connect the MCP server",
+     "text": "`<executable>` is the app's executable on your system. On macOS it is `/Applications/Openscreen.app/Contents/MacOS/Openscreen`. The SKILL.md lists the Windows and Linux paths.",
+     "code": "claude mcp add openscreen -- \"<executable>\" mcp"
+    },
+    {
+     "title": "Install the skill",
+     "code": "npx skills add getopenscreen/openscreen --skill openscreen-demo"
+    },
+    {
+     "title": "Start a new session and ask",
+     "text": "The agent loads MCP servers when a session starts, so open a new one before you ask for a video."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Add a video of this change to the PR."
+   },
+   "watch": [
+    "If OpenScreen is missing, the skill offers to install the latest release and does it only once you agree.",
+    "Nothing is posted to X without your explicit yes.",
+    "Keep secrets, customer data and personal notifications off screen. The skill blurs private details it spots, but check the frames.",
+    "GitHub accepts videos up to 10 MB on a free plan and 100 MB on a paid one.",
+    "When connected to the server inside the app, you must turn on MCP edits under AI settings before it can record or export.",
+    "The Windows `.exe` from Releases isn't code-signed, so SmartScreen warns. The Store version installs without a warning.",
+    "OpenScreen is under active development, so expect rough edges and breaking changes."
+   ],
+   "sources": [
+    "https://github.com/getopenscreen/openscreen/tree/main/plugin/skills/openscreen-demo",
+    "https://raw.githubusercontent.com/getopenscreen/openscreen/main/plugin/skills/openscreen-demo/SKILL.md",
+    "https://raw.githubusercontent.com/getopenscreen/openscreen/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "realtime",
+   "repo": "github.com/elevenlabs/skills",
+   "stars": "500",
+   "level": "Advanced",
+   "cost": "Skill is free (MIT). ElevenLabs bills a Realtime agent per minute plus tokens, and Max costs more than Mini. See elevenlabs.io/pricing",
+   "works_with": "Any coding agent that supports the Agent Skills format. ElevenAgents agents and browser apps built on OpenAI's Realtime SDK",
+   "short": "Moves an ElevenLabs voice agent onto the low-latency Realtime models, or ports an OpenAI Realtime browser app to ElevenLabs.",
+   "what": "ElevenLabs Realtime models are built for low-latency voice conversation, in a cheaper Mini and a Max that reasons before it answers. This AI skill does two jobs. It switches an ElevenAgents agent's Voice mode to Realtime by setting one field, after checking for settings that block it. It also migrates a browser app from OpenAI's Realtime API to ElevenLabs while keeping OpenAI's SDK.",
+   "who": "Developers already building voice agents on ElevenLabs, or running an OpenAI Realtime app in the browser. Skip it if your app opens the realtime connection from a server, such as a telephony bridge, which the skill doesn't cover.",
+   "needs": [
+    "An ElevenLabs API key in `ELEVENLABS_API_KEY`",
+    "A workspace with Realtime access, which is rolling out gradually",
+    "The ElevenLabs CLI, or the Python or JavaScript SDK",
+    "Node.js for `npx skills`"
+   ],
+   "steps": [
+    {
+     "title": "Install the ElevenLabs skills",
+     "text": "This adds the whole set, including `realtime`, `agents` and `setup-api-key`.",
+     "code": "npx skills add elevenlabs/skills"
+    },
+    {
+     "title": "Set your API key",
+     "text": "Keys come from the API keys page in ElevenLabs.",
+     "code": "export ELEVENLABS_API_KEY=\"your-api-key\""
+    },
+    {
+     "title": "Install the CLI",
+     "code": "npm install -g @elevenlabs/cli"
+    },
+    {
+     "title": "Pull the agent",
+     "code": "elevenlabs agents pull --agent <agent-id>"
+    },
+    {
+     "title": "Set the Realtime model",
+     "text": "In the agent's file under `agent_configs/`, set `conversation_config.realtime_model` to `eleven_realtime_v1_mini` or `eleven_realtime_v1_max`. Change nothing else. Then push it.",
+     "code": "elevenlabs agents push --agent <agent-id>"
+    },
+    {
+     "title": "Test it",
+     "text": "Publish the agent, check the field holds the model, and hold a test conversation."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Check whether my ElevenLabs agent can use a Realtime model, and switch it over if it can."
+   },
+   "watch": [
+    "If the API says Realtime models are not available for this workspace, you don't have access yet. No setting fixes that.",
+    "Agents that use a custom LLM, Amazon Bedrock or text only can't switch. Transfers between Realtime and Custom agents fail.",
+    "For Zero Retention Mode or HIPAA you need Max, which is available in the US and EU only.",
+    "The skill tells the agent never to ask you to paste your API key into the chat.",
+    "When porting an OpenAI app, tools, handoffs and guardrails stay unverified against ElevenLabs. Test them yourself."
+   ],
+   "sources": [
+    "https://github.com/elevenlabs/skills/tree/main/realtime",
+    "https://raw.githubusercontent.com/elevenlabs/skills/main/realtime/SKILL.md",
+    "https://raw.githubusercontent.com/elevenlabs/skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
