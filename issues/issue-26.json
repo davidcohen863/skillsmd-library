@@ -1,0 +1,354 @@
+{
+ "issue": 26,
+ "date": "24 Oct 2026",
+ "checked": "24 Oct 2026",
+ "blurb": "The six repos from the 24 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #26 had six repos and no AI skills, and this page covers all six. Two are big infrastructure projects (DeepSeek's inference engine and the PHP interpreter) that most people will only read about. If you have an Apple Silicon Mac, OnKey is the easiest one to try. If you use a coding agent, start with OpenFilm.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "DeepInfer",
+   "repo": "github.com/deepseek-ai/DeepInfer",
+   "stars": "21.5k",
+   "level": "Advanced",
+   "cost": "Free (Apache 2.0). It needs datacenter hardware: NVIDIA SM100 GPUs or Huawei Ascend 950 NPUs",
+   "works_with": "Linux with NVIDIA SM100 GPUs or Huawei Ascend 950 NPUs. Runs DeepSeek-V4.1-Flash",
+   "short": "DeepSeek's own inference framework, released so you can run DeepSeek-V4.1-Flash offline on large GPU clusters.",
+   "what": "DeepInfer is the inference framework behind DeepSeek's large-scale production services. This release does offline inference for DeepSeek-V4.1-Flash, with optimized kernels, several kinds of parallelism, draft-token decoding, deterministic sampling and structured outputs (regex, JSON schema or EBNF grammar). It was first built mostly on vLLM.",
+   "who": "Infrastructure engineers with access to NVIDIA SM100 GPUs or Ascend 950 NPUs who want to serve DeepSeek models themselves. Skip it if you don't have that hardware. It is also not a full serving stack on its own.",
+   "needs": [
+    "Linux",
+    "GCC 13.0 or later",
+    "Python 3.12, in a new empty environment",
+    "CUDA 13 on NVIDIA, or CANN 9.2 on Ascend",
+    "NVIDIA SM100 GPUs or Huawei Ascend 950 NPUs"
+   ],
+   "steps": [
+    {
+     "title": "Make a clean Python environment",
+     "text": "Get the source from the repo, then create and activate an empty Python 3.12 environment before you build."
+    },
+    {
+     "title": "Build from source",
+     "text": "Set `DEEPINFER_ACCELERATOR` to `nvidia` or `ascend`, and keep it exported wherever you run DeepInfer.",
+     "code": "# Use `ascend` instead for the Ascend platform\n# Keep it exported in the environment where you run DeepInfer\nexport DEEPINFER_ACCELERATOR=nvidia\n./build.sh"
+    },
+    {
+     "title": "Run offline inference",
+     "text": "The first run downloads the default checkpoint, `deepseek-ai/DeepSeek-V4.1-Flash-1017`, into the Hugging Face cache. To use a local copy, set `DEEPINFER_HF_MODEL_DIR` to its folder.",
+     "code": "python examples/offline_inference.py"
+    },
+    {
+     "title": "Turn on extra features",
+     "text": "Features are switched on with environment variables. `DEEPINFER_BATCH_INVARIANT=1` keeps results the same across batch mixes (NVIDIA only), and `so_args` in `SamplingParams` constrains output to a schema. examples/README.md has the details."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `python examples/offline_inference.py` to generate with the default DeepSeek-V4.1-Flash checkpoint."
+   },
+   "watch": [
+    "It runs only on NVIDIA SM100 GPUs or Huawei Ascend 950 NPUs. The published benchmarks used 4 GPUs for prefill and 64 for decode.",
+    "This release is offline inference only. A complete service also needs a KV cache system, prefill and decode disaggregation, and load balancing, and none of those are included.",
+    "The first run downloads the full model checkpoint from Hugging Face."
+   ],
+   "sources": [
+    "https://github.com/deepseek-ai/DeepInfer",
+    "https://raw.githubusercontent.com/deepseek-ai/DeepInfer/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "PhotoCraft",
+   "repo": "github.com/storytold/photocraft",
+   "stars": "72.1k",
+   "level": "Beginner",
+   "cost": "Free (MIT or Apache 2.0)",
+   "works_with": "macOS, Windows, Linux, FreeBSD and the web. AI agents can drive it through a CLI or an MCP server",
+   "short": "A free, open-source photo editor in pure Rust that works like Photoshop and opens and saves real PSD files.",
+   "what": "PhotoCraft is a clean-room reimplementation of Photoshop written in Rust. It has layers, masks, 16 adjustment layers, layer styles, editable type, vector shapes, a brush engine and 67 tools, and it opens and saves layered PSD files. Every menu item is a command, so a script or an AI agent can run the same edits through `photocraft-cli` or its MCP server.",
+   "who": "Anyone who wants a free Photoshop-style editor that runs offline, and developers who want to batch-edit images or let an agent do it. The team says it is early alpha and not yet ready to replace Photoshop for daily professional work.",
+   "needs": [
+    "To install: a download for your system from the getartcraft.com PhotoCraft page or the GitHub releases",
+    "To build from source: git and Rust's `cargo`",
+    "Optional: the craft-fonts repo for Japanese fonts in source builds"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "The easiest route is the PhotoCraft page on getartcraft.com. The latest GitHub release has every build: `.msi` or portable zip for Windows, a signed `.dmg` for macOS, AppImage, Flatpak, `.deb`, `.rpm` or tarball for Linux, plus FreeBSD and web builds. `SHA256SUMS.txt` lists a checksum for each file."
+    },
+    {
+     "title": "Or install the Flatpak on Linux",
+     "code": "flatpak install --user photocraft-<version>-linux-x86_64.flatpak   # or -linux-aarch64\nflatpak run ai.storyteller.photocraft"
+    },
+    {
+     "title": "Or build it from source",
+     "code": "git clone https://github.com/storytold/photocraft\ncd photocraft\ncargo run --release -p photocraft -- image.psd   # the desktop app\ncargo test --workspace                           # the test suite"
+    },
+    {
+     "title": "Edit from the command line",
+     "text": "`photocraft-cli` runs the same commands headless, on one file or a folder. Every subcommand has `--help`.",
+     "code": "photocraft-cli batch --actions grade.json --in ./raw --out ./graded"
+    },
+    {
+     "title": "Let an agent drive it",
+     "text": "This starts the MCP server, headless or bridged to the running app.",
+     "code": "photocraft-cli mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Use the README's headless example: open `wave.psd` with `photocraft-cli run`, add Smart Sharpen and a Curves adjustment layer, and save it as `wave-final.png`."
+   },
+   "watch": [
+    "It's early alpha. The README says the biggest gaps are AI and generative features, 15 missing tools, typography depth and plug-in support.",
+    "A re-saved PSD renders the same in almost all of their tests, but the file isn't byte-identical to the original. Keep a copy of important files.",
+    "The AppImage registers a launcher and menu entry in `~/.local/share` on first run. Set `PHOTOCRAFT_NO_DESKTOP_INTEGRATION=1` to skip that.",
+    "On Wayland, dropping files on the window doesn't open them yet. Use File › Open or paste with Ctrl+V.",
+    "The desktop app has a control channel (`photocraft --control`) that can drive tools and take screenshots. It is authenticated and listens only on your own machine."
+   ],
+   "sources": [
+    "https://github.com/storytold/photocraft",
+    "https://raw.githubusercontent.com/storytold/photocraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "universal-modder",
+   "repo": "github.com/rehan-remade/universal-modder",
+   "stars": "8.8k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Generated art, 3D and sound need a fal API key. fal prices are not stated in the README; Sprixen and Voidless are optional paid services",
+   "works_with": "Claude Code, Codex, Gemini CLI, GitHub Copilot, Cursor, OpenCode, or any agent that reads Agent Skills",
+   "short": "Skills and tools that let your coding agent mod PC games you own, from reverse engineering to generated sprites, 3D and sound.",
+   "what": "universal-modder gives your coding agent a set of AI skills, the fal MCP server and a CLI called `um`. The agent finds the game, works out its engine, reads the real code, builds the mod, makes assets with fal, tests it in the running game and records a video. It also keeps a shared knowledge base of field notes on how specific games were modded.",
+   "who": "PC gamers and modders who already use a coding agent and want help modding single-player games or servers they host. Skip it for online games with anti-cheat. It refuses those.",
+   "needs": [
+    "A coding agent",
+    "Git, Python 3.10 or later, and ffmpeg. `uv` is recommended",
+    "A fal API key for generated assets, or fal's browser sign-in, or a local ComfyUI server for images",
+    "Blender, if you want 3D models turned into sprites",
+    "PC games you own"
+   ],
+   "steps": [
+    {
+     "title": "Install it in Claude Code",
+     "code": "/plugin marketplace add rehan-remade/universal-modder\n/plugin install universal-modder@universal-modder"
+    },
+    {
+     "title": "Or in Codex",
+     "code": "codex plugin marketplace add rehan-remade/universal-modder\ncodex plugin add universal-modder@universal-modder"
+    },
+    {
+     "title": "Or the skills alone, for any agent",
+     "text": "Gemini CLI, VS Code with Copilot, Cursor and OpenCode have their own install routes in the README. You can also clone the repo and start your agent inside it.",
+     "code": "npx skills add https://github.com/rehan-remade/universal-modder"
+    },
+    {
+     "title": "Install the um CLI if your agent didn't",
+     "text": "The Claude Code plugin puts `um` on your PATH. Codex, Cursor, Gemini CLI and OpenCode plugin installs don't, so install it once.",
+     "code": "uv tool install git+https://github.com/rehan-remade/universal-modder     # or: pipx install git+..."
+    },
+    {
+     "title": "Store your fal key",
+     "text": "`um fal key set` asks for the key at a hidden prompt and stores it in the desktop keyring on Linux, or in an owner-only file elsewhere. The agent configs read `FAL_KEY`, so on Linux load it from the keyring before you start the agent.",
+     "code": "um fal key set                                                   # hidden prompt\nexport FAL_KEY=\"$(secret-tool lookup service fal.ai key api)\"    # Linux: before starting the agent"
+    },
+    {
+     "title": "Check for prior work",
+     "text": "Search the knowledge base before you start, to see how others modded the same game.",
+     "code": "um kb search \"grand theft auto\""
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Mod Terraria: add a homing missile launcher and a tactical nuke that craters the world. Make the sprites with fal."
+   },
+   "watch": [
+    "Generating art, 3D, sound and video uses your fal account. The README doesn't state prices, but `um fal` has a `price` command.",
+    "The agent works inside your game folders. It backs up saves first and asks before it drives your mouse and keyboard, installs loaders into game folders or publishes anything.",
+    "`um kb pr` opens a pull request with your field note on GitHub. It is meant to run only after you say OK.",
+    "The optional three-agent team for long mods uses several times the tokens of one agent.",
+    "It refuses to inject into online games with anti-cheat, write cheats against other players, or bypass anti-cheat, DRM or ownership checks."
+   ],
+   "sources": [
+    "https://github.com/rehan-remade/universal-modder",
+    "https://raw.githubusercontent.com/rehan-remade/universal-modder/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenFilm",
+   "repo": "github.com/openfilm/openfilm",
+   "stars": "2.4k",
+   "level": "Beginner",
+   "cost": "Free (MIT). Generated voice, music, images and video use your own keys for services like ElevenLabs, OpenAI, Google or fal",
+   "works_with": "Codex, Claude Code or any coding agent. macOS, Windows and Linux",
+   "short": "An open-source AI video agent: your coding agent writes the film as web pages, and you edit it in a local editor.",
+   "what": "OpenFilm lets your coding agent make videos. The agent writes the film as one `film.html` file of tracks and clips, where each shot is a web page that draws any moment with a `frame(t)` function. Studio, a local editor in your browser, shows the film taking shape, and you can change text, layers and clips by hand or by asking.",
+   "who": "People who use a coding agent and want to make launch videos, explainers or animated clips. If you don't use a coding agent, the desktop app gives you Studio with a chat beside it.",
+   "needs": [
+    "Node 22.2 or later and ffmpeg (git too, for Studio's saved versions)",
+    "A coding agent",
+    "A Chromium-based browser such as Chrome or Edge for Studio",
+    "Optional: your own API keys for voice, music, image and video services"
+   ],
+   "steps": [
+    {
+     "title": "Add the skills",
+     "text": "The first run downloads a headless Chromium of about 100 MB.",
+     "code": "npx skills add openfilm/openfilm"
+    },
+    {
+     "title": "Ask your agent for a film",
+     "text": "It opens the film in Studio so you can watch it come together. If your agent has no skills support, tell it to run `npx -y openfilm@latest` and follow the manual it prints."
+    },
+    {
+     "title": "Or use the desktop app",
+     "text": "Download it for macOS or Windows from openfilm.dev or the GitHub releases. It comes with ffmpeg and the headless browser, so nothing else needs installing."
+    },
+    {
+     "title": "Connect services for generated media",
+     "text": "Making, editing and rendering films needs no account. For generated voice, music, images and video, add your own keys in Studio under Settings → Providers."
+    },
+    {
+     "title": "Start from an example",
+     "code": "npx -y openfilm@latest open https://github.com/openfilm/examples/tree/main/one-prompt"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Make a 20-second launch video for my CLI, with music."
+   },
+   "watch": [
+    "The first run downloads a headless Chromium, about 100 MB.",
+    "Generated media goes through the services you connect, with your own keys, so those services bill you.",
+    "Use a Chromium-based browser for Studio. Films are drawn and exported with that engine, so that's the preview that matches the export."
+   ],
+   "sources": [
+    "https://github.com/openfilm/openfilm",
+    "https://raw.githubusercontent.com/openfilm/openfilm/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OnKey",
+   "repo": "github.com/dsmurrell/onkey",
+   "stars": "257",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Mac with Apple Silicon. Spotify, Apple Music, or YouTube in a browser",
+   "short": "A free Mac singing trainer that listens to the song you're playing and shows where your pitch is off.",
+   "what": "OnKey is a singing trainer for the Mac. You play a song in Spotify, Apple Music or YouTube and sing along. The first time you get the lyrics, and OnKey learns the singer's melody when the song ends. After that the notes scroll towards you, your pitch is drawn over them, and you get a score with a report on every line.",
+   "who": "Anyone who sings at home and wants to know when they're off key. You need an Apple Silicon Mac. It isn't meant for bars or events, where the README points you to a licensed karaoke service.",
+   "needs": [
+    "A Mac with Apple Silicon (M1 or later)",
+    "macOS 14.2 or later",
+    "Music you're entitled to play, in Spotify, Apple Music or YouTube in a browser"
+   ],
+   "steps": [
+    {
+     "title": "Download and install",
+     "text": "Download `OnKey.dmg` from the latest GitHub release, open it and drag OnKey to Applications."
+    },
+    {
+     "title": "Grant permissions",
+     "text": "Setup asks for the microphone, to hear you, and for system audio recording, to hear the music app. When it asks whether it may follow Spotify and Apple Music, you can choose Listen only and it follows songs by their sound alone."
+    },
+    {
+     "title": "Sing a song twice",
+     "text": "Play a song and sing along. The first play gives you lyrics and teaches OnKey the melody. On later plays you get the scrolling notes and a score."
+    },
+    {
+     "title": "Or build it yourself",
+     "text": "You need the Xcode command line tools, Rust, Node and Python 3. A self-built copy can't ask Shazam to name new songs.",
+     "code": "git clone https://github.com/dsmurrell/onkey && cd onkey\nnpm install && npm --prefix ui install\npython3 -m venv .venv && .venv/bin/pip install -r scripts/requirements-models.txt\nPYTHON=.venv/bin/python scripts/fetch-models.sh   # downloads the models and checks them by SHA-256\nnpx tauri build"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "OnKey and your music app",
+    "text": "Play a song you like in Spotify, Apple Music or YouTube, sing along, then play it again to see your pitch against the notes."
+   },
+   "watch": [
+    "It needs microphone and system audio recording access.",
+    "It never saves the music, and your recordings stay on your Mac. A take sung over speakers can contain some of the music.",
+    "Some requests go out: a short sound signature to Shazam to name songs, the song details to LRCLIB for lyrics, iTunes lookups for covers, and a daily update check to GitHub. Settings has switches for Shazam, lyrics and the update check.",
+    "The README asks you not to share the melody transcriptions it makes, and not to post screen recordings with the music playing."
+   ],
+   "sources": [
+    "https://github.com/dsmurrell/onkey",
+    "https://raw.githubusercontent.com/dsmurrell/onkey/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "PHP",
+   "repo": "github.com/php/php-src",
+   "stars": "41.6k",
+   "level": "Advanced",
+   "cost": "Free (Modified BSD licence)",
+   "works_with": "Windows, Linux and macOS",
+   "short": "The source code of the PHP interpreter, with steps to build it, test it and install it yourself.",
+   "what": "php-src is the official repository for PHP, the general-purpose scripting language used across web development. The README covers prebuilt packages, building PHP from source on Ubuntu, Fedora and macOS, running the test suite, and installing extensions with PIE.",
+   "who": "Developers who want to build PHP themselves, test a change or contribute to the language. If you only want to run PHP, use a prebuilt package from windows.php.net or the installation chapter on php.net.",
+   "needs": [
+    "For a minimal build from Git: autoconf, bison and re2c",
+    "For a default build, also libxml2 and libsqlite3",
+    "A C build toolchain (the Ubuntu command installs build-essential)"
+   ],
+   "steps": [
+    {
+     "title": "Get a prebuilt package",
+     "text": "If you only need PHP, skip the build. On Windows, get the binaries from windows.php.net. After you extract the archive the `.exe` files are ready to use. For other systems, see the installation chapter at php.net/install."
+    },
+    {
+     "title": "Install the build tools",
+     "text": "This is the Ubuntu command. The README also gives commands for Fedora, Homebrew and MacPorts.",
+     "code": "sudo apt install -y pkg-config build-essential autoconf bison re2c libxml2-dev libsqlite3-dev"
+    },
+    {
+     "title": "Generate configure",
+     "code": "./buildconf"
+    },
+    {
+     "title": "Configure the build",
+     "text": "`--enable-debug` is recommended for development. `./configure --help` lists every option.",
+     "code": "# For development\n./configure --enable-debug\n# For production\n./configure"
+    },
+    {
+     "title": "Build it",
+     "text": "Set the job count to roughly your number of cores, which `nproc` shows.",
+     "code": "make -j4"
+    },
+    {
+     "title": "Run the tests",
+     "code": "make TEST_PHP_ARGS=-j4 test"
+    },
+    {
+     "title": "Install it",
+     "code": "make install"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "After building, test one directory only: `make TESTS=tests/lang/ test`"
+   },
+   "watch": [
+    "`make install` may need superuser permissions, depending on your permissions and install prefix.",
+    "Windows builds from source follow a separate guide on the PHP wiki.",
+    "New features need an accepted RFC. Bug fixes don't."
+   ],
+   "sources": [
+    "https://github.com/php/php-src",
+    "https://raw.githubusercontent.com/php/php-src/HEAD/README.md"
+   ]
+  }
+ ]
+}
