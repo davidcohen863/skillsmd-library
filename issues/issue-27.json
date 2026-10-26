@@ -1,0 +1,313 @@
+{
+ "issue": 27,
+ "date": "25 Oct 2026",
+ "checked": "26 Oct 2026",
+ "blurb": "The six repos from the 25 October issue, with what each one does and the setup steps from its own README.",
+ "intro": "Issue #27 had six repos and no AI skills, and this page covers all six. Three plug into a coding agent (Hallmark, Replica and jevgrep), one is a desktop PDF app, one is an agent app and one runs very large models on your own GPUs. If you build web pages with an agent, start with Hallmark. For a free PDF editor, PdfCraft is the easy one.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Hallmark",
+   "repo": "github.com/Nutlope/hallmark",
+   "stars": "32.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode",
+   "short": "A design skill that builds web pages from 48 themes and checks them in a real browser for the habits that make pages look AI-made.",
+   "what": "Hallmark is a design skill made by Together AI. It offers three themes from a catalog of 48, builds the page around what the visitor came to do, then lints it at eight widths for common AI design tells. It can also redesign or audit an existing page by name.",
+   "who": "Anyone who asks a coding agent to build landing pages or sites and is tired of them all looking the same. Skip it if you don't build web pages.",
+   "needs": [
+   "Node 18 or later",
+   "For the browser checks and screenshots: puppeteer-core and Chrome (the static checks run without them)"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "`-g` installs it for every project. Leave it off to install into the current project only.",
+     "code": "npx skills add nutlope/hallmark -g"
+    },
+    {
+     "title": "Add the browser checks (optional)",
+     "text": "This turns on `sloplint --render` and screenshots. You also need Chrome.",
+     "code": "npm i -g puppeteer-core"
+    },
+    {
+     "title": "Or install it as a Claude Code plugin",
+     "text": "Run `/plugin marketplace add nutlope/hallmark`, then `/plugin install hallmark@hallmark`. It is then invoked as `/hallmark:hallmark`."
+    },
+    {
+     "title": "Build or redesign a page",
+     "text": "Type `/hallmark <prompt>` (or `$hallmark <prompt>` in Codex CLI), or just describe a new build. For a page that already exists, name it:",
+     "code": "/hallmark redesign ./src/app\n/hallmark audit ./index.html"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `/hallmark audit ./index.html` on a page you already have. It only reports and changes nothing. If the skill does not fire on its own, say \"use hallmark to build ...\"."
+   },
+   "watch": [
+    "It never redesigns an existing page unless you name it. A full redesign keeps your content and wiring but changes the layout. Say \"keep the layout\" for a restyle or \"polish\" to fix only the tells.",
+    "Photos come from a list of 755 openly licensed Wikimedia Commons images. Each keeps its own licence, and Hallmark credits each one on the page."
+   ],
+   "sources": [
+    "https://github.com/Nutlope/hallmark",
+    "https://raw.githubusercontent.com/Nutlope/hallmark/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Cindy",
+   "repo": "github.com/makecindy/cindy",
+   "stars": "4.4k",
+   "level": "Intermediate",
+   "cost": "The client is free (Apache 2.0). The hosted service is paid; see the pricing page at cindy.app",
+   "works_with": "macOS, Windows, Linux, iOS, Android. Uses Claude Code and Codex as harnesses",
+   "short": "An open-source AI agent app that runs on your own computer and uses Claude Code or Codex under the hood.",
+   "what": "Cindy is an AI agent that works in your real files and logged-in apps. It brings several harnesses, models and tools into one agent, keeps memory and skills across them, and can drive your browser, computer and phone. This repo is the open-source desktop and mobile client.",
+   "who": "People who want one agent app on their desktop or phone that can switch models and harnesses mid-task. Most users should download the app. Building from this repo is for contributors.",
+   "needs": [
+    "For the download: nothing listed beyond the app",
+    "For models: a Cindy account, your existing Claude Code or Codex plan, your own API keys, or local models",
+    "To build from source: Node.js 22.x, pnpm 10.x (v11 not yet supported) and Git LFS"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Get it from cindy.app/download. Linux users have a separate guide in the repo at docs/linux.md."
+    },
+    {
+     "title": "Choose how to sign in",
+     "text": "Sign in to the Cindy service, authorise the Claude Code or Codex plan you already pay for, or connect your own API keys. Choose \"Skip Sign-In\" to use local agents without an account; server-backed features are then unavailable."
+    },
+    {
+     "title": "Or build it from source",
+     "text": "The full contributor setup is in CONTRIBUTING.en.md.",
+     "code": "git clone https://github.com/makecindy/cindy.git\ncd cindy\ngit lfs pull\npnpm install"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "The Cindy app",
+    "text": "Ask it to do a small real task in one of your project folders, such as summarising what is in it."
+   },
+   "watch": [
+    "It works with your real files and logged-in apps and can drive your browser, computer and phone. Check what you let it reach.",
+    "Official builds include TapDB usage analytics (device, OS and app version, tied to your account ID once you sign in). The README says it does not collect chat, file or folder content.",
+    "The client connects to Cindy's cloud services by default, and desktop updates come from its CDN.",
+    "`pnpm install` downloads the claude-code, codex and ripgrep binaries for your platform."
+   ],
+   "sources": [
+    "https://github.com/makecindy/cindy",
+    "https://raw.githubusercontent.com/makecindy/cindy/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Replica",
+   "repo": "github.com/Jakeschincariol/replica-skill",
+   "stars": "5.3k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). No signup or API key",
+   "works_with": "Claude Code. Any single SKILL.md can also be pasted into a chat",
+   "short": "Eleven skills that study an app's features, rebuild them clean-room style, test the result, and rebrand it as your own.",
+   "what": "Replica is a set of eleven skills you run in order: recon, architect, design, build, backend, test, diff, entrepreneur, brand, launch and deploy. Each one reads what the last wrote into a `replica/` folder. It rebuilds features and flows, not the original's code, logo, copy or content. Six small Python tools score parity, rank review complaints and sweep out the original's name.",
+   "who": "Builders who want to make a competitor to an app they already know. `/replica-entrepreneur` on its own is useful for checking whether an idea is worth it. Skip it if you are not planning to ship your own product.",
+   "needs": [
+    "Claude Code (for the full set and the Python tools)",
+    "Python 3.8 or newer for the tools. Nothing to pip install"
+   ],
+   "steps": [
+    {
+     "title": "Install as a plugin",
+     "text": "Installed this way, the skills are namespaced, like `/replica-skill:replica-recon`.",
+     "code": "/plugin marketplace add Jakeschincariol/replica-skill\n/plugin install replica-skill@replica-skill"
+    },
+    {
+     "title": "Or copy the folders",
+     "text": "Do this if you want plain `/replica-recon`. Copy into your repo's `.claude/skills/` instead for one project only.",
+     "code": "git clone https://github.com/Jakeschincariol/replica-skill.git\ncp -r replica-skill/replica-* ~/.claude/skills/"
+    },
+    {
+     "title": "Start with recon",
+     "text": "Run `/replica-recon` with the app's URL. It reads public pages and store listings, and you click through your own account with it. It writes `replica/recon.md` and a `features.csv`."
+    },
+    {
+     "title": "Run the rest in order",
+     "text": "recon, architect, design, build, backend, test, diff, entrepreneur, brand, launch, deploy. You can also run any one on its own."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `/replica-entrepreneur` on an app you are only thinking about cloning. It reads real reviews and tells you what users hate, with links."
+   },
+   "watch": [
+    "Only use it on what you are allowed to read: public pages and your own account. If your account's terms forbid building a competitor, the skill says so and sticks to public sources.",
+    "The README says to run the trademark checks `/replica-brand` lists, read the terms of anything you used, and talk to a lawyer before launch if there is money on the line.",
+    "`/replica-backend` and `/replica-deploy` set up auth, payments and production with your own keys and domain.",
+    "No promise of a perfect clone. `/replica-recon` sizes the job first and `/replica-diff` gives a parity score."
+   ],
+   "sources": [
+    "https://github.com/Jakeschincariol/replica-skill",
+    "https://raw.githubusercontent.com/Jakeschincariol/replica-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "PdfCraft",
+   "repo": "github.com/storytold/pdfcraft",
+   "stars": "17.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT or Apache 2.0)",
+   "works_with": "macOS, Windows, Linux, FreeBSD and the web. Optional MCP server for AI agents",
+   "short": "A free, offline PDF reader and editor written in Rust, with a command-line tool and an opt-in MCP server for agents.",
+   "what": "PdfCraft reads, organises, combines, splits and password-protects PDFs, and handles comments, forms and layers. Every save appends your changes and leaves the original bytes untouched. A `pdfcraft-cli` tool and an opt-in MCP server let scripts and AI agents do the same jobs without the app.",
+   "who": "Anyone who wants a private PDF app with no account or cloud. The CLI and MCP server are for people who want an agent to handle PDFs. It is alpha, so keep another editor around if you need to edit existing text or convert office files.",
+   "needs": [
+    "Nothing for the downloads",
+    "To build from source: Rust 1.95 or later"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "The easiest way is the PdfCraft page on getartcraft.com. Every build (MSI, DMG, AppImage, Flatpak, .deb, .rpm, web) is also on the GitHub releases page, with checksums in `SHA256SUMS.txt`."
+    },
+    {
+     "title": "Try the command-line tool",
+     "text": "The CLI does the same jobs as the app.",
+     "code": "pdfcraft-cli combine report.pdf appendix.pdf --out combined.pdf\npdfcraft-cli extract report.pdf --pages 1,3,5-8 --out highlights.pdf\npdfcraft-cli split   report.pdf --every 10 --out-dir parts/"
+    },
+    {
+     "title": "Give an agent access (optional)",
+     "text": "Add this to your agent's MCP configuration. `--root` keeps every file it can read or write inside one folder.",
+     "code": "{ \"mcpServers\": { \"pdfcraft\": { \"command\": \"pdfcraft-cli\", \"args\": [\"mcp\", \"--root\", \"/path/to/your/pdfs\"] } } }"
+    },
+    {
+     "title": "Or build from source",
+     "code": "git clone https://github.com/storytold/pdfcraft\ncd pdfcraft\ncargo xtask models                                # fetch the OCR models Scan & OCR needs (release builds include them)\ncargo run --release -p pdfcraft -- some.pdf     # desktop app"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `pdfcraft-cli text paper.pdf --page 3` to get page 3's text in reading order."
+   },
+   "watch": [
+    "It is alpha. Editing existing text, OCR beyond Latin script and office document import or export are thin or missing, and fuzzing still finds crashes on hostile files.",
+    "The MCP server is off unless an agent launches `pdfcraft-cli mcp`. It opens no network port.",
+    "The app-control mode (`--control`) lets an agent click and type in the real app. Keep its control file in a folder only you can write, not `/tmp`.",
+    "The Windows MSI needs administrator rights and adds right-click menu entries for PDFs and images."
+   ],
+   "sources": [
+    "https://github.com/storytold/pdfcraft",
+    "https://raw.githubusercontent.com/storytold/pdfcraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "jevgrep",
+   "repo": "github.com/dzhng/jevgrep",
+   "stars": "2.9k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Searches use your own model provider key, which you pay for",
+   "works_with": "Claude Code, Codex, OpenCode and other coding agents",
+   "short": "A CLI that lets your coding agent find code by asking what it does, so it starts from the right files.",
+   "what": "You ask `jg` a question about a repo and it returns the relevant files, reading leads and exact source excerpts in one response. It uses the Jev model to judge what is relevant. In the authors' ten-task SWE-bench test, it solved the same 8 of 10 tasks as the baseline at lower cost.",
+   "who": "People who point coding agents at large or unfamiliar codebases. If you already know the symbol or path, a plain `rg` search is enough.",
+   "needs": [
+    "Node.js 22+ (22.20+ for the skill installer)",
+    "macOS, Linux or Windows",
+    "A key for Vercel AI Gateway, TypeSafe, OpenRouter, OpenCode Zen or a TypeSafe-compatible endpoint"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI",
+     "code": "npm install -g @dzhng/jevgrep"
+    },
+    {
+     "title": "Add your provider key",
+     "text": "It asks for your provider and saves the key in an owner-only config file. `jg doctor` checks it.",
+     "code": "jg auth"
+    },
+    {
+     "title": "Install the agent skill",
+     "text": "Run it from the project your agent works in. This step is required; the CLI alone does not teach your agent to use it. Add `--global` for a user-wide install.",
+     "code": "jg skill"
+    },
+    {
+     "title": "Ask a question",
+     "code": "jg \"How are telemetry events recorded and sent?\" ./my-project"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `jg \"Which tests cover retry behavior when a request times out?\" .` in a repo you know, and check the files it points to."
+   },
+   "watch": [
+    "Searches send source code to Jev through the provider you chose. It skips hidden, build, binary and obvious credential files, but the README calls that best-effort. Pick a search root you are happy to send.",
+    "`jg files [root]` shows which files a search could read, with no key or network request.",
+    "Answers are cached locally by default. The output is evidence for your agent, not a guarantee every relevant file was found."
+   ],
+   "sources": [
+    "https://github.com/dzhng/jevgrep",
+    "https://raw.githubusercontent.com/dzhng/jevgrep/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Project Maya",
+   "repo": "github.com/mw00/project-maya",
+   "stars": "1.8k",
+   "level": "Advanced",
+   "cost": "Free (MIT). You need your own GPU hardware",
+   "works_with": "Linux with NVIDIA GPUs. Windows and AMD are experimental. OpenAI- and Anthropic-compatible API",
+   "short": "Runs GLM-5.3-Flash and DeepSeek-V4.1-Flash privately on your own GPUs, with a chat page and an API for coding agents.",
+   "what": "Project Maya runs two very large open models on hardware you already own. It keeps the most-used experts on the GPU, the next ones in RAM and the rest on your SSD, and tunes itself to your machine. It serves a browser chat, a live monitor, and OpenAI- and Anthropic-compatible APIs with tool calls.",
+   "who": "People with a strong NVIDIA GPU (or several), plenty of RAM and a big NVMe SSD who want a private, local model for chat or coding agents. Skip it on a laptop without a big GPU or if you lack hundreds of GB of free disk.",
+   "needs": [
+    "An NVIDIA GPU with compute capability 7.0 or newer (V100, RTX 20 and newer), up to 16. AMD is experimental",
+    "32 GB of RAM at minimum. More is faster",
+    "A fast NVMe SSD with room for the model: about 100 GB for Maya-S, 160 GB for Maya-L, 350 GB for DeepSeek-V4.1-Flash-1017's Maya-S",
+    "Linux x86-64, the NVIDIA driver, CUDA 12.x, g++ and Python 3.10+. Not WSL2"
+   ],
+   "steps": [
+    {
+     "title": "Clone and run the setup",
+     "text": "Answer a few questions (Enter takes the recommended choice). It shows each download first, builds everything once in 20 to 40 minutes plus the download, then starts the model. On Windows, run `START-MAYA.bat` instead.",
+     "code": "git clone https://github.com/mw00/project-maya.git && cd project-maya\n./setup.sh"
+    },
+    {
+     "title": "Open the chat",
+     "text": "Go to `http://127.0.0.1:8080`. Ctrl+C stops it, and `./setup.sh` starts it again."
+    },
+    {
+     "title": "Point a coding agent at it",
+     "text": "The OpenAI-compatible API is at `http://127.0.0.1:8080/v1` and the Anthropic one at `http://127.0.0.1:8080/v1/messages`. For Claude Code:",
+     "code": "ANTHROPIC_BASE_URL=http://127.0.0.1:8080"
+    },
+    {
+     "title": "Tune it to your hardware",
+     "text": "Takes 10 to 15 minutes.",
+     "code": "./maya.sh --calibrate"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `./maya.sh --bench` to measure your speed, then `--report` to share it in a GitHub issue."
+   },
+   "watch": [
+    "The engine pins most of your free RAM (all but about 6 GB) while it runs, so other programs get little.",
+    "Downloads are very large: about 95 to 156 GB for the GLM quants and 340 GB or more for DeepSeek.",
+    "To reach it from another device, use `--host 0.0.0.0` with `--api-key`. The README says always set a key.",
+    "The optional DFlash2 drafter is non-commercial only (CC BY-NC-ND 4.0). Maya-M-Derisked is an experimental edit that reduces refusals."
+   ],
+   "sources": [
+    "https://github.com/mw00/project-maya",
+    "https://raw.githubusercontent.com/mw00/project-maya/HEAD/README.md"
+   ]
+  }
+ ]
+}
