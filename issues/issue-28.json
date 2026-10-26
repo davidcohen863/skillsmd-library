@@ -1,0 +1,377 @@
+{
+ "issue": 28,
+ "date": "26 Oct 2026",
+ "checked": "26 Oct 2026",
+ "blurb": "Every repo and skill from the 26 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #28 had six repos and two AI skills, and this page covers all eight. Most of it is for people who already work with a coding agent: an SEO audit plugin, two design and explainer skills, a learning plugin and a new IDE from JetBrains. If you run a website, try Claude SEO first. If you are learning to code, VibeWise is the gentlest start.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Claude SEO",
+   "repo": "github.com/AgriciDaniel/claude-seo",
+   "stars": "21.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT). It uses your Claude Code plan. Some optional extensions connect to paid services you bring your own account for",
+   "works_with": "Claude Code 1.0.33 or newer",
+   "short": "An SEO audit plugin that checks a whole site in 10 to 15 minutes and hands back a prioritized fix list.",
+   "what": "Claude SEO is a plugin built from 26 sub-skills and 19 specialist agents. Give it a site and it checks technical SEO, content quality, structured data, AI search readiness, local SEO and e-commerce pages. Up to 17 agents work in parallel, and each recommendation says how you will know it worked. Reports are saved as Markdown files on your machine.",
+   "who": "Site owners, freelancers and SEO teams who already use Claude Code. Skip it if you need a deep crawler or a backlink database; the README says tools like Screaming Frog crawl faster and deeper.",
+   "needs": [
+    "Claude Code 1.0.33 or newer",
+    "Python 3.11 to 3.14",
+    "Optional: free Google API keys (PageSpeed Insights, Chrome UX Report, Search Console, GA4) for real field data"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin",
+     "text": "Run these three commands inside Claude Code. `/seo setup` makes its own Python environment and a headless browser without touching the rest of your system.",
+     "code": "/plugin marketplace add AgriciDaniel/claude-seo\n/plugin install claude-seo@agricidaniel-claude-seo\n/seo setup"
+    },
+    {
+     "title": "Check it is ready",
+     "text": "Run `/seo doctor` any time. It checks the runtime without changing anything."
+    },
+    {
+     "title": "Run your first audit",
+     "code": "/seo audit https://example.com           # full site audit with a prioritized plan"
+    },
+    {
+     "title": "Connect Google data (optional)",
+     "text": "Without keys, Core Web Vitals are lab estimates. Run `/seo google setup` to connect the free Google APIs. Your keys stay on your machine."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Run `/seo page https://example.com/pricing` on one of your own pages for a single-page check, which uses less of your plan than a full audit."
+   },
+   "watch": [
+    "Pages and data it analyses are sent to Anthropic's model, like anything else in Claude Code. Some checks also read public sources such as Wikipedia, Reddit and Common Crawl.",
+    "A full `/seo audit` runs five agents on Opus and the rest on Sonnet, so it uses more of your plan than a single-page check.",
+    "The README offers a curl one-liner that saves `install.sh` first and tells you to read it before running. Do that, or use the plugin install.",
+    "Pages that load key content only after scrolling or clicking can give noisy results."
+   ],
+   "sources": [
+    "https://github.com/AgriciDaniel/claude-seo",
+    "https://raw.githubusercontent.com/AgriciDaniel/claude-seo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ThinkRail",
+   "repo": "github.com/JetBrains/thinkrail",
+   "stars": "2.2k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). You bring a model provider: JetBrains AI or your own credentials",
+   "works_with": "macOS (Apple Silicon), Windows x64, Linux x64 and ARM64. Built around the pi coding agent",
+   "short": "A lightweight IDE from JetBrains around the pi coding agent, with isolated workspaces and living spec files.",
+   "what": "ThinkRail wraps the `pi` coding agent in an editor, file tree and terminals. Each task gets its own git worktree, so agents can work in parallel without touching your checkout. A graph of `SPEC.md` files beside the code keeps the project's intent across sessions, and it reads the Agent Skills you already have.",
+   "who": "Developers who run several agent sessions at once and want each one isolated on its own branch. Skip it on an Intel Mac, where there is no prebuilt app or CLI.",
+   "needs": [
+    "`git` on your PATH",
+    "A model provider: sign in with JetBrains AI, or your own credentials through pi",
+    "On Linux desktop: glibc 2.38+ with GTK 3, WebKitGTK 4.1, Ayatana AppIndicator 3 and librsvg 2 (Ubuntu 24.04 or newer)"
+   ],
+   "steps": [
+    {
+     "title": "Install the desktop app",
+     "text": "Download the `thinkrail-desktop-*` file for your platform from the releases page. On macOS open the DMG; on Windows extract the setup ZIP and run its setup executable; on Linux extract the tarball and run `installer`."
+    },
+    {
+     "title": "Or install the CLI",
+     "text": "The installer checks the binary's SHA-256 and puts `thinkrail` on your PATH. On Windows, use the PowerShell command in the README.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash"
+    },
+    {
+     "title": "Open a repo",
+     "code": "thinkrail ~/code/my-repo"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "A ThinkRail chat",
+    "text": "Open a repo, cut a new workspace, and ask the agent to explain how the project is laid out."
+   },
+   "watch": [
+    "The CLI install pipes a script from GitHub straight into your shell. Read install.sh first.",
+    "It sends basic usage events and error reports tied to a random installation ID. The README says these never include prompts, code or files. Extra sharing is a switch in Settings, and `thinkrail --no-analytics` turns it off for a run.",
+    "MCP servers a repository defines stay off until you approve them, and it asks before calls not marked read-only.",
+    "Linux builds are unsigned, and the macOS CLI is signed but not yet notarized."
+   ],
+   "sources": [
+    "https://github.com/JetBrains/thinkrail",
+    "https://raw.githubusercontent.com/JetBrains/thinkrail/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Answer me with HTML",
+   "repo": "github.com/QingYunA/answer-me-with-html",
+   "stars": "4.5k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode, DeepSeek Harness and other agents that can run a shell command",
+   "short": "A skill that answers hard questions with one readable HTML page of diagrams, tables and short text.",
+   "what": "Your agent writes a short Markdown draft and a bundled CLI turns it into a one-file HTML page with diagrams, tables and code. Because the CLI handles layout and drawing, the model writes about one eighth of the tokens. It can also make narrated explainer videos when you ask.",
+   "who": "Anyone who asks an agent to explain systems, compare options or map a codebase and finds long text hard to follow. Short questions still get short answers.",
+   "needs": [
+    "Node.js 20 or newer. There is no npm install step"
+   ],
+   "steps": [
+    {
+     "title": "Install it in Claude Code",
+     "code": "/plugin marketplace add QingYunA/answer-me-with-html\n/plugin install answer-me-with-html@answer-me-with-html"
+    },
+    {
+     "title": "Or install it for any agent",
+     "text": "It asks which agents to install into.",
+     "code": "npx skills add QingYunA/answer-me-with-html"
+    },
+    {
+     "title": "Ask as usual",
+     "text": "The agent decides when a page is worth it. You can also say \"explain it in HTML\". Pages are saved in `~/.answer-me-with-html/pages/`."
+    },
+    {
+     "title": "Change settings",
+     "text": "Use `am config set open off` in a terminal to stop pages opening in the browser, or just tell the agent."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask \"Explain the TCP three-way handshake\" or \"Map out how the modules in this repo fit together\"."
+   },
+   "watch": [
+    "The README's recommended install asks your agent to read and follow a remote INSTALL.md. The plugin or `npx skills add` commands above do the same job without that.",
+    "Always-on mode adds a rule to your agent's rules file so every conclusion gets a page. It is off by default. Pages pile up until you run `am clean`.",
+    "The CLI checks GitHub for a new version at most once a day. The README says nothing about you is sent."
+   ],
+   "sources": [
+    "https://github.com/QingYunA/answer-me-with-html",
+    "https://raw.githubusercontent.com/QingYunA/answer-me-with-html/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Oil UI",
+   "repo": "github.com/oil-oil/oil-ui",
+   "stars": "2.3k",
+   "level": "Beginner",
+   "cost": "Free (MIT). A paid Pro version is $9.99 one-time",
+   "works_with": "Claude Code, Codex and other agents that install skills. DeepSeek Harness has a native plugin",
+   "short": "A UI design skill that drafts a few clearly different directions, lets you pick one, then refines it against real screenshots.",
+   "what": "Oil UI is an interface design skill for websites, apps, dashboards and components. It studies the product's peers, sets a tone, builds distinct directions and puts them side by side on a comparison page. After you choose, it checks the result at desktop and mobile sizes from screenshots.",
+   "who": "People who want an agent to show them several design options to choose from. Redesigning existing projects and usability polish are in the paid Pro version.",
+   "needs": [
+    "Node.js for `npx`",
+    "Python 3 for the version check"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "It works right away with nothing to configure.",
+     "code": "npx skills add oil-oil/oil-ui"
+    },
+    {
+     "title": "Describe what you need",
+     "text": "Share any brand assets, screenshots or existing project you have. Work in progress goes in a `.oil-ui` folder in your project."
+    },
+    {
+     "title": "Pick a direction",
+     "text": "On the comparison page, click \"Select\" on the one you like and paste the copied sentence back to your agent."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Use oil-ui to explore a few design directions for this course booking product and build pages I can preview.\""
+   },
+   "watch": [
+    "Each use checks ui.oiloil.org for a newer version, at most once every 10 minutes. It uploads nothing from your project. Set `OIL_NO_UPDATE_CHECK=1` to turn it off.",
+    "Don't install it alongside Oil UI Pro. The two compete for the same requests."
+   ],
+   "sources": [
+    "https://github.com/oil-oil/oil-ui",
+    "https://raw.githubusercontent.com/oil-oil/oil-ui/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "VibeWise",
+   "repo": "github.com/nykooi1/vibe-wise",
+   "stars": "4.0k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex",
+   "short": "A plugin that asks for your approach first, talks through tradeoffs, then lets the AI write the code you designed.",
+   "what": "VibeWise turns your coding agent into a tutor that keeps you in charge. It stops at build, design and implementation checkpoints so you reason through the problem and approve each step. After writing code, it explains what changed and why. Notes and a project map live in a `.vibe-wise/` folder.",
+   "who": "Beginners, junior developers and experienced engineers on an unfamiliar stack who want to learn while they build. Skip it if you just want the code written fast.",
+   "needs": [
+    "An up-to-date Claude Code or Codex",
+    "Python 3 (no extra packages)"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "Choose a scope and confirm. If the directory isn't available in your version, use `/plugin marketplace add nykooi1/vibe-wise` then `/plugin install vibe-wise@vibe-wise`.",
+     "code": "/plugin install vibe-wise@anthropic-plugin-directory"
+    },
+    {
+     "title": "Or install in Codex",
+     "text": "Run these one at a time.",
+     "code": "codex plugin marketplace add nykooi1/vibe-wise\ncodex plugin add vibe-wise@vibe-wise"
+    },
+    {
+     "title": "Start learning mode",
+     "text": "Restart in your project, then run this. In Codex it is `$vibe-wise:learn`, and you run it again each session.",
+     "code": "/vibe-wise:learn"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code or Codex",
+    "text": "After setup, ask it to build something small, like a notes app where a note can sit in several folders. It will ask how deleting a folder should work before any code."
+   },
+   "watch": [
+    "Saved notes go into the AI's context, so your normal Claude Code or Codex data settings apply. The README says there is no extra account, backend or telemetry.",
+    "Add `.vibe-wise/` to your `.gitignore` if you want to keep your notes out of Git. The plugin won't change it for you."
+   ],
+   "sources": [
+    "https://github.com/nykooi1/vibe-wise",
+    "https://raw.githubusercontent.com/nykooi1/vibe-wise/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ManimGX",
+   "repo": "github.com/academa-labs/manimgx",
+   "stars": "2.1k",
+   "level": "Intermediate",
+   "cost": "Free. Its own code is MIT; native wheels include x264 and are GPL-3.0-or-later as a whole",
+   "works_with": "macOS, Linux, Windows and the browser. Claude Code, Codex, Cursor",
+   "short": "A fast animation engine that turns Manim-style Python into 1080p60 math and 3D videos, built for agents to write.",
+   "what": "ManimGX uses Manim Community Edition's API, so your agent writes familiar Python, and a Rust and wgpu engine renders the MP4. It handles 2D and 3D together, LaTeX or Typst without a LaTeX install, and speech synced to animation. `manimgx inspect` gives agents storyboards to check their work.",
+   "who": "Teachers, explainer-video makers and anyone with existing Manim scenes who wants them rendered much faster. Skip it if you don't want to work in Python.",
+   "needs": [
+    "Python 3.13+"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "Fonts, typesetting and video encoding are included.",
+     "code": "pip install manimgx"
+    },
+    {
+     "title": "Write a scene",
+     "text": "Save this as `scene.py`.",
+     "code": "import manimgx as m\n\n\nclass Hello3D(m.ThreeDScene):\n    def construct(self) -> None:\n        self.set_camera_orientation(phi=65 * m.DEGREES, theta=-45 * m.DEGREES)\n        self.begin_ambient_camera_rotation(rate=0.5)\n        cube = m.Cube(side_length=3, fill_opacity=0.3, stroke_width=2)\n        self.play(m.Create(cube), run_time=2)\n        self.wait(4)"
+    },
+    {
+     "title": "Render it",
+     "text": "You get `Hello3D.mp4`, a 1080p60 video.",
+     "code": "manimgx render scene.py"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Once it is installed, ask: \"make a 3D animation of the solar system, and open it.\""
+   },
+   "watch": [
+    "The README also offers a prompt that tells your agent to follow a remote llms.txt file. The pip install above does not need it.",
+    "Native wheels are GPL-3.0-or-later as a whole because they include x264. Check that fits how you plan to ship."
+   ],
+   "sources": [
+    "https://github.com/academa-labs/manimgx",
+    "https://raw.githubusercontent.com/academa-labs/manimgx/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ub-mode",
+   "repo": "github.com/unclebob/ub-mode",
+   "stars": "332",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Cursor, Grok and other agents with a skills folder",
+   "short": "Makes your coding agent follow one set of rules on every change: make it work, make it right, then follow practice.",
+   "what": "ub-mode is a single SKILL.md of short engineering rules, loosely based on parts of poteto's rules. It covers TDD, fixing root causes, testing behaviour and small ordered commits. It pairs with quality-gate tools for complexity (CRAP under 10), duplication and mutation testing.",
+   "who": "Developers who want their agent held to strict TDD and refactoring habits. Skip it if you prefer quick throwaway changes, since it asks for a failing test first.",
+   "needs": [
+    "For the full gates: the companion tools unclebob/crapper, unclebob/dryer and unclebob/mutator"
+   ],
+   "steps": [
+    {
+     "title": "Copy the skill",
+     "text": "Save `SKILL.md` into your agent's skills folder as `ub-mode/SKILL.md`, for example `~/.claude/skills/ub-mode/SKILL.md` or `~/.cursor/skills/ub-mode/SKILL.md`."
+    },
+    {
+     "title": "Turn it on",
+     "text": "Type `/ub-mode`, or ask for the reduced principles."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Run `/ub-mode`, then ask for one small bug fix and watch it write the failing test first."
+   },
+   "watch": [
+    "The rules tell the agent to commit often and push to the main line at the end. Say so if you don't want pushes.",
+    "It also asks the agent to clean up worktrees and reclaim disk, leaving uncommitted work for you to decide on.",
+    "The crapper, dryer and mutator steps need those separate tools installed."
+   ],
+   "sources": [
+    "https://github.com/unclebob/ub-mode",
+    "https://raw.githubusercontent.com/unclebob/ub-mode/master/SKILL.md",
+    "https://raw.githubusercontent.com/unclebob/ub-mode/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "reverse-engineer-anything-self-learning-loop",
+   "repo": "github.com/speedrunlab/reverse-engineer-anything-self-learning-loop",
+   "stars": "10",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, OpenClaw and any agent with a shell, file access and a skills folder",
+   "short": "Has your agent study software you're authorised to rebuild, build its own version, then improve it until a signed checklist passes.",
+   "what": "This skill writes down what 100% means before building: a parity checklist of testable behaviours that you sign. The agent then builds its own clean-room version, compares it with the original on the same inputs, plans the gaps and repeats until every must-have passes twice in a row. It saves lessons back into the skill, staged for your approval.",
+   "who": "Teams rebuilding software they own or license, such as a product whose source was lost, a port or a compatible replacement. It is not for cloning someone else's product.",
+   "needs": [
+    "An analysis environment you supply, with no network or credentials, and a disposable VM for any live step",
+    "A separate build folder under version control",
+    "The open-source tools the target needs, installed by you",
+    "An approver who is not the requester, and test files you own"
+   ],
+   "steps": [
+    {
+     "title": "Install it in Claude Code",
+     "code": "mkdir -p ~/.claude/skills\ngit clone https://github.com/Speedrunlab/reverse-engineer-anything-self-learning-loop.git ~/.claude/skills/reverse-engineer-anything-self-learning-loop"
+    },
+    {
+     "title": "Start a run",
+     "text": "Run `/reverse-engineer-anything-self-learning-loop`. Give it the product you're authorised to rebuild, who approved it, what's in scope and a working folder."
+    },
+    {
+     "title": "Sign the checklist",
+     "text": "It writes a parity checklist for you to sign, then builds, tests against the original and reports a score each iteration."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Run `/reverse-engineer-anything-self-learning-loop` on a tool your team owns. Working solo, record yourself as the approver and note it."
+   },
+   "watch": [
+    "Use it only on software you own, license or are cleared to examine. It asks for the authority record before any tool runs.",
+    "Content read from the target is processed by your model provider. Confirm that is fine if it may hold personal or regulated data.",
+    "It edits its own reference files with lessons, but each change is staged for your approval first."
+   ],
+   "sources": [
+    "https://github.com/speedrunlab/reverse-engineer-anything-self-learning-loop",
+    "https://raw.githubusercontent.com/speedrunlab/reverse-engineer-anything-self-learning-loop/main/SKILL.md",
+    "https://raw.githubusercontent.com/speedrunlab/reverse-engineer-anything-self-learning-loop/HEAD/README.md"
+   ]
+  }
+ ]
+}
