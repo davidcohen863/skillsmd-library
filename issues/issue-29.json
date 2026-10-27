@@ -1,0 +1,476 @@
+{
+ "issue": 29,
+ "date": "27 Oct 2026",
+ "checked": "27 Oct 2026",
+ "blurb": "Every repo and skill from the 27 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #29 had six repos and three AI skills, and this page covers all nine. There is a mix: a local AI app for anyone, CAD and 3D tools for makers, business and design skills, and OpenAI's new math papers for the curious. If you install skills from other people, set up SkillSpector first. If you don't code, try Hob.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenAI Math",
+   "repo": "github.com/openai/math",
+   "stars": "15.8k",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "A PDF reader. Lean, Lake and Comparator if you want to check the formal proofs",
+   "short": "OpenAI's collection of 721 math manuscripts written by an unreleased internal model, with Lean proofs for some of them.",
+   "what": "This repo holds mathematical manuscripts and proof files produced by an unnamed internal OpenAI model while it was tested on open research problems. There are 721 manuscripts in 373 families, sorted by discipline, plus abridged reasoning summaries for ten results. About 42% of the top-line results have Lean formalizations, and more are being added.",
+   "who": "Mathematicians, researchers and students who want to read or check the results themselves. There is nothing to install for everyday use, so skip it if you were after a tool for your own work.",
+   "needs": [
+    "A PDF reader for the manuscripts",
+    "To check formal proofs: `comparator`, `landrun` and `lean4export` on your `PATH`, plus Lean and Lake"
+   ],
+   "steps": [
+    {
+     "title": "Start with the overview",
+     "text": "Open `overview.pdf` in the repo. It describes each family of results."
+    },
+    {
+     "title": "Find a paper",
+     "text": "Use the manuscript map in `CONTENTS.md`. Each paper sits in `preprints/` with its PDF, source files and its own citation and build notes."
+    },
+    {
+     "title": "Check a formal proof",
+     "text": "Install `comparator`, `landrun` and `lean4export` and put them on your `PATH`. Then run these from the `lean/` folder.",
+     "code": "lake update\nlake exe cache get\nlake env comparator ComparatorChallenges/QuasiRiemannHypothesis.json"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The repo on GitHub",
+    "text": "Open one of the reasoning summaries in `reasoning_traces/`, such as the one on the irrationality exponent of pi, to see how the model worked toward a result."
+   },
+   "watch": [
+    "OpenAI says some of the unformalized results could have issues and calls the manuscripts raw research data, not polished papers.",
+    "The Lean library is large. The README recommends compiling small portions at a time, and a full build may fail on Linux if `vm.max_map_count` is too low.",
+    "Corrections arrive as new versions. Older versions stay available, so check `history.md` for what changed."
+   ],
+   "sources": [
+    "https://github.com/openai/math",
+    "https://raw.githubusercontent.com/openai/math/HEAD/README.md",
+    "https://raw.githubusercontent.com/openai/math/HEAD/lean/README.md",
+    "https://raw.githubusercontent.com/openai/math/HEAD/lean/ComparatorChallenges/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenBot",
+   "repo": "github.com/nightly-labs/openbot",
+   "stars": "1.8k",
+   "level": "Intermediate",
+   "cost": "Free for noncommercial use (PolyForm Noncommercial 1.0.0). Commercial use needs a separate license. Each AI provider's own plan or key applies",
+   "works_with": "Codex, Claude Code, Grok CLI, OpenCode, Gemini, Cursor CLI, Cline CLI, plus OpenAI-compatible endpoints and local servers like Ollama and LM Studio",
+   "short": "A desktop app where AI agents work as teammates, each with its own workspace, task queue and a shared browser.",
+   "what": "OpenBot is a local-first desktop workspace for persistent AI agents. Each agent runs on its own provider session with its own folder and conversation. Agents get message queues, file transfers, an embedded browser and can message each other. There is optional computer use and a mobile app that connects to your desktop.",
+   "who": "People who already run more than one coding agent and want them in one place with queues and hand-offs. It is a development preview, so skip it if you are not comfortable giving agents full access to your machine.",
+   "needs": [
+    "macOS 13 or newer, Windows 10 or newer (x64), or x64 or arm64 Linux",
+    "A sign-in or API key for at least one provider, such as a Codex, Claude, Grok, Gemini, Cursor or Cline account",
+    "On Windows, Claude Code also needs Git for Windows"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Get the latest build for your system from GitHub Releases: `OpenBot-*-arm64.dmg` or `OpenBot-*-x64.dmg` on a Mac, `OpenBot-*-x64.exe` on Windows, or the AppImage on Linux."
+    },
+    {
+     "title": "Install it",
+     "text": "On a Mac, drag OpenBot to Applications. On Windows, run the installer. On Linux, make the AppImage executable and run it.",
+     "code": "chmod +x OpenBot-*.AppImage"
+    },
+    {
+     "title": "Ubuntu 23.10+ and Debian 13 only",
+     "text": "OpenBot exits on launch until you install its AppArmor profile. The file ships in the AppImage at `resources/linux/openbot.apparmor`.",
+     "code": "sudo install -m 0644 build/linux/openbot.apparmor /etc/apparmor.d/openbot\nsudo systemctl reload apparmor"
+    },
+    {
+     "title": "Connect a provider",
+     "text": "Pick `Download` in onboarding or Settings and OpenBot fetches the provider CLI for you. It reuses your existing CLI login and does not copy provider credentials."
+    },
+    {
+     "title": "Create an agent",
+     "text": "Describe the agent you want in a prompt. You can edit its instructions, avatar and sections before saving."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "OpenBot",
+    "text": "Ask an agent to turn a workflow you repeat into a skill. It writes a `SKILL.md` and saves it to a shared local library that other agents can add."
+   },
+   "watch": [
+    "Agents currently run with full access and no per-action approval once you accept the first-launch consent. They can read and change files, run commands, use the network and control the browser. Keep backups.",
+    "It is local-first, not offline. Each provider gets your prompts, and plugins may connect to their own services.",
+    "The README offers a server install that pipes a script straight into `sudo bash`. Read the script before running it.",
+    "Do not start it with `--no-sandbox` on Linux. The README says that removes the boundary between a renderer and the rest of your computer."
+   ],
+   "sources": [
+    "https://github.com/nightly-labs/openbot",
+    "https://raw.githubusercontent.com/nightly-labs/openbot/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Hob",
+   "repo": "github.com/FrigadeHQ/hob",
+   "stars": "187",
+   "level": "Beginner",
+   "cost": "Free (MIT). No account or subscription",
+   "works_with": "Mac, Windows and Linux",
+   "short": "A desktop AI coworker that runs open models on your own computer and works on your files, even offline.",
+   "what": "Hob is a free, open-source desktop app that runs an open-weight model on your computer and works on your files: spreadsheets, PDFs, photos and whole folders. It checks your hardware and downloads a model that fits, Gemma 4 on most machines or gpt-oss 120B on workstations. It can run Python in a sandbox, draw charts, fill PDF forms on Mac, search the web and take dictation.",
+   "who": "Anyone who wants an AI assistant for documents and data without sending files to the cloud. The smallest model it lists is for 8 GB Macs.",
+   "needs": [
+    "A Mac, Windows or Linux computer",
+    "An internet connection for the first model download"
+   ],
+   "steps": [
+    {
+     "title": "Download Hob",
+     "text": "Get the installer for your system from hob.chat or the latest GitHub release: `Hob-mac-arm64.dmg`, `Hob-windows-x64.exe` or `Hob-linux-x86_64.AppImage`."
+    },
+    {
+     "title": "Let it pick a model",
+     "text": "On first launch Hob checks your hardware and downloads the best model it can run well. You can switch models any time."
+    },
+    {
+     "title": "Go fully offline (optional)",
+     "text": "Turn off Web access in Settings to keep everything on your machine."
+    },
+    {
+     "title": "Build from source (optional)",
+     "text": "Needs Node.js 24 and pnpm 10.",
+     "code": "pnpm install\npnpm dev              # run Hob"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Hob",
+    "text": "Drop a sales spreadsheet into a project and ask Hob to chart revenue by region and sum up what stands out."
+   },
+   "watch": [
+    "Hob goes online to download models and check for new ones. With Web access on it also searches the web, fetches data from its code and installs Python packages from PyPI.",
+    "Connectors you add go online too.",
+    "It asks for approval before changing anything in your folders, keeps Undo for every task and runs code in a sandbox. Filling PDF forms is Mac only."
+   ],
+   "sources": [
+    "https://github.com/FrigadeHQ/hob",
+    "https://raw.githubusercontent.com/FrigadeHQ/hob/HEAD/README.md",
+    "https://raw.githubusercontent.com/FrigadeHQ/hob/HEAD/docs/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "SolidCraft",
+   "repo": "github.com/tangency-labs/solidcraft",
+   "stars": "10.9k",
+   "level": "Intermediate",
+   "cost": "Free (MIT or Apache-2.0)",
+   "works_with": "Windows, macOS, Linux and the browser. Its MCP server works with agents like Claude Code",
+   "short": "An open-source parametric 3D CAD app in Rust that you or an AI agent can drive, on desktop or in the browser.",
+   "what": "SolidCraft is a parametric CAD app: you sketch, add constraints and build solids on an editable feature timeline, then change a dimension and the model rebuilds. It covers extrude, fillet, shell, holes, threads, assemblies, sheet metal and STEP, STL, 3MF and other formats. The desktop app, browser app, command line and MCP server all run the same commands.",
+   "who": "Makers, 3D printing hobbyists and engineers who want free parametric CAD, and anyone curious about letting an agent model parts. The README calls it early but usable for simple parts, so skip it for complex production work for now.",
+   "needs": [
+    "Windows, macOS or Linux, or just a browser",
+    "For agent use: an MCP-capable coding agent and `solidcraft-cli` on your `PATH`"
+   ],
+   "steps": [
+    {
+     "title": "Try it in the browser",
+     "text": "Open solidcraft.io/app. Nothing to install."
+    },
+    {
+     "title": "Or install the desktop app",
+     "text": "Download the Windows installer, the macOS disk image or the Linux AppImage from the downloads page. On Linux you can also use Snap.",
+     "code": "sudo snap install solidcraft"
+    },
+    {
+     "title": "Get past the unsigned warning",
+     "text": "The downloads are not signed yet. On Windows choose More info, then Run anyway. On macOS right-click SolidCraft and choose Open the first time."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "The built-in MCP server runs its own design session, or drives the open app with `--connect` so you can watch. For Claude Code:",
+     "code": "claude mcp add solidcraft -- solidcraft-cli mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "From a source checkout, run the example script that builds a bracket and exports it: `cargo run --release -p solidcraft-cli -- run examples/bracket.json --out bracket.step`."
+   },
+   "watch": [
+    "The installers are not code-signed yet, so your system will warn you on first launch.",
+    "75 of 76 public reference parts match their expected volume, area and centre of mass. The other one is a tracked bug.",
+    "Older Windows installers do not put `solidcraft-cli` on `PATH`. Give its full path if your terminal cannot find it.",
+    "Upgrading from versions 0.11 to 0.14 needs one manual download."
+   ],
+   "sources": [
+    "https://github.com/tangency-labs/solidcraft",
+    "https://raw.githubusercontent.com/tangency-labs/solidcraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Founder Skill",
+   "repo": "github.com/Jakeschincariol/founder-skill",
+   "stars": "1.9k",
+   "level": "Beginner",
+   "cost": "Free (MIT). No signup, no API key",
+   "works_with": "Claude Code, or any AI chat by pasting a single SKILL.md (without the sub-agents and tools)",
+   "short": "Eleven AI skills that stress-test a business idea before launch, from a mock board vote to a 100-buyer panel and a CFO.",
+   "what": "Eleven skills that each play a role: a board scoring your idea with published frameworks, a competitor scout, a panel of 100 simulated buyers, a pricing strategist, an offer builder, a CFO, marketing, brand, operations and launch leads, and a planner. Each one writes to a `founder/` folder that the next one reads. The last one compiles a business plan with a verdict computed from the numbers.",
+   "who": "First-time founders and small business owners testing an idea before spending money on it. It is not a forecast or professional advice, so skip it if you need either.",
+   "needs": [
+    "Claude Code for the full set, with sub-agents and tools",
+    "Python 3.8 or newer for the four calculator tools. Nothing to pip install"
+   ],
+   "steps": [
+    {
+     "title": "Install as a plugin",
+     "text": "Run these in Claude Code. The skills show up as `/founder-skill:founder-board` and so on.",
+     "code": "/plugin marketplace add Jakeschincariol/founder-skill\n/plugin install founder-skill@founder-skill"
+    },
+    {
+     "title": "Or copy the folders",
+     "text": "Do this if you want plain `/founder-board` names. Copy into your repo's `.claude/skills/` instead for one project only.",
+     "code": "git clone https://github.com/Jakeschincariol/founder-skill.git\ncp -r founder-skill/skills/founder-* ~/.claude/skills/"
+    },
+    {
+     "title": "Run them in order",
+     "text": "Each skill reads what the earlier ones wrote: board, competitors, consumer, pricing, offer, cfo, marketing, brand, ops, launch, plan."
+    },
+    {
+     "title": "Get the verdict",
+     "text": "`/founder-plan` writes `founder/business-plan.md` with a verdict of Profitable, Not yet or Incomplete."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Run `/founder-consumer --quick` on an idea you are only thinking about to see how a panel of simulated buyers reacts."
+   },
+   "watch": [
+    "The buyer panel is simulated. The README says models lean agreeable, so read the buy rate as an upper bound and confirm with real people.",
+    "The board applies summaries of published frameworks. It does not speak as or for Hormozi, Thiel or Jobs.",
+    "Not financial, legal or tax advice. The CFO marks estimates and asks for real quotes.",
+    "The competitor scout researches public sources on the web. The four Python tools do not touch the network."
+   ],
+   "sources": [
+    "https://github.com/Jakeschincariol/founder-skill",
+    "https://raw.githubusercontent.com/Jakeschincariol/founder-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "SkillSpector",
+   "repo": "github.com/NVIDIA/SkillSpector",
+   "stars": "22.6k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). Optional LLM analysis uses your own provider account",
+   "works_with": "Skills for Claude Code, Codex CLI, Gemini CLI and other agents, plus MCP servers",
+   "short": "NVIDIA's scanner that checks AI agent skills for prompt injection, data theft and supply-chain risks before you install them.",
+   "what": "SkillSpector scans a skill folder, a single SKILL.md, a Git repo, a URL or a zip file and gives it a risk score from 0 to 100 with a recommendation. It checks 71 patterns in 17 categories, from prompt injection to tool poisoning, with static analysis and an optional LLM pass. It never runs the skill it scans. Reports come out as terminal text, JSON, Markdown or SARIF.",
+   "who": "Anyone who installs skills from strangers, and teams who want to gate skill installs in CI or inside their agent. If you only use skills you wrote yourself, you can skip it.",
+   "needs": [
+    "Python 3.12 or newer with uv or pip, or Docker instead",
+    "Optional: an API key for an LLM provider such as OpenAI, Anthropic or NVIDIA, or a local server like Ollama"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "code": "uv tool install git+https://github.com/NVIDIA/skillspector.git"
+    },
+    {
+     "title": "Scan a skill",
+     "text": "Point it at a folder, a SKILL.md, a Git repo or a zip.",
+     "code": "skillspector scan https://github.com/user/my-skill"
+    },
+    {
+     "title": "Keep it local",
+     "text": "Skip the LLM pass so file contents stay on your machine.",
+     "code": "skillspector scan ./my-skill/ --no-llm"
+    },
+    {
+     "title": "Add an LLM pass (optional)",
+     "text": "Pick a provider and key. For example:",
+     "code": "export SKILLSPECTOR_PROVIDER=anthropic\nexport ANTHROPIC_API_KEY=sk-ant-...\nskillspector scan ./my-skill/"
+    },
+    {
+     "title": "Use it from your agent (optional)",
+     "text": "Install the MCP extra, then run the server so your agent can scan before it installs.",
+     "code": "uv tool install --force 'skillspector[mcp] @ git+https://github.com/NVIDIA/skillspector.git'\nskillspector mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Save a JSON report you can share: `skillspector scan ./my-skill/ --format json --output report.json`."
+   },
+   "watch": [
+    "LLM analysis is on by default and sends file contents to the provider you set. Use `--no-llm` to keep contents local.",
+    "The supply-chain check sends the skill's dependency names and versions to OSV.dev, even with `--no-llm`. No file contents go there.",
+    "It flags risks; it does not sandbox anything. It can miss attacks in other languages, in images or in compiled code.",
+    "The install downloads other open-source projects. The README asks you to review their licenses."
+   ],
+   "sources": [
+    "https://github.com/NVIDIA/SkillSpector",
+    "https://raw.githubusercontent.com/NVIDIA/SkillSpector/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "landing-page-design",
+   "repo": "github.com/elayadesign/ai-design-skills",
+   "stars": "5.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cursor, Codex, Windsurf, Cline and Claude.ai",
+   "short": "Walks your agent through a landing page that converts: intake questions, page structure, copy, SEO and strict visual rules.",
+   "what": "The skill has two halves. The first decides what the page says: one offer, one audience and one action, with intake questions, a required above-the-fold structure, conversion and copy rules and SEO advice. The second is a fixed visual system for fonts, spacing, corner radius, backgrounds, hero layout, icons and motion. It builds section by section, starting with the hero.",
+   "who": "Founders, marketers and developers who want their agent to produce a focused landing page instead of a generic one. Skip it if you already have a design system you want followed, since its rules replace framework defaults.",
+   "needs": [
+    "A coding agent that reads a skills folder or a rules file"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "Swap `<skill-name>` for `landing-page-design`.",
+     "code": "mkdir -p .claude/skills\ngit clone https://github.com/elayadesign/ai-design-skills.git /tmp/ai-design-skills\ncp -r /tmp/ai-design-skills/skills/<skill-name> .claude/skills/"
+    },
+    {
+     "title": "Or use it in Cursor",
+     "text": "Swap `<skill-name>` the same way, or paste the file into Settings, Rules for AI.",
+     "code": "mkdir -p .cursor/rules\ncurl -o .cursor/rules/<skill-name>.md \\\n  https://raw.githubusercontent.com/elayadesign/ai-design-skills/main/skills/<skill-name>/SKILL.md"
+    },
+    {
+     "title": "Other tools",
+     "text": "Copy the `SKILL.md` into `AGENTS.md` for Codex, `.windsurfrules` for Windsurf or `.clinerules` for Cline. On Claude.ai, upload it to a Project or attach it to a chat."
+    },
+    {
+     "title": "Make it yours",
+     "text": "The fonts, colours, spacing and motion values sit in one section near the bottom of the file. Edit that section and the rest follows."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask in plain language for a landing page for your product. It asks its intake questions in one batch, then returns an outline, hero copy, benefits, FAQ and SEO advice before writing code."
+   },
+   "watch": [
+    "Its description tells the agent to use it for any web UI work, so it may shape pages you did not mean it for. Your explicit prompt still wins over its rules.",
+    "The visual rules are strict: no Inter, Roboto or Arial, no italics, no ultra bold weights, no gradients, and a required word-by-word tagline reveal section."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/elayadesign/ai-design-skills/skills-landing-page-design",
+    "https://raw.githubusercontent.com/elayadesign/ai-design-skills/main/skills/landing-page-design/SKILL.md",
+    "https://raw.githubusercontent.com/elayadesign/ai-design-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "nlm-skill",
+   "repo": "github.com/jacob-bd/gemini-notebook-mcp-cli",
+   "stars": "6.4k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README. Chat and Studio use counts against your Gemini Notebook plan's limits",
+   "works_with": "Claude Code, Claude Desktop, Codex, Gemini CLI, Cursor, Windsurf, Cline, Antigravity, GitHub Copilot, OpenCode and more",
+   "short": "Teaches your agent to drive Gemini Notebook (formerly NotebookLM) to make notebooks, add sources, make podcasts and check quota.",
+   "what": "This skill comes with the `nlm` command line tool and MCP server for Gemini Notebook. It tells your agent which to use, how to create notebooks, add URLs, YouTube, text or Drive files, run research and generate podcasts, reports, quizzes, slides and more. It also checks your plan usage before expensive jobs.",
+   "who": "People who use Gemini Notebook a lot and want their agent to run it for them. It relies on undocumented Google APIs, so skip it for anything work-critical.",
+   "needs": [
+    "A Google account with Gemini Notebook",
+    "uv (or pip or pipx) to install the package",
+    "A browser to sign in"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI and MCP server",
+     "code": "uv tool install notebooklm-mcp-cli"
+    },
+    {
+     "title": "Sign in",
+     "text": "Your browser opens, you log in, and the cookies are saved for you.",
+     "code": "nlm login"
+    },
+    {
+     "title": "Connect your tools and add the skill",
+     "text": "The wizard finds your AI tools, connects the MCP server and offers to install the skill for all projects or one folder.",
+     "code": "nlm setup"
+    },
+    {
+     "title": "Or install the skill directly",
+     "code": "nlm skill install codex"
+    },
+    {
+     "title": "Protect your login (recommended)",
+     "text": "This encrypts your saved Google login with a key in your computer's keychain.",
+     "code": "nlm auth storage set protected"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Create a notebook about quantum computing and generate a podcast."
+   },
+   "watch": [
+    "It uses internal Google APIs that may change without notice and may not be aligned with Google's Terms of Service. The author says to use it at your own risk for personal or experimental use.",
+    "It works by saving your Google login cookies. They sit in a plain file unless you turn on protected storage, and need refreshing every few weeks.",
+    "The skill tells your agent to ask before deleting anything and before generating content, since deletions are permanent."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/jacob-bd/gemini-notebook-mcp-cli/src-notebooklm-tools-data",
+    "https://raw.githubusercontent.com/jacob-bd/gemini-notebook-mcp-cli/main/src/notebooklm_tools/data/SKILL.md",
+    "https://raw.githubusercontent.com/jacob-bd/gemini-notebook-mcp-cli/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "scenario-3d",
+   "repo": "github.com/scenario-labs/skills",
+   "stars": "1.1k",
+   "level": "Intermediate",
+   "cost": "Skill is free (MIT). Generations use Scenario credits from your plan",
+   "works_with": "Claude Code, Cursor, Codex, Copilot and other agents that connect to an MCP server",
+   "short": "Makes 3D models from text or an image through Scenario's MCP server and exports GLB, FBX, OBJ or STL files.",
+   "what": "This skill guides your agent through Scenario's 3D tools. The recommended path is a concept image first, then image to 3D, with a polycount target, texture controls, a preview in the 3D viewer and a download. It also covers remeshing, retexturing, UV unwrapping, auto-rigging and animation, with models ready for Unity, Unreal, Godot or Blender.",
+   "who": "Game developers and 3D artists who want props and characters without modelling from scratch. You need a Scenario account and generations spend credits, so skip it if you only want free tools.",
+   "needs": [
+    "A Scenario account (sign in with OAuth) or a Scenario API key",
+    "An agent that can connect to an MCP server"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "The menu opens with nothing selected. Pick `scenario` (the core skill) and `scenario-3d` before pressing enter.",
+     "code": "npx skills add scenario-labs/skills"
+    },
+    {
+     "title": "Connect the Scenario MCP server",
+     "text": "For Claude Code. In other clients, add `https://mcp.scenario.com/mcp` and sign in.",
+     "code": "claude mcp add --transport http scenario https://mcp.scenario.com/mcp"
+    },
+    {
+     "title": "Keep it current",
+     "text": "Installs always pull the latest copy from `main`.",
+     "code": "npx skills update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Turn this concept sketch into a 3D prop and let me preview it before I export the GLB."
+   },
+   "watch": [
+    "Costs vary a lot by model. At the time of writing, the skill quotes one model at 1,300 credits per asset and another at 45, so price a batch with a dry run first.",
+    "Some models need a plan upgrade and fail with a 403 only after earlier paid steps ran. The skill checks this up front.",
+    "Your prompts and reference images go to Scenario.",
+    "There is no version pinning. Updates pull whatever is on `main`."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/scenario-labs/skills/skills-scenario-3d",
+    "https://raw.githubusercontent.com/scenario-labs/skills/main/skills/scenario-3d/SKILL.md",
+    "https://raw.githubusercontent.com/scenario-labs/skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
