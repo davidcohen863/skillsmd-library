@@ -1,0 +1,429 @@
+{
+ "issue": 30,
+ "date": "28 Oct 2026",
+ "checked": "28 Oct 2026",
+ "blurb": "Every repo and skill from the 28 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #30 had six repos and three AI skills, and this page covers all nine. Most of it is for people who already run a coding agent, plus a self-hosted AI tutor, a job search app and a Danish VAT skill for business owners. If you run several agents at once, try myoffice first. If you have a GeForce RTX 30 card on Linux, read the gpu-unlock notes before you install it.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "gpu-unlock",
+   "repo": "github.com/Zagitta/gpu-unlock",
+   "stars": "11.8k",
+   "level": "Advanced",
+   "cost": "Free (GPL-2.0)",
+   "works_with": "Linux with a GeForce RTX 20, 30 or 40 series card and the stock NVIDIA driver",
+   "short": "A Linux kernel module that lifts the half-speed cap on GeForce tensor cores at boot, for faster AI training and inference.",
+   "what": "The author says GeForce cards run FP16, BF16 and TF32 tensor math at half the rate of the same chip sold as a professional card. gpu-unlock is a kernel module that removes that cap at boot, before the normal NVIDIA driver loads. The README reports gains of 25 to 55% on LLM prompt processing and image generation, with no change for token generation, quantized INT8, FP8 or INT4 models, or gaming.",
+   "who": "Linux users who train or run unquantized models on an RTX 30 card. RTX 20 and 40 support is experimental and RTX 50 is not supported. Skip it on Windows, on laptops that power down the GPU when idle, or if you mostly run quantized GGUF models.",
+   "needs": [
+    "Linux with a supported GeForce RTX 20, 30 or 40 series card (RTX 30 is the stable one)",
+    "sudo access and a bootloader you can edit (GRUB, systemd-boot or a UKI)",
+    "Arch, Debian/Ubuntu or Fedora/RHEL for `make install`, or an explicit `make install-*` target on other distributions"
+   ],
+   "steps": [
+    {
+     "title": "Build and install it",
+     "text": "This builds the packages, installs build dependencies and asks for your sudo password.",
+     "code": "git clone https://github.com/Zagitta/gpu-unlock\ncd gpu-unlock\nmake install"
+    },
+    {
+     "title": "Opt in on the kernel command line",
+     "text": "The module does nothing until you add `gpu_unlock.targets=all` to your kernel command line, keeping your existing options. With GRUB on Debian, Ubuntu or Mint, add it inside `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`, then run `sudo update-grub`. On Fedora or RHEL, run the command below. The README covers Arch, systemd-boot and UKI setups too.",
+     "code": "sudo grubby --update-kernel=ALL --args=\"gpu_unlock.targets=all\""
+    },
+    {
+     "title": "Reboot and check",
+     "text": "After a reboot, check the kernel log for the unlock.",
+     "code": "journalctl -k -b | grep gpu_unlock\nlspci -nnk -s 0000:[ID]:00.0"
+    },
+    {
+     "title": "Turn it off if you need to",
+     "text": "Remove `gpu_unlock.targets=` from the kernel command line. Removing the packages also removes the module and its initramfs files."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `journalctl -k -b | grep gpu_unlock` after boot, then compare an FP16 or BF16 workload you already use, such as image generation in ComfyUI, against your old timings."
+   },
+   "watch": [
+    "It is a kernel module that changes how the card runs at boot. The display card's screen goes blank briefly during the unlock.",
+    "The build downloads NVIDIA and CachyOS inputs over HTTPS to generate firmware. NVIDIA firmware stays under its own terms.",
+    "The author says it is very unlikely to harm the card, but the GPU may run slightly hotter because it does more work.",
+    "On laptops the unlock resets whenever the GPU powers off, and hibernation is not covered.",
+    "The author warns that Windows installers, websites and coins using this name are not from the project. Only use this repo."
+   ],
+   "sources": [
+    "https://github.com/Zagitta/gpu-unlock",
+    "https://raw.githubusercontent.com/Zagitta/gpu-unlock/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "DeepTutor",
+   "repo": "github.com/HKUDS/DeepTutor",
+   "stars": "47k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). You bring your own model provider",
+   "works_with": "Any model provider you set up in Settings. Can also consult agents like Claude Code, Codex and others from chat",
+   "short": "A self-hosted AI tutor with chat, quizzes, research, problem solving and study plans that share one memory of what you know.",
+   "what": "DeepTutor is a learning workspace you run yourself. It puts tutoring, quiz generation, research, problem solving, visual explanations and mastery practice in one app, with knowledge bases built from your own material. It keeps an editable memory of what you have learned and has a command-line tool that other agents can drive.",
+   "who": "Students, self-learners and teachers who want an AI tutor on their own machine using their own documents. If you just want a quick chat about a topic, a regular chat app is simpler.",
+   "needs": [
+    "Docker for the one-command trial, or Python 3.11 to 3.14 and Node.js 20 or newer for the PyPI install",
+    "An LLM provider, base URL, API key and model. An embedding provider for knowledge bases and a search provider for web search are optional"
+   ],
+   "steps": [
+    {
+     "title": "Try it with Docker",
+     "text": "Then open http://127.0.0.1:3782 and add a model provider in Settings, then Providers. Press Ctrl+C to stop. The named volume keeps your settings for next time.",
+     "code": "docker run --rm --name deeptutor \\\n  -p 127.0.0.1:3782:3782 \\\n  -v deeptutor-data:/app/data \\\n  ghcr.io/hkuds/deeptutor:latest"
+    },
+    {
+     "title": "Or install it from PyPI",
+     "text": "`deeptutor init` asks for ports, your LLM provider and key, and optional embedding and search providers. Keep the terminal open while it runs.",
+     "code": "mkdir -p my-deeptutor && cd my-deeptutor\npip install -U \"deeptutor[full]\"\ndeeptutor init     # prompts for ports + LLM provider + optional embedding/search\ndeeptutor start    # starts backend + frontend; keep the terminal open"
+    },
+    {
+     "title": "Open the app",
+     "text": "Go to the URL the terminal prints, by default http://127.0.0.1:3782."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `deeptutor run chat \"Explain the Fourier transform\"` for a one-turn answer, or `deeptutor chat` for an interactive session."
+   },
+   "watch": [
+    "Your questions and documents go to whichever model provider you configure.",
+    "Agents in DeepTutor can read your content workspace folder. Running commands is read-only outside `outputs/`, and copying files elsewhere needs your confirmation.",
+    "The README offers a prompt to paste into a coding agent so it installs DeepTutor for you. That agent then clones the dev branch and handles your provider keys, so read the Agent Setup guide first if you go that way.",
+    "Upgrading to 1.7.0 has extra steps if the old `deeptutor-cli` package is installed. Back up your data first."
+   ],
+   "sources": [
+    "https://github.com/HKUDS/DeepTutor",
+    "https://raw.githubusercontent.com/HKUDS/DeepTutor/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "tstack",
+   "repo": "github.com/t3dotgg/tstack",
+   "stars": "2.1k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex",
+   "short": "A set of AI skills for shipping pull requests: review, file, babysit through CI, and merge.",
+   "what": "tstack is the author's own daily AI skills, cleaned up for anyone to use. You trigger them by saying a phrase like \"full send\", \"file a PR\" or \"babysit\". They cover proving and reviewing a change, filing short PRs, watching CI and review bots, taking over someone else's PR, and getting review from three models from different providers.",
+   "who": "Developers who already work through GitHub pull requests with a coding agent. Skip it if you don't use GitHub or the `gh` CLI.",
+   "needs": [
+    "An authenticated GitHub CLI (`gh`)",
+    "`python3` for the `pr-wait` script in `babysit-pr`",
+    "For `council` and `sol-loop`: a harness that can run subagents on other providers' models"
+   ],
+   "steps": [
+    {
+     "title": "Copy the skills in",
+     "text": "Use the line for your agent.",
+     "code": "git clone https://github.com/t3dotgg/tstack\ncp -R tstack/skills/* ~/.claude/skills/   # Claude Code\ncp -R tstack/skills/* ~/.codex/skills/    # Codex"
+    },
+    {
+     "title": "Keep the ones they depend on",
+     "text": "Some skills call others. For example, `full-send` uses `sol-loop`, `file-pr` and `babysit-pr`, and most use `leaving-pr-comments`. The README lists each dependency."
+    },
+    {
+     "title": "Make them yours",
+     "text": "Put personal settings, such as which models sit on your council, in your `CLAUDE.md` or `AGENTS.md`. That way you can update the skills without losing them."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "After making a change, say \"file a PR\" to have it filed with a short description that leads with the problem."
+   },
+   "watch": [
+    "These skills act on GitHub with your `gh` login. `full-send` merges a PR with nobody watching. Use `full-stop` if you want to do the final merge yourself.",
+    "`council` and `sol-loop` send your change to models from other providers for review."
+   ],
+   "sources": [
+    "https://github.com/t3dotgg/tstack",
+    "https://raw.githubusercontent.com/t3dotgg/tstack/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "leanrea",
+   "repo": "github.com/aicodeking/leanrea",
+   "stars": "3.3k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, Gemini CLI, OpenCode and other agents the skills CLI supports",
+   "short": "One small AI skill that helps your agent reverse engineer apps and binaries with ordinary command-line tools.",
+   "what": "leanrea is a single 8 KB SKILL.md for reverse engineering. It tells your agent the fastest command for each kind of target, such as Electron apps, Mach-O binaries, Go builds, Android APKs, WASM or pcap files, and lists common traps. The agent then runs the real tools itself through the shell. In the author's benchmark it was faster and cheaper than the REA MCP server at about the same accuracy.",
+   "who": "Security researchers and developers who need to see how an app or binary works. Skip it if you don't do reverse engineering.",
+   "needs": [
+    "A coding agent that can run shell commands",
+    "The tools for your target, such as asar, otool, nm, jadx, apktool, Ghidra, tshark, binwalk or sqlite3"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "This uses the skills CLI, which asks which agents to install it for.",
+     "code": "npx skills add aicodeking/leanrea"
+    },
+    {
+     "title": "Or install it by hand",
+     "text": "If an agent has no skills support, paste `leanrea/SKILL.md` into its rules or system prompt.",
+     "code": "git clone https://github.com/aicodeking/leanrea\nmkdir -p ~/.claude/skills && cp -R leanrea/leanrea ~/.claude/skills/"
+    },
+    {
+     "title": "Update it later",
+     "code": "npx skills update leanrea"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/leanrea How does the search feature in Foo.app work? Show the evidence."
+   },
+   "watch": [
+    "Your agent runs reverse engineering tools directly in your shell. The skill's first rule is to work on a copy of the target.",
+    "The benchmark used 3 runs per case, one model and one machine, and some tools were not installed. Treat the numbers as a rough guide."
+   ],
+   "sources": [
+    "https://github.com/aicodeking/leanrea",
+    "https://raw.githubusercontent.com/aicodeking/leanrea/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OXR",
+   "repo": "github.com/SoMarkAI/OXR",
+   "stars": "2k",
+   "level": "Advanced",
+   "cost": "Free API for testing. The model is under the OXR Open Source License, based on Apache 2.0 with extra terms",
+   "works_with": "SoMark's somark-py and somark-js tools, or its own local API",
+   "short": "An open document parsing model that turns PDFs and scans into Markdown or JSON with layout coordinates.",
+   "what": "OXR is a 1.3B parameter model from the SoMark team that reads PDFs and document images and outputs Markdown or JSON, with bounding boxes. It recognises 13 element types, including tables, formulas, chemical equations and structures, and code blocks. The team says it ranks first on olmOCR-Bench, OmniDocBench and DocParsingBench, and its layout analysis model can be swapped for your own.",
+   "who": "Developers building document pipelines or feeding PDFs to AI agents. Running it locally needs a large NVIDIA GPU, so most people should start with the free API.",
+   "needs": [
+    "For the free API: Python or Node.js to install the somark CLI",
+    "To run it locally: Linux, an NVIDIA GPU with BF16 support and at least 24 GB of memory (48 GB recommended), a CUDA 13.0 compatible driver, and Python 3.12"
+   ],
+   "steps": [
+    {
+     "title": "Try the free API",
+     "text": "No sign-up or key is needed. Install one of the CLIs and point it at the free API.",
+     "code": "# using python\npip install somark\n# or using js\nnpm install -g somark-js\n\nsomark --base-url https://free-oxr.somark.ai/api/v1 --api-key dummy \\\n  parse document.pdf --formats md,json --out ./parsed-output/"
+    },
+    {
+     "title": "Download the code and model",
+     "code": "git clone https://github.com/SoMarkAI/OXR.git\ncd OXR\n\n# pip install -U huggingface_hub\nhf download SoMarkAI/OXR-1.0 --local-dir ./models/OXR-1.0"
+    },
+    {
+     "title": "Run it locally with Docker",
+     "text": "When the logs say the services are ready, open http://localhost:8000/demo. The first start can take a while.",
+     "code": "docker build -f docker/Dockerfile.allinone -t oxr-1.0 .\ndocker run --rm --gpus all --ipc=host \\\n  -p 127.0.0.1:8000:8000 \\\n  -v \"$PWD/models/OXR-1.0:/models/oxr-model:ro\" \\\n  oxr-1.0"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "https://free-oxr.somark.ai",
+    "text": "Upload one of your own PDFs to the online demo and compare the Markdown and JSON output."
+   },
+   "watch": [
+    "The free API sends your documents to SoMark's servers. The team does not recommend it for production, does not guarantee stability, and says it stays online only while they can afford to run it.",
+    "The license is custom, based on Apache 2.0 with additional terms. Read it before commercial use."
+   ],
+   "sources": [
+    "https://github.com/SoMarkAI/OXR",
+    "https://raw.githubusercontent.com/SoMarkAI/OXR/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Dossier",
+   "repo": "github.com/AienTech/dossier",
+   "stars": "2k",
+   "level": "Intermediate",
+   "cost": "Free software (AGPL-3.0)",
+   "works_with": "Local models through Ollama or LM Studio, or any OpenAI-compatible API, Anthropic or Mistral",
+   "short": "A self-hosted job search app that writes a tailored resume and cover letter for each job from your own profile.",
+   "what": "Dossier keeps your career history in one profile. For each job, it reads the posting, shows how you match, and drafts a resume and cover letter using only facts from your profile, with gaps shown instead of made up. You refine them in a chat, download PDFs and track each application from draft to offer. It can also search job sites, run a daily job agent and connect to Gmail and Google Calendar.",
+   "who": "One job seeker who is comfortable running Docker. It is built for a laptop or desktop browser, not phones, and has one password and one profile, so it doesn't suit a team.",
+   "needs": [
+    "Docker Desktop on macOS or Windows, or Docker Engine with the Compose plugin on Linux",
+    "About 2 GB of free memory",
+    "An AI model, either local through Ollama or LM Studio, or a hosted one"
+   ],
+   "steps": [
+    {
+     "title": "Fetch the Compose file and make secrets",
+     "text": "On an Apple Silicon Mac, the README has one extra line to add first.",
+     "code": "mkdir ~/dossier && cd ~/dossier\ncurl -fsSL -o compose.yml https://raw.githubusercontent.com/AienTech/dossier/main/compose.production.yml\necho \"POSTGRES_PASSWORD=$(openssl rand -hex 24)\" > .env\necho \"DOSSIER_SECRET=$(openssl rand -base64 32)\" >> .env"
+    },
+    {
+     "title": "Choose your password",
+     "text": "This prints a hash starting with `argon2id:`. Add it to `.env` as `DOSSIER_PASSWORD=argon2id:…`.",
+     "code": "docker run --rm -it --platform linux/amd64 ghcr.io/aientech/dossier hash-password"
+    },
+    {
+     "title": "Start it",
+     "text": "The first start downloads about 1.7 GB. Then open http://localhost:3000, sign in and pick a model in Settings, then AI provider.",
+     "code": "docker compose up -d"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Dossier in your browser",
+    "text": "Start your profile from an existing resume, then paste a job posting into a new application and refine the tailored resume it writes in the chat."
+   },
+   "watch": [
+    "With a hosted model, your profile and documents go to that provider. A local model keeps them on your own hardware.",
+    "Gmail and Calendar access is optional and needs your own Google OAuth client. The README says nothing is sent without your confirmation.",
+    "The optional Claude connector can read your profile and applications and save drafts. It never sends or deletes anything.",
+    "Run only one copy of the app per database."
+   ],
+   "sources": [
+    "https://github.com/AienTech/dossier",
+    "https://raw.githubusercontent.com/AienTech/dossier/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "myoffice",
+   "repo": "github.com/Charonyuu/whatsmyagentdoing",
+   "stars": "203",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Gemini CLI and OMP sessions. Installs as a skill in Claude Code or Codex",
+   "short": "Type /myoffice to open a live office view of every coding agent on your machine and see which one is waiting for you.",
+   "what": "myoffice opens a local page that shows every Claude Code, Codex, Gemini CLI and OMP session on your machine as a character in a 2D or 3D office. Each one shows whether it is thinking, running a tool, writing a reply, waiting for you or done. A list view groups sessions into Needs you, Working and Finished, with a copy button for the resume command.",
+   "who": "Anyone who runs several coding agents at once and loses track of which one needs an answer. If you only run one agent at a time, you won't get much from it.",
+   "needs": [
+    "Node.js 18 or newer",
+    "git"
+   ],
+   "steps": [
+    {
+     "title": "Clone it into your skills folder",
+     "text": "Use the line for your agent. There is nothing to `npm install`.",
+     "code": "# Claude Code\ngit clone --depth 1 https://github.com/Charonyuu/whatsmyagentdoing ~/.claude/skills/myoffice\n\n# Codex\ngit clone --depth 1 https://github.com/Charonyuu/whatsmyagentdoing ~/.codex/skills/myoffice"
+    },
+    {
+     "title": "Open the office",
+     "text": "Start a new session and type `/myoffice`, or ask \"what are my agents doing?\". The office opens in your browser."
+    },
+    {
+     "title": "Update it later",
+     "code": "git -C ~/.claude/skills/myoffice pull"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Type /myoffice, then switch to List view to see which sessions need you."
+   },
+   "watch": [
+    "It reads your agents' session logs in `~/.claude/projects`, `~/.codex/sessions` and `~/.gemini/tmp`. The server listens on 127.0.0.1 only and the README says nothing leaves your machine.",
+    "The page shows your prompts and replies. Use `--private` when sharing your screen.",
+    "It checks this repo's `package.json` for updates about every half hour. Set `WMAD_NO_UPDATE_CHECK=1` to turn that off.",
+    "Claude Code doesn't log permission prompts, so an agent waiting for your approval shows as Running."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/Charonyuu/whatsmyagentdoing/main/SKILL.md",
+    "https://raw.githubusercontent.com/Charonyuu/whatsmyagentdoing/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ai-startup-skills",
+   "repo": "github.com/huaxialucaicaizi/ai-startup-skills",
+   "stars": "236",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Codex, Claude Code, and other tools that support AI skills such as Cursor",
+   "short": "Seven AI skills that walk a solo founder in China from validating an AI product idea to registering the company.",
+   "what": "This bundle has seven AI skills plus a router skill. You say what you are building and how far you have got, and the router picks the stage: MVP validation, business plan, policies and subsidies, roadshow pitch, growth, pricing and sales, or registration and compliance. The output of each step feeds the next.",
+   "who": "One-person companies and early founders in China building AI tools or apps. It is not for formal legal or tax advice, and the pitch coach targets parks, incubators and competitions, not VC fundraising.",
+   "needs": [
+    "A coding agent that supports AI skills"
+   ],
+   "steps": [
+    {
+     "title": "Install all eight skills",
+     "text": "This is the Claude Code version. For Codex, the README uses `~/.agents/skills` instead.",
+     "code": "git clone https://github.com/huaxialucaicaizi/ai-startup-skills.git\nmkdir -p ~/.claude/skills\ncp -R ai-startup-skills/skills/* ~/.claude/skills/\ncp -R ai-startup-skills ~/.claude/skills/ai-startup-skills"
+    },
+    {
+     "title": "Tell it where you are",
+     "text": "Describe your product and what you have already done. The router asks at most two questions, then hands off to the right step."
+    },
+    {
+     "title": "Pull updates",
+     "text": "Run this inside the cloned repo to fetch the latest versions of the seven sub-skills.",
+     "code": "./scripts/sync.sh\npython3 scripts/validate.py"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Use ai-startup-skills to tell me which startup stage I am at and what to do next: ___ (what you are building, what you have done)"
+   },
+   "watch": [
+    "Policy, legal and tax content is information only. Check official texts and ask a professional.",
+    "Much of the content is in Chinese, and the growth step covers Xiaohongshu, Douyin and WeChat Channels.",
+    "If you only need one step, each one is also a standalone repo you can install alone."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/huaxialucaicaizi/ai-startup-skills/main/SKILL.md",
+    "https://raw.githubusercontent.com/huaxialucaicaizi/ai-startup-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "denmark-vat-return",
+   "repo": "github.com/openaccountants/openaccountants",
+   "stars": "460",
+   "level": "Beginner",
+   "cost": "The skills and the AI connection are free. Skill content is under the OpenAccountants Guide License",
+   "works_with": "Claude, ChatGPT, Cursor, Windsurf or any MCP client. Or upload the files to your AI",
+   "short": "Danish VAT rules for 2026 for your AI, with every rate, threshold and deadline cited to the law.",
+   "what": "This skill covers Danish VAT (moms) and the VAT return for 2026. It includes the 25% rate and zero-rated supplies, the DKK 50,000 registration threshold, the EU SME scheme, filing periods and deadlines, input VAT limits, reverse charge, the return boxes, digital bookkeeping and the DKK 1,400 late fee. Each figure links to its official source, and it ends with worked examples and questions to ask the client first.",
+   "who": "Business owners, bookkeepers and accountants dealing with Danish VAT. It doesn't cover income tax, company tax, payroll, OSS returns or margin schemes, so skip it for those.",
+   "needs": [
+    "An AI app that supports MCP connectors, or one where you can upload files"
+   ],
+   "steps": [
+    {
+     "title": "Add the hosted connector",
+     "text": "Add this URL as a connector in your AI app. There is a guided setup at openaccountants.com/connect.",
+     "code": "https://www.openaccountants.com/api/mcp"
+    },
+    {
+     "title": "Or run the MCP server yourself",
+     "code": "pip install openaccountants-mcp"
+    },
+    {
+     "title": "Or upload the files",
+     "text": "Download Denmark's folder from `packages/` in the repo and upload the files to your AI. The skill file itself is in `agent-skills/denmark-vat-return/`."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your AI",
+    "text": "Ask what your Danish VAT return deadline is for the next quarter, and check that the answer cites the law."
+   },
+   "watch": [
+    "This version is a source-cited draft that no accountant has reviewed yet. Have a qualified professional in Denmark check anything before you file or pay.",
+    "With the hosted connector, your questions go to openaccountants.com.",
+    "Rates and deadlines change. The skill says to confirm every figure against the cited official pages."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/openaccountants/openaccountants/main/agent-skills/denmark-vat-return/SKILL.md",
+    "https://raw.githubusercontent.com/openaccountants/openaccountants/HEAD/README.md"
+   ]
+  }
+ ]
+}
