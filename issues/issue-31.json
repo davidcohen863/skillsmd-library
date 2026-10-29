@@ -1,0 +1,484 @@
+{
+ "issue": 31,
+ "date": "29 Oct 2026",
+ "checked": "29 Oct 2026",
+ "blurb": "Every repo and skill from the 29 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #31 had six repos and three AI skills, and this page covers all nine. Most of it is for people who build with a coding agent, plus a desktop learning app, a team workspace and a diagram skill for Salesforce people. If you write prompts or tool descriptions that other agents read, try asd-ste100 first. If you build Expo apps, install Expo's own skills.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "huashu-motion",
+   "repo": "github.com/alchaincyf/huashu-motion",
+   "stars": "1.9k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). The music is made on your machine with no paid API",
+   "works_with": "Claude Code, Codex, WorkBuddy, Grok Bot, Muse, Dots and other agents that support Agent Skills",
+   "short": "An agent skill that makes a product launch film with its own music, then lets you click a frame to change just that part.",
+   "what": "You ask your agent for something like a 30 second launch film. It reads your product, offers three directions, writes the film as a web page drawn with code, writes a score and plays it with instrument samples, then opens an editor in your browser. You press C, click a spot in the frame and write what to change, and the agent changes only that spot. It exports MP4, transparent MOV, WebM or GIF.",
+   "who": "Makers who want a short launch or explainer video without a video editor, and who are fine running commands locally. The README is in Chinese, with an English version linked at the top. It has only been tested on macOS, so Windows and Linux users may hit rough edges.",
+   "needs": [
+    "Node 22 or newer",
+    "Chrome, Chromium or Edge already installed",
+    "FFmpeg, for exporting video and mixing the music",
+    "Optional: about 55MB of free instrument samples (`om samples build`), and uv with Python 3.12 for Chinese voiceover with Kokoro"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "The skills CLI detects your agent. Add `-a claude-code` or `-a codex` to pick one.",
+     "code": "npx skills add alchaincyf/huashu-motion"
+    },
+    {
+     "title": "Or clone the whole repo",
+     "text": "For Codex, link into `~/.codex/skills/` instead.",
+     "code": "git clone https://github.com/alchaincyf/huashu-motion.git\nln -s \"$PWD/huashu-motion/skills/huashu-motion\" ~/.claude/skills/huashu-motion"
+    },
+    {
+     "title": "Check what is missing",
+     "text": "Run `om doctor` to see which tools are missing. The README says your agent can install them for you."
+    },
+    {
+     "title": "Ask for a film",
+     "text": "Describe the product and length. The agent shows keyframes for three directions, then builds the one you pick and opens the editor."
+    },
+    {
+     "title": "Point at what to change",
+     "text": "In the editor, press C, click the frame and type your note. Titles, numbers, colours and timings also show up as fields you can edit yourself. Every version is kept, and ⌘Z undoes."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Use huashu-motion to make a 30 second launch film for my product. The website is xxx.com.\" (translated from the README's Chinese example)"
+   },
+   "watch": [
+    "It has only been tested on macOS.",
+    "Films of 4 seconds or longer get a small \"Made with huashu-motion\" line in the last 1.2 seconds. Ask your agent to turn it off if you don't want it.",
+    "The optional samples and the Kokoro voice model are downloads (about 55MB and about 325MB).",
+    "Codex's sandbox blocks the local preview and the browser, so you will need to approve those by hand.",
+    "The author says the agent cannot hear. It checks the music from the score and charts, so listen to it yourself before you publish.",
+    "The 豆子花叔 cartoon character in the repo is not covered by the MIT licence."
+   ],
+   "sources": [
+    "https://github.com/alchaincyf/huashu-motion",
+    "https://raw.githubusercontent.com/alchaincyf/huashu-motion/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "LearnHarness",
+   "repo": "github.com/amosblomqvist/learnharness",
+   "stars": "3.7k",
+   "level": "Beginner",
+   "cost": "Free (AGPL-3.0). You pay your model provider for usage",
+   "works_with": "30+ model providers, including OpenAI, Anthropic, Google, DeepSeek and OpenRouter",
+   "short": "A desktop app where AI agents find what you already understand, plan a path to your goal and teach you one step at a time.",
+   "what": "LearnHarness checks where your understanding ends, maps the steps from there to what you want to learn, then teaches each step. You predict, get an explanation and check yourself. Separate practice sessions give you varied problems. Everything you learn goes into a knowledge graph that later sessions read from.",
+   "who": "Anyone trying to learn a hard subject properly who is happy to bring their own API key. Skip it if you want a free hosted tutor with no setup, since every lesson costs model usage.",
+   "needs": [
+    "A Mac with Apple Silicon, a Windows x64 PC or a Linux x64 machine",
+    "An API key from a model provider",
+    "Optional: a Deepgram API key with the Member role or higher for dictation, and a separate key for web search"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Get it from learnharness.ai or the GitHub Releases page. On macOS, drag the app to Applications. On Windows, run the installer. On Linux, make the AppImage executable and open it, or install the `.deb`."
+    },
+    {
+     "title": "Add your key",
+     "text": "Add your provider API key and choose your models."
+    },
+    {
+     "title": "Start a session",
+     "text": "Tell it what you want to understand. Use the thinking fields to explain your reasoning in your own words, typed or dictated."
+    },
+    {
+     "title": "Turn on dictation (optional)",
+     "text": "Add a Deepgram key under Settings, Providers, Dictation, and pick a language. A `403 Insufficient permissions` error can mean the key's role is too low."
+    },
+    {
+     "title": "Run it from source (optional)",
+     "code": "npm install\nnpm run dev        # http://localhost:3000\nnpm test           # deterministic, no LLM, no network"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "LearnHarness",
+    "text": "Start a session with something you want to understand, answer the first questions honestly and write out your thinking, so it knows where to begin."
+   },
+   "watch": [
+    "The Windows installer is unsigned, so Windows may show an unknown publisher or SmartScreen warning.",
+    "Your chats, graph, settings and API keys are stored on your machine, but model requests, web research and dictation go to outside services. Local storage does not mean offline.",
+    "A live cost meter shows what you are spending with your model provider."
+   ],
+   "sources": [
+    "https://github.com/amosblomqvist/learnharness",
+    "https://raw.githubusercontent.com/amosblomqvist/learnharness/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "new-term-radar",
+   "repo": "github.com/zhuyansen/new-term-radar",
+   "stars": "1.9k",
+   "level": "Advanced",
+   "cost": "Free (MIT). Paid signals use your AIsa key; the README puts the example setup at about $15 a month",
+   "works_with": "Command line, Claude Code, Codex, Cursor, TRAE, WorkBuddy, DeepSeek Harness and other MCP clients",
+   "short": "A daily report of new AI model, product and repo names from X, Hugging Face, GitHub and sitemaps, before keyword tools list them.",
+   "what": "The radar watches where new names show up first: posts on X, Hugging Face trending, fast-rising GitHub repos and new pages on directory sitemaps. Each day it writes a report of the new names and a keyword table that sizes the everyday searches behind them and gives each one a decision: prioritize, watch or skip. Fourteen days later it checks whether each lead really rose.",
+   "who": "People who build pages or posts around new AI terms: SEO for AI tool sites, newsletters and directories. Skip it if you don't publish around search demand, or don't want to manage several paid API keys.",
+   "needs": [
+    "Python 3.10 or newer (it uses only the standard library)",
+    "An AIsa API key for X, the name judge and the keyword table. Without one, the free signals still run",
+    "Optional: GoAnyAPI, TrustMRR, Resend and Google Search Console access for extra signals",
+    "uv, if you use the skills or the MCP server"
+   ],
+   "steps": [
+    {
+     "title": "Clone and configure",
+     "text": "Edit `config.json` with your X accounts, sitemaps and topics.",
+     "code": "git clone https://github.com/zhuyansen/new-term-radar\ncd new-term-radar\ncp config.example.json config.json"
+    },
+    {
+     "title": "Run the daily report",
+     "text": "The first run only builds snapshots, so it reports just GitHub breakouts. From the second run on, every signal reports changes.",
+     "code": "export AISA_API_KEY=...\npython -m radar daily --out report.md"
+    },
+    {
+     "title": "Or split it into two jobs",
+     "code": "python -m radar sources --out sources.md           # ① only: X and Hugging Face. Run every few hours.\npython -m radar daily --skip x,hf --out report.md  # everything else, once a day"
+    },
+    {
+     "title": "Use it from your agent",
+     "text": "This installs three skills. In Claude Code you can also run `/plugin marketplace add zhuyansen/new-term-radar`, then `/plugin install new-term-radar@new-term-radar`.",
+     "code": "npx skills add zhuyansen/new-term-radar"
+    },
+    {
+     "title": "Or add the MCP server",
+     "text": "Put this in your MCP client's config, with your key and absolute paths.",
+     "code": "{\n  \"mcpServers\": {\n    \"new-term-radar\": {\n      \"command\": \"uvx\",\n      \"args\": [\"--with\", \"mcp\", \"new-term-radar\", \"mcp\"],\n      \"env\": {\n        \"AISA_API_KEY\": \"...\",\n        \"RADAR_CONFIG\": \"/absolute/path/to/config.json\",\n        \"RADAR_STATE\": \"/absolute/path/to/state\"\n      }\n    }\n  }\n}"
+    },
+    {
+     "title": "Schedule it (optional)",
+     "text": "A GitHub Actions workflow is included and off by default. Fork the repo, commit your config, add the `AISA_API_KEY` secret and set the variable `RADAR_ENABLED` to `true`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask for \"today's new AI keywords\" or \"keyword research on PhotoCraft and SynthID Detector\"."
+   },
+   "watch": [
+    "Most signals are paid API calls. The README lists a price for each, using AIsa's October 2026 prices. The skills tell you the cost and wait for your yes before any paid run.",
+    "The README's AIsa and GoAnyAPI sign-up links are referral links. Any AIsa key works.",
+    "It fetches the sitemaps you list. The author asks you to read each site's robots.txt first and respect its crawl delay.",
+    "TrustMRR's terms forbid republishing its data, and the README asks you not to republish Reddit posts it collects.",
+    "Search volumes are estimates, and the author says hit rates per signal are not proven yet."
+   ],
+   "sources": [
+    "https://github.com/zhuyansen/new-term-radar",
+    "https://raw.githubusercontent.com/zhuyansen/new-term-radar/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Solid Glass",
+   "repo": "github.com/deeplethe/solid-glass",
+   "stars": "2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "shadcn/ui projects on React 19 and Tailwind CSS 4",
+   "short": "A glass-look stylesheet for shadcn/ui, plus components for agent apps such as a status line, composer, tool steps and diff view.",
+   "what": "Solid Glass is one stylesheet that restyles shadcn/ui components into a frosted, solid glass look with fine borders and soft shadows. It finds each component part by the `data-slot` and classes shadcn already uses, so your existing components need no changes. It also ships its own components for AI interfaces: a status glyph, turn status, composer, tool steps, diff view, ask card, context ring, task notice and reasoning panel.",
+   "who": "Front-end developers building an AI chat or agent app on shadcn/ui. Skip it if you are not on shadcn/ui with React 19 and Tailwind 4.",
+   "needs": [
+    "A shadcn/ui project with React 19, Tailwind CSS 4 and the Base UI components"
+   ],
+   "steps": [
+    {
+     "title": "Start a shadcn/ui project",
+     "code": "npx shadcn@latest init"
+    },
+    {
+     "title": "Add the stylesheet",
+     "code": "npx shadcn@latest add deeplethe/solid-glass/solid-glass"
+    },
+    {
+     "title": "Import it",
+     "text": "Import it after Tailwind and shadcn's stylesheet. Then delete the `:root` and `.dark` colour variables that `shadcn init` wrote, because Solid Glass defines the same names.",
+     "code": "@import \"tailwindcss\";\n@import \"tw-animate-css\";\n@import \"shadcn/tailwind.css\";\n@import \"./solid-glass.css\";"
+    },
+    {
+     "title": "Add its own components",
+     "text": "Each one installs the same way.",
+     "code": "npx shadcn@latest add deeplethe/solid-glass/status-glyph"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Add `status-glyph`, the three points of light that show a turn is running and what it is doing, then open the Create page on the project site to try the thickness, tint and blur settings."
+   },
+   "watch": [
+    "You have to delete the colour variables `shadcn init` wrote, or the two sets will clash.",
+    "Dark is the theme as designed. Light is included too.",
+    "The `add` commands pull files from this GitHub repo straight into your project."
+   ],
+   "sources": [
+    "https://github.com/deeplethe/solid-glass",
+    "https://raw.githubusercontent.com/deeplethe/solid-glass/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Macro",
+   "repo": "github.com/macro-inc/macro",
+   "stars": "5.6k",
+   "level": "Beginner",
+   "cost": "Not stated in the README. The code is open source (AGPL-3.0) and can be self-hosted",
+   "works_with": "Any browser, an iOS app, and Claude Code, Codex or any MCP client",
+   "short": "One workspace for email, team chat, docs, tasks, CRM and agents, with a shared team memory your agents can use.",
+   "what": "Macro puts email, channels and DMs, markdown docs, tasks, a canvas, calls, file storage, pull requests and a CRM in one keyboard-first app. Everything can be @linked, and the links work both ways. Its agents use a team memory, refreshed daily from your conversations, emails, tasks and calls, and an MCP server lets outside coding agents work in the same workspace.",
+   "who": "Small teams tired of juggling separate chat, email, tracker and CRM tools. Skip it if your team is settled on those tools, or if you don't use Gmail or Google Workspace, since that is the email the README covers.",
+   "needs": [
+    "A Gmail or Google Workspace account",
+    "A modern browser, or the iOS app"
+   ],
+   "steps": [
+    {
+     "title": "Sign up",
+     "text": "Create an account at macro.com/app and connect your Gmail or Google Workspace account. The getting started guide at docs.macro.com takes about 15 minutes."
+    },
+    {
+     "title": "Connect your coding agent",
+     "text": "Point Claude Code, Codex or any MCP client at your workspace.",
+     "code": "claude mcp add --transport http macro https://mcp-server.macro.com/mcp"
+    },
+    {
+     "title": "Run it yourself (optional)",
+     "text": "Follow `docs/development/running-locally.md` in the repo to run the frontend against hosted services or run the local stack."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Macro",
+    "text": "Open a customer email and hit \"task\" to turn it into a task linked back to that email, then @mention the task in a channel."
+   },
+   "watch": [
+    "Macro reads your email, messages, tasks and calls to build its team memory, and calls are recorded and transcribed.",
+    "Its agents can act for you, including drafting and sending email from an AI chat.",
+    "Anything you @mention in a channel is shared with that channel's members automatically.",
+    "The README says model providers keep zero data and don't train on customer data, and that Macro is SOC 2 Type II certified."
+   ],
+   "sources": [
+    "https://github.com/macro-inc/macro",
+    "https://raw.githubusercontent.com/macro-inc/macro/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Expo Skills",
+   "repo": "github.com/expo/skills",
+   "stars": "3.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT). The EAS skills use Expo Application Services, which are paid",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode, GitHub Copilot, Windsurf, Gemini, Cline and other coding agents",
+   "short": "Expo's official AI skills for building, deploying, upgrading and debugging Expo and React Native apps.",
+   "what": "These are AI skills from the Expo team that teach your coding agent how Expo work is done: Expo Router navigation, animations, native UI, data fetching, native modules, SDK upgrades and more. A second group covers Expo Application Services: app store builds and submission, hosting, workflows, OTA updates and a remote simulator. Your agent picks the right skill from the task.",
+   "who": "Anyone building an Expo or React Native app with a coding agent. If you don't touch Expo, you won't need it.",
+   "needs": [
+    "An Expo project and a coding agent",
+    "Expo Application Services (paid) if you use the EAS skills"
+   ],
+   "steps": [
+    {
+     "title": "Install with the skills CLI",
+     "text": "Run it from the project root. It still asks where to install; add `--agent <agent>` to target one agent. Restart your agent afterwards.",
+     "code": "npx skills@latest add expo/skills --skill '*'"
+    },
+    {
+     "title": "Or install the Claude Code plugin",
+     "text": "Or run `/plugin install expo@claude-plugins-official` inside Claude Code.",
+     "code": "claude plugin install expo@claude-plugins-official"
+    },
+    {
+     "title": "Or install the Codex plugin",
+     "code": "codex plugin add expo@openai-curated"
+    },
+    {
+     "title": "Keep them updated",
+     "text": "Plugin installs update through their marketplaces. For skills CLI installs:",
+     "code": "npx skills@latest update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Help me upgrade this app to the latest Expo SDK.\" or \"Create an EAS workflow that builds previews on pull requests.\""
+   },
+   "watch": [
+    "The EAS skills are for paid services. Each one opens with a note on costs and plan limits.",
+    "The plugin also sets up the Expo MCP server, which can install dependencies, trigger EAS builds and workflows, pull TestFlight crash data and take simulator screenshots.",
+    "Every skill tells your agent to send feedback to Expo with `npx --yes @expo/agent-cli@latest feedback`.",
+    "The experimental `expo-migrate-module` skill ships in a separate `expo-experiments` plugin and may change or be retired."
+   ],
+   "sources": [
+    "https://github.com/expo/skills",
+    "https://raw.githubusercontent.com/expo/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "asd-ste100",
+   "repo": "github.com/danyuchn/asd-ste100-skill",
+   "stars": "5.6k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code",
+   "short": "Rewrites prompts, tool descriptions and error messages in Simplified Technical English so another agent can't misread them.",
+   "what": "ASD-STE100 is the controlled English the aerospace industry uses so maintenance instructions can't be misread. This skill applies its rules to text an AI has to parse alone: active voice, simple tenses, one instruction per sentence, length caps, no phrasal verbs and no semicolons. It has a strict mode for procedures and errors and a lighter mode for READMEs and prose, keeps every hedge and fact, and comes with a linter.",
+   "who": "People writing system prompts, tool descriptions, agent-to-agent messages or error strings. Skip it for creative or marketing copy, where it flattens the voice on purpose.",
+   "needs": [
+    "Python, if you want to run the linter"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "Run it from your project root. Update later with `npx skills update`.",
+     "code": "npx skills add danyuchn/asd-ste100-skill"
+    },
+    {
+     "title": "Or clone it for every project",
+     "code": "git clone https://github.com/danyuchn/asd-ste100-skill ~/.claude/skills/asd-ste100"
+    },
+    {
+     "title": "Ask for a rewrite",
+     "text": "Paste text and ask it to disambiguate it or apply STE100. You get only the rewritten text back. Add \"show the diff\" to see which rules it applied."
+    },
+    {
+     "title": "Lint a file (optional)",
+     "text": "The README runs the linter on the skill's own file this way. `--baseline` sets how many violations to tolerate.",
+     "code": "python scripts/ste-lint.py --baseline 36 SKILL.md"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Rewrite this error message so an agent can't misparse it\", followed by an error message from your own code."
+   },
+   "watch": [
+    "The skills CLI sends anonymous install telemetry. Set `DISABLE_TELEMETRY=1` to opt out.",
+    "It does not include ASD's official approved word list, so it is not a certified STE tool. Get the real standard for aircraft documents.",
+    "The linter checks sentence structure only. It does not prove a rewrite kept the meaning."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/danyuchn/asd-ste100-skill/master/SKILL.md",
+    "https://raw.githubusercontent.com/danyuchn/asd-ste100-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "design-doctrine",
+   "repo": "github.com/plugin87/ux-ui-agent-skills",
+   "stars": "3k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code as a plugin. The kit also covers Codex, Cursor, Copilot and MCP clients",
+   "short": "House rules your agent loads first for any UI work: no emoji, one shared theme, eight states per control and measured contrast checks.",
+   "what": "design-doctrine is the always-on rule set from the UX/UI Agent Skills kit. It tells your agent never to claim a contrast number it didn't measure, to run the kit's gates before reporting done, and to design mobile first. It bans emoji, em dashes, native selects and one-sided coloured borders. It also asks for tokens picked by intent, one theme for every page, eight states for every interactive element and one clear focal point per screen.",
+   "who": "Developers who have their agent build UI and want its claims checked. It needs the full kit, so skip it if you only want a single skill file.",
+   "needs": [
+    "Node, to run the gate scripts",
+    "Chrome, or the one `npx playwright install chrome` downloads, for the 34 gates that open a browser"
+   ],
+   "steps": [
+    {
+     "title": "Install the kit as a Claude Code plugin",
+     "text": "This adds all 26 skills, including design-doctrine, and the design-critic agent.",
+     "code": "/plugin marketplace add plugin87/ux-ui-agent-skills\n/plugin install ux-ui-agent-skills@ux-ui-agent-skills"
+    },
+    {
+     "title": "Or copy the kit into a project",
+     "code": "npx ux-ui-agent-skills init"
+    },
+    {
+     "title": "Ask for UI work",
+     "text": "The skill loads for any design or UI task. If skills don't appear, start a new session."
+    },
+    {
+     "title": "Check the result",
+     "text": "Run `/gate` to run all 52 checks and report the real N/N, and `/critique` for a review that argues for rejection."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Design a notification component with all states and accessibility\", then `/gate`."
+   },
+   "watch": [
+    "Installing with `npx skills add` copies only the skill folders. The skill then can't find the kit, says so and stops.",
+    "`init` writes `CLAUDE.md` and a `.claude/` folder with skills, rules and hooks into your project.",
+    "The skill has your agent run Node scripts from the kit, and its no-emoji, no-dash rule covers code, comments and commit messages too.",
+    "Uninstalling the plugin deletes its data folder, including the gate receipts."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/plugin87/ux-ui-agent-skills/main/.claude/skills/design-doctrine/SKILL.md",
+    "https://raw.githubusercontent.com/plugin87/ux-ui-agent-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "diagramforce",
+   "repo": "github.com/MateuszDabrowski/diagramforce",
+   "stars": "21",
+   "level": "Intermediate",
+   "cost": "Free (EUPL 1.2). No account",
+   "works_with": "Claude (Cowork, Claude Code, claude.ai) and the free Diagramforce web app",
+   "short": "Turns a description, screenshot, draw.io or Mermaid file, or real Salesforce Flow metadata into a diagram you open in Diagramforce.",
+   "what": "Diagramforce is a free browser app for Salesforce architecture diagrams, data models, Data Cloud field mappings, Flows, org charts, Gantt charts and sequence diagrams. This skill writes diagram JSON for it, checks it with a bundled validator and hands you a link or a file. Given a real Flow's `.flow-meta.xml` or Tooling API response, it converts the actual flow, decision outcomes and fault paths included, instead of redrawing it.",
+   "who": "Salesforce architects, consultants and admins who document orgs. It is for diagrams only, so skip it if you need data charts or dashboards.",
+   "needs": [
+    "Node, for the bundled converter and validator scripts",
+    "Optional: an authenticated Salesforce CLI, to link a diagram to the real flow",
+    "Optional: a Chromium-family browser, to render PNG or SVG images"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill",
+     "text": "The skill lives in the repo's `cowork-skill/diagramforce` folder. The README gives no install command, so add that folder to your AI app's skills the usual way."
+    },
+    {
+     "title": "Ask for a diagram",
+     "text": "Describe it, or hand over a screenshot, a draw.io file or Mermaid source. If you have Mermaid, you can also paste it straight into the app."
+    },
+    {
+     "title": "Convert a real Flow",
+     "text": "Give it the SFDX source file or a Tooling API response. It runs the converter, then the validator.",
+     "code": "node scripts/flow-to-diagramforce.mjs force-app/main/default/flows/My_Flow.flow-meta.xml diagram.json\nnode scripts/validate-diagram.mjs diagram.json"
+    },
+    {
+     "title": "Open it",
+     "text": "Click the diagramforce.com link it gives you. For a big diagram it gives you a file instead: open diagramforce.com, click Load, choose Paste and paste the JSON, or open the file from the File tab."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI app",
+    "text": "\"Turn this into an ERD\" with a screenshot of a data model, or \"diagram this Flow from my org\"."
+   },
+   "watch": [
+    "The project gives no install command for the skill.",
+    "With `--org`, the converter uses your logged-in Salesforce CLI to read the org.",
+    "A share link carries the whole diagram in the URL, so anyone with the link can see it.",
+    "Google Drive sync is opt-in. Once connected, auto-save is on by default, every 2 minutes.",
+    "Workbench, one way to fetch Flow metadata, is a third-party tool that some orgs block."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/MateuszDabrowski/diagramforce/main/cowork-skill/diagramforce/SKILL.md",
+    "https://raw.githubusercontent.com/MateuszDabrowski/diagramforce/HEAD/README.md",
+    "https://raw.githubusercontent.com/MateuszDabrowski/diagramforce/main/how-to-use/README.md"
+   ]
+  }
+ ]
+}
