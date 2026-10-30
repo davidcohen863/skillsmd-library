@@ -1,0 +1,575 @@
+{
+ "issue": 32,
+ "date": "30 Oct 2026",
+ "checked": "30 Oct 2026",
+ "blurb": "Every repo and skill from the 30 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #32 had six repos and four AI skills, and this page covers all ten. Most of it is for people who run agents every day: two apps for teams of AI coworkers, a data graph, a TV cleanup and a few skills for email, Stripe and scheduled checks. If you have an old Android TV, try TV Detox first. If you build on Stripe, install Stripe's own skill.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenMausBot",
+   "repo": "github.com/milind-soni/OpenMausBot",
+   "stars": "7.8k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). Bots run on the agent logins you already have. Boat cloud computers are paid after a trial",
+   "works_with": "The claude, codex and grok CLIs, on macOS, Windows and Ubuntu 24.04",
+   "short": "A chat app where every contact is a real AI agent with its own model, its own computer and its own connected apps.",
+   "what": "OpenMausBot works like a messaging app for agents. Each bot in the sidebar runs the claude, codex or grok CLI on your machine and has its own personality and model. A bot can work on a cloud Linux desktop, a local VM or, where supported, your own computer, and can use hundreds of apps through Composio. Shell commands, file edits and questions appear in the chat as cards you allow or deny.",
+   "who": "People who already use Claude Code, Codex or Grok and want several agents they can talk to like contacts. You need at least one of those CLIs installed and logged in, so skip it if you have none.",
+   "needs": [
+    "macOS (Apple silicon or Intel), Windows x64 or Ubuntu 24.04 x64",
+    "At least one agent CLI installed and logged in: `claude`, `codex` or `grok`",
+    "Optional: a Composio project key for connected apps, a Boat API key for cloud computers, and an ElevenLabs or Fish Audio key for voices",
+    "For the terminal version or a source build: Node 24 or newer (and pnpm for the source build)"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Get the .dmg, the Windows installer or the Ubuntu .deb from the latest GitHub release. The harness server comes built in. The Windows installer isn't code-signed yet, so SmartScreen shows \"unknown publisher\". Choose More info, then Run anyway."
+    },
+    {
+     "title": "Or run it from a terminal",
+     "text": "`npx openmausbot` also works without a global install. The first launch asks how you want to reach AI, which model to use and whether to connect a phone.",
+     "code": "npm install -g openmausbot\nopenmausbot"
+    },
+    {
+     "title": "Or build it from source",
+     "text": "Keep the server and app running, then start the desktop shell.",
+     "code": "git clone https://github.com/milind-soni/OpenMausBot && cd OpenMausBot\npnpm install\npnpm dev:server    # harness server → 127.0.0.1:8799\npnpm dev           # app → http://127.0.0.1:5199\npnpm dev:desktop   # Electron shell; keep the two commands above running"
+    },
+    {
+     "title": "Add keys only if you want them",
+     "text": "Local chat works with none. Paste a key once in App Settings (the gear in the sidebar footer) to turn on connected apps, cloud computers or voices."
+    },
+    {
+     "title": "Approve what bots do",
+     "text": "Shell commands, file edits and questions show up as inline cards. Pick Allow or Deny, or answer in the chat."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A bot's chat",
+    "text": "\"Every weekday at 9, send me a summary of my inbox.\" The bot sets up the schedule in that turn and shows a card with Edit, Pause and Undo. Connect Gmail first."
+   },
+   "watch": [
+    "Bots run agent CLIs on your machine. On macOS and Ubuntu Xorg they can also control your own computer once you opt in. That is turned off on Ubuntu Wayland.",
+    "When a bot creates a schedule or webhook trigger, it does so without asking. You get a card to edit, pause or undo it.",
+    "Boat is a paid service after its trial, and cloud computers may cost money. Composio and Boat have their own accounts and terms.",
+    "The terminal version saves API keys as plain text in a private `config.json`.",
+    "Usage analytics are anonymous and optional. Turn them off in Settings, General, Usage analytics.",
+    "Ubuntu builds are beta, and voice calls are macOS only for now.",
+    "The project has no crypto token. The maintainer says any coin using its name has nothing to do with it."
+   ],
+   "sources": [
+    "https://github.com/milind-soni/OpenMausBot",
+    "https://raw.githubusercontent.com/milind-soni/OpenMausBot/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenBot",
+   "repo": "github.com/CopilotKit/OpenBot",
+   "stars": "8.4k",
+   "level": "Advanced",
+   "cost": "Free (MIT). Needs a CopilotKit Intelligence project, which has a free plan, plus your own model key",
+   "works_with": "Any AG-UI agent, including LangGraph, Mastra, CrewAI, Pydantic AI and Google ADK. The shipped bots use OpenAI, Anthropic or Google models",
+   "short": "A template for AI coworkers you host yourself. Each gets a browser, files and only the tools you grant, and every action is checked and logged.",
+   "what": "OpenBot is a template you clone and change into your own company assistant. Docker Compose runs every part of it, your data sits in your own PostgreSQL, and you choose the model. Each coworker gets a real browser with its own logins and files. Anything a bot does to a computer, file, MCP server or component goes through one gateway that checks a policy and writes an audit record before it acts. A new deployment starts with a General Assistant and a Knowledge bot.",
+   "who": "Developers and platform teams who want an internal agent workspace they fully control. It is a beta and there is no hosted version, so skip it if you want something you can just sign up for.",
+   "needs": [
+    "Docker",
+    "Bun 1.4 or newer (some tests fail on 1.3)",
+    "A CopilotKit Intelligence project and licence. There is a free plan, and Intelligence can be self-hosted",
+    "A model key. The proof-of-concept bot uses OpenAI. The LangGraph bot can use OpenAI, Anthropic or Google"
+   ],
+   "steps": [
+    {
+     "title": "Create your .env",
+     "code": "cp .env.example .env\nbun install"
+    },
+    {
+     "title": "Connect an Intelligence project",
+     "text": "The helper sets up the project's runtime key and an `openbot` Learning container, then writes both into `.env`.",
+     "code": "npx --yes copilotkit@latest login\nnpx --yes copilotkit@latest project select\nbun scripts/setup-learning.ts"
+    },
+    {
+     "title": "Add your model key",
+     "text": "Fill in `OPENAI_API_KEY`. The example `KEY_ENCRYPTION_KEY` is public and fine on a laptop. Make your own with this command.",
+     "code": "openssl rand -base64 32"
+    },
+    {
+     "title": "Start it",
+     "text": "This starts the Docker services, the API on port 3001 and the app on port 3010, then checks they answer. Open http://localhost:3010. `scripts/stop.sh` takes it all down and deletes nothing.",
+     "code": "bash scripts/start.sh"
+    },
+    {
+     "title": "Turn on sign-in before you share it",
+     "text": "Delete `OPENBOT_SINGLE_USER=true` from `.env` and set up Google, Microsoft or Okta. Put TLS in front of any deployment."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "OpenBot, at /bot",
+    "text": "\"Open news.ycombinator.com and tell me the top story.\" Then open /admin/audit to see what it did."
+   },
+   "watch": [
+    "`.env.example` ships with single-user mode on, which admits every request as an administrator. Turn on sign-in before anyone else can reach it.",
+    "Each bot's computer drives a browser holding real logins. `docker-compose.yml` binds it to loopback, so leave it there.",
+    "Bots can run shell commands in their workspace. Rules under /admin/boundaries can refuse a shell outright or block particular commands.",
+    "Routines run as you on a schedule. There is a 15 minute floor, a cap of 20, and ten failures in a row switch one off.",
+    "It is a beta under active development, so expect rough edges."
+   ],
+   "sources": [
+    "https://github.com/CopilotKit/OpenBot",
+    "https://raw.githubusercontent.com/CopilotKit/OpenBot/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Helix Foundry",
+   "repo": "github.com/HelixDB/helix-foundry",
+   "stars": "1.8k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0) to run yourself. The README doesn't state pricing for the hosted version",
+   "works_with": "Claude, OpenAI, Ollama, LM Studio, Azure OpenAI, Amazon Bedrock or any OpenAI-compatible server",
+   "short": "Connect your company's databases, apps and documents, let an agent draft an ontology, then explore it as one graph you can ask questions of.",
+   "what": "Foundry connects PostgreSQL, MySQL, Amazon S3, Stripe, PostHog, WorkOS, GitHub, Linear, Granola and Cal.com, and takes uploaded documents and table files. An agent drafts an ontology: types, links, where each one comes from, and rules. You review and edit it, then load it into HelixDB. You can explore the result as a graph or as records, trace every value back to its row or quote, and ask questions that come back with cited answers.",
+   "who": "Teams whose data is spread across databases and SaaS tools and who want one connected view they can question. You run it with Docker, so skip it if you'd rather not, or use the hosted version.",
+   "needs": [
+    "Docker with Compose v2",
+    "For AI: an `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` in the shell you start it from, or Ollama or LM Studio on your computer"
+   ],
+   "steps": [
+    {
+     "title": "Clone and start it",
+     "code": "git clone https://github.com/helixdb/helix-foundry.git\ncd helix-foundry\ndocker compose up -d --wait"
+    },
+    {
+     "title": "Open it",
+     "text": "Go to http://localhost:3000. There is no sign-in and nothing to set up. You get one owner, every connector and a workspace to start in."
+    },
+    {
+     "title": "Try the sample",
+     "text": "No data to hand? Choose Use the sample on the first page. It loads Acme Corp, a made-up software company, and walks you through the data, the goal, a ready-made ontology, its load and Ask in about a minute."
+    },
+    {
+     "title": "Run a local model if you like",
+     "text": "This runs Ollama beside Foundry. Settings › AI models shows which model it chose and why, and lets you switch.",
+     "code": "docker compose --profile ollama up -d"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Foundry, at localhost:3000",
+    "text": "Click Use the sample and follow it through the Acme Corp data, the ontology and its load, then ask a question in Ask."
+   },
+   "watch": [
+    "If your shell has an Anthropic or OpenAI key set, Foundry uses that provider for AI. Ollama and LM Studio run on your own computer instead.",
+    "The local install has no sign-in. It runs as one owner with every connector turned on.",
+    "The first start writes the install's secrets into a Docker volume. `docker compose down -v` deletes that volume along with your data."
+   ],
+   "sources": [
+    "https://github.com/HelixDB/helix-foundry",
+    "https://raw.githubusercontent.com/HelixDB/helix-foundry/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "15 Motion Design Styles",
+   "repo": "github.com/Vincentwei1021/mg-styles-15",
+   "stars": "2.6k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Third-party files keep their own licences",
+   "works_with": "An AI assistant that can write code and run commands, such as Claude Code",
+   "short": "Fifteen 10-second motion design films an AI made by writing code, each with its style notes, full prompt and source to copy.",
+   "what": "Each film shows one style, from frame-by-frame line boil and isometric 2.5D to synthwave, pixel art and a 9:16 variety-show edit. There is no image or video generation. The picture is code (SVG, Canvas, WebGL, Three.js, and Blender for the 3D film), and each film's `audio.py` synthesises its music and sound effects. The repo publishes the films, prompts and source so you can send a prompt to your own agent and make your own film.",
+   "who": "Designers and makers who want a short animated film without a video editor, or a set of tested prompts to start from. If you want the same polish in one go, know that the README says a single run usually doesn't get there.",
+   "needs": [
+    "Node.js 22.12 or later",
+    "Google Chrome, for capturing frames",
+    "ffmpeg",
+    "Python 3.11 or later, for the soundtracks",
+    "Blender, only for the 3D style",
+    "Optional: the fonts listed in `assets/fonts/README.md`, so the lettering matches"
+   ],
+   "steps": [
+    {
+     "title": "Watch the films",
+     "text": "All 15 play with sound at https://vincentwei1021.github.io/mg-styles-15/, each next to its style notes and prompt."
+    },
+    {
+     "title": "Send a prompt to your agent",
+     "text": "Open your agent in an empty folder. Open any file in `prompts/` and send the whole prompt block."
+    },
+    {
+     "title": "Make it your own",
+     "text": "Only `Creative seed` is a specific story. Swap in your own story, brand name, copy and colours, or change `Output` to vertical 1080×1920. Keep `Signature features`, because that's what makes the style recognisable."
+    },
+    {
+     "title": "Review and go again",
+     "text": "Have a second AI review the film with `rubric.md` and paste the review back. The original films went through make, review and revise twice."
+    },
+    {
+     "title": "Render a film from the source",
+     "text": "Run these from the repository root.",
+     "code": "npm install\npip install -r requirements.txt\npython3 demos/01-flat-vector/audio.py          # soundtrack → demos/01-flat-vector/out/audio.wav\nnode harness/render.mjs demos/01-flat-vector   # render every frame → demos/01-flat-vector/out/video.mp4"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, in an empty folder",
+    "text": "Open `prompts/01-flat-vector.md` and send the whole prompt block. Then swap the `Creative seed` story for your own."
+   },
+   "watch": [
+    "The same prompt makes a different film every time.",
+    "Your agent writes code and runs commands on your machine to render the film.",
+    "The font files aren't in the repo. Without them, the lettering falls back to system fonts.",
+    "The instructions in `prompts/` are in Chinese. The prompts themselves are in English.",
+    "For your own films, use only assets licensed for commercial use, such as CC0 or OFL. The prompts already ask for this."
+   ],
+   "sources": [
+    "https://github.com/Vincentwei1021/mg-styles-15",
+    "https://raw.githubusercontent.com/Vincentwei1021/mg-styles-15/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "TV Detox",
+   "repo": "github.com/Ansub/tv-detox",
+   "stars": "1.8k",
+   "level": "Beginner",
+   "cost": "Free (MIT). The AI route needs Claude Code or Codex. The scripts alone need only adb",
+   "works_with": "Claude Code or Codex, on Android TV and Google TV sets",
+   "short": "Your coding agent strips bloatware and ads off a slow Android TV over Wi-Fi, then installs a tiny ad-free home screen.",
+   "what": "You turn on developer mode on the TV and paste one prompt into Claude Code or Codex on a laptop on the same network. The agent connects to the TV, lists every app in plain English, asks before each change, turns apps off instead of deleting them and keeps an undo list. Then it installs a small home screen with your apps, your HDMI inputs and a clock, which uses about 30 MB of RAM.",
+   "who": "Anyone with a slow Android TV or Google TV, including many Sony, TCL, Hisense, Philips and Xiaomi sets, Chromecast with Google TV and Nvidia Shield. It doesn't work on Roku, Samsung (Tizen) or LG (webOS). Fire TV gets the cleanup but keeps Amazon's home screen.",
+   "needs": [
+    "An Android TV or Google TV. Tested on Android TV 9, 11 and 12, and Google TV 14",
+    "A laptop on the same network as the TV",
+    "Claude Code or Codex on that laptop. Without AI you only need `adb` (`brew install android-platform-tools` on a Mac)"
+   ],
+   "steps": [
+    {
+     "title": "Turn on developer mode",
+     "text": "On the TV, go to Settings, Device Preferences, About and press Build 7 times. Then turn on USB debugging in Developer options. Read the README's notes and warnings first."
+    },
+    {
+     "title": "Open your agent",
+     "text": "Start Claude Code or Codex on the laptop. The laptop and TV must be on the same Wi-Fi."
+    },
+    {
+     "title": "Paste the prompt",
+     "text": "Copy the numbered prompt from the README and fill in your TV's brand and model and the apps you use. The agent asks you before every change."
+    },
+    {
+     "title": "Turn debugging off",
+     "text": "When it's done, turn off USB debugging in Developer options, plus Network or Wireless debugging if you turned them on."
+    },
+    {
+     "title": "Or skip the AI",
+     "text": "Download the repo and run `sh install.sh <TV_IP>` to install just the home screen. `sh candidates.sh <TV_IP>` lists every app with a verdict and changes nothing."
+    },
+    {
+     "title": "Undo it",
+     "text": "This brings back the TV's own home screen. To undo the cleanup too, ask your agent to reverse everything on its list.",
+     "code": "sh undo.sh <TV_IP>"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code or Codex on your laptop",
+    "text": "\"Help me clean up my Android TV and make it faster. My TV is a <brand and model>.\" followed by the rest of the README's numbered prompt."
+   },
+   "watch": [
+    "This turns off system apps, at your own risk. A few TVs got stuck at the logo or kept restarting. The README explains how to recover.",
+    "On Google TV and Chromecast with Google TV, don't turn off Google TV's own home screen. Some needed a factory reset. `install.sh` leaves it on by default.",
+    "While debugging is on, other devices on your network can ask to control the TV. Turn it off once you're done.",
+    "On an OLED TV, keep the screensaver on to avoid burn-in.",
+    "Some remote buttons, like the YouTube button on some Google TVs, can stop working.",
+    "The Claude app and claude.ai can't reach your TV, because they run on Anthropic's servers. You need an agent running on your laptop."
+   ],
+   "sources": [
+    "https://github.com/Ansub/tv-detox",
+    "https://raw.githubusercontent.com/Ansub/tv-detox/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "doomformer",
+   "repo": "github.com/mottopanikeiku/doomformer",
+   "stars": "33",
+   "level": "Advanced",
+   "cost": "Free (MIT). Some bundled data has its own licence",
+   "works_with": "Python 3.11+ on Linux or macOS. The museum map also runs in GZDoom, LZDoom, UZDoom and ZDoom 2.8.1",
+   "short": "Compiles small integer neural networks into DOOM maps, where voodoo dolls do the maths and every value is checked against NumPy.",
+   "what": "doomformer turns a neural network into a DOOM map. A value is a crowd of voodoo dolls, a weight is a line on the floor that adds to the sum each time a doll crosses it, and a sum is a light level or floor height. Python reads the values back and checks every one against NumPy with zero tolerance. The demos include an MNIST digit reader, a small transformer that names a level and a museum map you can play.",
+   "who": "People who like neural networks, compilers or DOOM mapping and enjoy an odd experiment. A small network runs about 23,000 times slower than NumPy, so this is for curiosity and learning.",
+   "needs": [
+    "Python 3.11 or newer, on Linux or macOS",
+    "git, cmake and a C compiler, so `doomformer doctor` can build the ACS compiler if it's missing",
+    "For the museum map without Python: GZDoom and the free Freedoom IWAD"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "code": "pip install git+https://github.com/mottopanikeiku/doomformer   # Python 3.11+, Linux or macOS"
+    },
+    {
+     "title": "Check your setup",
+     "text": "It builds ACC, the ACS compiler, if it's missing. On Fedora: `sudo dnf install git cmake gcc gcc-c++ make`.",
+     "code": "doomformer doctor"
+    },
+    {
+     "title": "Run the first demos",
+     "text": "The first checks a small network in about 2 seconds. The second has the marine walk a 7 and the level read it.",
+     "code": "doomformer hello             # 2 s: a small MLP, every value checked\ndoomformer draw --digit 7    # 15 s: the marine walks a 7 and the level reads it"
+    },
+    {
+     "title": "Play the museum",
+     "text": "Download museum.wad from the v0.7.1 release and the Freedoom IWAD. Step on pads to light a digit, press READ, then press MUTATE to rewire one connection.",
+     "code": "gzdoom -iwad freedoom2.wad -file museum.wad"
+    },
+    {
+     "title": "Or skip the install",
+     "text": "Open the Colab notebook linked in the README and draw a digit in your browser."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "`doomformer draw --digit 7`. The marine inks a 7 on the floor, presses READ, and 1,355 voodoo dolls in the map work out which digit it is."
+   },
+   "watch": [
+    "Bigger runs are slow. `doomformer ask` takes about 11 minutes, and all 10,000 MNIST digits take about 23 minutes on six games. Budget one core and 1.3 GB of RAM per game.",
+    "EXACT means DOOM got the same numbers as the integer network. It doesn't mean the answer is right, and inputs that never ran aren't covered.",
+    "Some showcased outputs and seeds were hand-picked.",
+    "The fruit-fly circuits in `models/fly` are CC BY-NC 4.0, so non-commercial use only.",
+    "The museum.wad download has a SHA-256 file you can check it against."
+   ],
+   "sources": [
+    "https://github.com/mottopanikeiku/doomformer",
+    "https://raw.githubusercontent.com/mottopanikeiku/doomformer/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "email-sequence-designer",
+   "repo": "github.com/aaron-he-zhu/aaron-marketing-skills",
+   "stars": "3k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode, Gemini CLI and the other hosts the skills CLI supports",
+   "short": "Plans welcome, abandoned-cart, post-purchase and cold-outbound email flows with timing, exit rules, send caps and a sunset path.",
+   "what": "You tell your agent which flow you want and what triggers it. The skill maps each flow's trigger, step timing, branch and exit conditions and goal. It adds a global send cap, quiet hours and a fatigue guardrail, plus a path for re-engaging and then retiring people who stop opening. It scores the plan on the pack's SEND framework. It plans the flow only, and other skills in the same pack write the emails and audit the program.",
+   "who": "Marketers and founders setting up lifecycle email in a platform like Klaviyo, Mailchimp, HubSpot or Customer.io. It doesn't write the emails, so add email-creative-builder from the same pack if you want copy too.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Optional: an export of your current flows from your email platform, and GA4 or store data for timing"
+   ],
+   "steps": [
+    {
+     "title": "Add the pack in Claude Code",
+     "text": "It is one of 120 marketing skills in this pack.",
+     "code": "/plugin marketplace add aaron-he-zhu/aaron-marketing-skills"
+    },
+    {
+     "title": "Then install it",
+     "text": "`marketplace add` only registers the catalog. This step turns the skills and commands on.",
+     "code": "/plugin install aaron-marketing@aaron"
+    },
+    {
+     "title": "Other agents",
+     "text": "For Codex, Cursor, OpenCode, Gemini CLI and others. The README adds a single skill with `-s` and the skill's name, for example `-s keyword-research`.",
+     "code": "npx skills add aaron-he-zhu/aaron-marketing-skills"
+    },
+    {
+     "title": "Describe the flow",
+     "text": "Give the flow type, your email platform, the trigger event and the audience. Paste a list or segment export if you have one."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Build an abandoned-cart sequence: [N] steps, [timing], with a discount branch and an exit-on-purchase condition.\""
+   },
+   "watch": [
+    "With Resend as your email platform, it can create and send broadcasts. The skill treats creating and sending as two separate steps, each needing your go-ahead.",
+    "When you confirm, it saves results into a `memory/` folder in your project.",
+    "The Claude Code plugin adds hooks that run at session start, on prompts and around tool use.",
+    "The pack doesn't guarantee deliverability or results, and its compliance checks are guidance, not legal advice."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/main/email/nurture/email-sequence-designer/SKILL.md",
+    "https://raw.githubusercontent.com/aaron-he-zhu/aaron-marketing-skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "create-loop",
+   "repo": "github.com/davidondrej/cloudroom",
+   "stars": "1.1k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). Agents use your own Claude and ChatGPT logins",
+   "works_with": "Cloudroom, with the Claude Code, Codex, Pi and other agents it runs",
+   "short": "Sets up a recurring Cloudroom loop: an agent checks one thing, archives itself if all is fine and reports only when you're needed.",
+   "what": "You describe the job in one sentence. The skill fills in the rest from defaults: every 4 hours in your timezone, the same agent and model as the current thread, read-only access and a fresh thread for every run. It reads the files the job touches, writes a short prompt, creates the loop with `room-cli loop create` and runs it once as a test. Then it tells you the loop's name, schedule and test thread.",
+   "who": "Cloudroom users who want small watchdog jobs, like checking a branch or a service every few hours. It depends on Cloudroom's `room-cli`, so it won't work in other agents.",
+   "needs": [
+    "Cloudroom: the desktop app for Apple Silicon Macs (macOS 13+), Linux x64 (alpha) or Windows 11 (beta), or the core hosted on your own Ubuntu 24.04 machine",
+    "A Claude or ChatGPT login for the agents"
+   ],
+   "steps": [
+    {
+     "title": "Get Cloudroom",
+     "text": "Download the app from https://www.cloudroom.dev/download. It updates itself. This skill is one of the skills every Cloudroom agent ships with."
+    },
+    {
+     "title": "Or host the core yourself",
+     "text": "On Ubuntu 24.04. Then connect the app with your server's URL and token.",
+     "code": "curl -fsSL https://cloudroom.dev/install.sh -o install.sh\nsudo bash install.sh"
+    },
+    {
+     "title": "Ask for a loop",
+     "text": "In a thread, say \"create loop\" and describe the job. Anything you say overrides a default. It asks only when the job itself is unclear."
+    },
+    {
+     "title": "Check the test run",
+     "text": "The skill runs the loop once and gives you its thread. After that, each run is its own thread, and it archives itself when all is fine."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A Cloudroom thread",
+    "text": "\"Every 4 hours, have an agent check X\", with X being the one thing you want watched."
+   },
+   "watch": [
+    "Cloudroom agents run without approval prompts, so the README says to give each trusted user their own machine.",
+    "Loops are read-only by default. No edits, commits or pushes until you approve a fix.",
+    "Read `install.sh` before you run it with sudo.",
+    "Cloud agents can reach your Mac. You choose Off, Read-only, Ask first or Full.",
+    "A loop that calls paid APIs costs money each run. The skill suggests fetching only what's new since the last run."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/davidondrej/cloudroom/main/skills/create-loop/SKILL.md",
+    "https://raw.githubusercontent.com/davidondrej/cloudroom/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "generated-ui",
+   "repo": "github.com/QwenLM/qwen-code",
+   "stars": "28.8k",
+   "level": "Beginner",
+   "cost": "Free and bundled with Qwen Code. You bring your own model provider and API key",
+   "works_with": "Qwen Code, in Web Shell or the Desktop app",
+   "short": "Shows an interactive calculator, simulator or comparison right in the chat, for jobs like splitting a bill or comparing plans.",
+   "what": "When you want to change numbers and see what happens, the agent builds a small interactive card in the conversation instead of writing an HTML file. It passes HTML, CSS and JavaScript to a `generated_ui_show` tool. The script runs in an isolated QuickJS worker with no network, files or browser access. Each card carries a written summary of the result and its assumptions, so the answer still reads without the interface.",
+   "who": "Qwen Code users working in Web Shell or the Desktop app. It isn't offered in the terminal UI, headless `qwen -p` runs, editor clients or chat channels, so skip it if that's where you work.",
+   "needs": [
+    "Qwen Code, viewed in Web Shell or the Desktop app",
+    "Node.js 22 or newer if you install with npm",
+    "A model provider and API key, set up with `/auth`"
+   ],
+   "steps": [
+    {
+     "title": "Install Qwen Code",
+     "text": "Linux and macOS. Restart your terminal afterwards.",
+     "code": "curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen-standalone.sh | bash"
+    },
+    {
+     "title": "Or install with npm",
+     "code": "npm install -g @qwen-code/qwen-code@latest"
+    },
+    {
+     "title": "Set up a model",
+     "text": "Run it in your project, then run `/auth` to choose your provider and API key.",
+     "code": "qwen"
+    },
+    {
+     "title": "Open a client that shows cards",
+     "text": "Generated UI is bundled and on by default where cards can render: Web Shell (`qwen serve --open`, experimental) or the Desktop app."
+    },
+    {
+     "title": "Ask for something to adjust",
+     "text": "Ask for a calculator, simulator or comparison where you want to try different numbers."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Qwen Code Web Shell or Desktop",
+    "text": "Ask it to help split a bill, or to compare two plans with weights you can drag."
+   },
+   "watch": [
+    "The Linux and macOS install pipes a script from the internet straight into your shell. Read the script first, or use npm or Homebrew.",
+    "Cards can't fetch data, open files or act for you. Errors that only appear after you change inputs aren't caught before display.",
+    "To turn it off, set `experimental.generatedUi` to `false` and restart the CLI or daemon session.",
+    "Web Shell is experimental."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/QwenLM/qwen-code/main/integrations/generated-ui/skills/generated-ui/SKILL.md",
+    "https://raw.githubusercontent.com/QwenLM/qwen-code/main/integrations/generated-ui/README.md",
+    "https://raw.githubusercontent.com/QwenLM/qwen-code/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "stripe-best-practices",
+   "repo": "github.com/stripe/ai",
+   "stars": "2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, Grok Build and other agents through the skills CLI",
+   "short": "Stripe's own guide for your agent on choices like Checkout Sessions or PaymentIntents, subscriptions, Connect, tax and key security.",
+   "what": "The skill gives your agent Stripe's current defaults before it writes integration code: the latest API and SDK versions, which API fits each job, and which deeper reference to read for payments, Connect, billing, tax, Treasury or security. It also carries firm rules, such as never treating webhooks as optional and checking for an active tax registration before turning on automatic tax.",
+   "who": "Developers building or reviewing a Stripe integration with an AI agent. If you don't use Stripe, you don't need it.",
+   "needs": [
+    "A coding agent",
+    "A Stripe account, or the Stripe CLI to create a test sandbox with no sign-up"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code",
+     "text": "Stripe recommends its official plugins, which add agent tools and update automatically. Run this in your project.",
+     "code": "claude plugin install stripe@claude-plugins-official"
+    },
+    {
+     "title": "Codex",
+     "code": "codex plugin add stripe@openai-curated"
+    },
+    {
+     "title": "Cursor",
+     "text": "Or install through the Cursor marketplace.",
+     "code": "/add-plugin stripe"
+    },
+    {
+     "title": "Grok Build",
+     "code": "grok plugin install stripe --trust"
+    },
+    {
+     "title": "Any other agent",
+     "text": "Manually installed skills don't auto-update. Run `npx skills update -y` to get the latest.",
+     "code": "npx skills add https://docs.stripe.com"
+    },
+    {
+     "title": "No Stripe account yet?",
+     "text": "The skill points to the Stripe CLI (`npm i -g @stripe/cli`) and `stripe sandbox create`, which makes test API keys for you."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Ask it to plan one-time payments for your app and explain which Stripe API it chose and why."
+   },
+   "watch": [
+    "The skill steers you to restricted API keys (`rk_`) instead of secret keys (`sk_`).",
+    "It tells the agent to build in separate sandboxes, not the shared test mode, for new work.",
+    "Stripe also hosts a remote MCP server at mcp.stripe.com that signs in with OAuth.",
+    "Manually installed skills don't auto-update."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/stripe/ai/main/providers/agent-plugins/plugin/skills/stripe-best-practices/SKILL.md",
+    "https://raw.githubusercontent.com/stripe/ai/HEAD/README.md"
+   ]
+  }
+ ]
+}
