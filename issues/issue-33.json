@@ -1,0 +1,450 @@
+{
+ "issue": 33,
+ "date": "31 Oct 2026",
+ "checked": "31 Oct 2026",
+ "blurb": "Every repo and skill from the 31 October issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #33 had five repos and four AI skills, and this page covers eight of them. There's a mix: an NES running inside a model's weights, a cost saver for coding agents, a free spreadsheet, a phone agent and skills for dashboards, blog SEO and Obsidian. If you use a coding agent every day, try TokenEconomizer first. If your app looks AI-made, try unslop.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "nesformer",
+   "repo": "github.com/dbreunig/nesformer",
+   "stars": "200",
+   "level": "Advanced",
+   "cost": "Free (MIT). You supply your own game ROMs beyond the three test ROMs",
+   "works_with": "Python 3.11 or newer, in a terminal",
+   "short": "An NES CPU compiled into the weights of a stock Qwen3.5 model, so the model itself plays NES games one token at a time.",
+   "what": "Nobody trained these weights. A compiler computed every one so that the NES's 6502 CPU, its 2 KB of work RAM and a cartridge's program ROM run inside a standard Qwen3.5 checkpoint. When you play, the model predicts the CPU's execution log token by token, and a small host program draws the picture, reads the controller and fires the vblank interrupt. It builds on Qwenputer, which did the same with a CHIP-8 and a RISC-V CPU.",
+   "who": "People curious about what a model's weights can hold, and anyone who likes emulator internals. It is very slow, so skip it if you just want to play NES games.",
+   "needs": [
+    "Python 3.11 or newer",
+    "The two zip files the README starts from: `nesformer.zip` and `nesformer-weights.zip`",
+    "For `--show`: a terminal with 24-bit color, such as iTerm2 or Windows Terminal",
+    "Optional, for your own games: a `.nes` ROM that uses the NROM board (iNES mapper 0)"
+   ],
+   "steps": [
+    {
+     "title": "Lay out the folder",
+     "text": "Unzip `nesformer.zip` and `nesformer-weights.zip` into the same folder. The `weights/` folder goes next to the `nesformer/` package, not inside it. Run commands from the top folder. To check the weights unzipped correctly:",
+     "code": "shasum -a 256 -c weights/SHA256SUMS"
+    },
+    {
+     "title": "Install the dependencies",
+     "text": "On Windows, activate with `.venv\\Scripts\\activate` instead.",
+     "code": "python3 -m venv .venv\nsource .venv/bin/activate\npip install numpy scipy numba pillow"
+    },
+    {
+     "title": "Play a bundled test game",
+     "text": "`--show` draws each frame in your terminal. When the run ends, it saves a GIF named after the ROM in the current folder.",
+     "code": "python -m nesformer run roms/thwaite.nes --frames 600 --show \\\n  --buttons \"start@90-95+200-205,a@230-233+250-253+270-273+290-293+310-313+330-333+350-353+370-373+390-393+410-413+430-433+450-453+470-473+490-493+510-513+530-533+550-553+570-573+590-593\""
+    },
+    {
+     "title": "Check it against a normal emulator",
+     "text": "`check` runs the weights and the reference CPU side by side and stops at the first difference. `info` describes the checkpoint.",
+     "code": "python -m nesformer check ROM"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Point it at your own Super Mario Bros. ROM: `python -m nesformer run roms/smb.nes --frames 600 --show --buttons \"start@60-65,right@200-600,a@250-265+300-315+360-375+420-435+480-495+540-555\"`. It starts the game, walks Mario right and jumps about once a second."
+   },
+   "watch": [
+    "It is slow. The first run spends about 20 seconds compiling, then each frame takes 1 to 6 seconds, so 600 frames (10 seconds of NES time) take around 25 minutes.",
+    "Only NROM (mapper 0) games run. Games on other boards stop with a message. Only official opcodes work, there are no IRQs and there is no sound.",
+    "The README does not say where to download the two zip files.",
+    "Only the three freely licensed test ROMs ship with it. Any other ROM you supply yourself."
+   ],
+   "sources": [
+    "https://github.com/dbreunig/nesformer",
+    "https://raw.githubusercontent.com/dbreunig/nesformer/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "TokenEconomizer",
+   "repo": "github.com/microsoft/TokenEconomizer",
+   "stars": "2.4k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). Its own model calls run on your agent's plan and show up in its reports",
+   "works_with": "Claude Code, Codex, GitHub Copilot CLI and Pi, with experimental opencode support",
+   "short": "A plugin from Microsoft Research and UC Berkeley that learns from your past agent sessions in a repo to make the next ones cheaper.",
+   "what": "It leaves your coding agent alone and watches the sessions it runs in a repository. It does three things. Micro-skills remember repo facts, like the test command that actually works. Tool pruning stops loading tools that never get used. A loop guard spots a turn stuck on the same failure and nudges the agent to try another way. On the paper's SWE-Bench runs, mean cost fell 18.4 to 30.9% across five agent and model combinations.",
+   "who": "Developers who run the same coding agent in the same repositories every day. If you only use an agent now and then, there's little for it to learn from.",
+   "needs": [
+    "One of the supported agents, signed in any way it supports, in a supported version (the README lists the exact ranges, for example Claude Code 2.1.300 to 2.1.310)",
+    "Python 3.10 or newer on `PATH`",
+    "No API key of its own"
+   ],
+   "steps": [
+    {
+     "title": "Install for Claude Code",
+     "text": "Run this in the folder where you want to keep the clone. The plugin runs from the clone, so leave it in place.",
+     "code": "git clone https://github.com/microsoft/TokenEconomizer.git\nclaude plugin marketplace add \"$PWD/TokenEconomizer\"\nclaude plugin install tokeneconomizer@tokeneconomizer"
+    },
+    {
+     "title": "Check it works",
+     "text": "Start `claude` in one of your repos, trust the folder and run `/tokeneconomizer:status`, allowing its script if asked. Once per machine, and again after Claude Code updates, run `/tokeneconomizer:toolprune refresh-catalog`."
+    },
+    {
+     "title": "Install for Codex",
+     "text": "Trust the folder and, at Hooks need review, choose Trust all and continue. Then quit, start `codex` again and check with `$tokeneconomizer:status`.",
+     "code": "git clone https://github.com/microsoft/TokenEconomizer.git\ncodex plugin marketplace add \"$PWD/TokenEconomizer\"\ncodex plugin add tokeneconomizer@tokeneconomizer"
+    },
+    {
+     "title": "Install for Copilot CLI",
+     "text": "Keep the marketplace path absolute. Copilot reads a relative path as a GitHub repo name.",
+     "code": "git clone https://github.com/microsoft/TokenEconomizer.git\ncopilot plugin marketplace add \"$PWD/TokenEconomizer\"\ncopilot plugin install tokeneconomizer@tokeneconomizer"
+    },
+    {
+     "title": "Install for Pi",
+     "text": "Then start `pi` and run `/te status`.",
+     "code": "pi install git:github.com/microsoft/TokenEconomizer"
+    },
+    {
+     "title": "Turn on micro-skills if you want them",
+     "text": "Tool pruning and the loop guard are on by default. Micro-skills is off because its fact proposer adds model calls.",
+     "code": "/tokeneconomizer:config set microskills=on"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Work as usual for a few sessions, then run `/tokeneconomizer:status` to see what it learned, what it did and what your sessions cost."
+   },
+   "watch": [
+    "It changes your agent's settings files in the repo to leave out unused tools, such as `.claude/settings.local.json` or `.codex/config.toml`. It adds only its own entries, and `toolprune restore` gives the tools back.",
+    "The loop guard's judge and redirect are extra model calls on your own plan. The plugin includes them in its cost reports.",
+    "Codex and Copilot ask you to trust its hooks and scripts. Codex before 0.141.0 doesn't run plugin hooks at all.",
+    "Only the listed agent versions are supported, and newer ones haven't been tested.",
+    "What it learns stays on your machine in `~/.tokeneconomizer`."
+   ],
+   "sources": [
+    "https://github.com/microsoft/TokenEconomizer",
+    "https://raw.githubusercontent.com/microsoft/TokenEconomizer/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "unslop",
+   "repo": "github.com/heydamir/unslop",
+   "stars": "2k",
+   "level": "Beginner",
+   "cost": "Free (CC BY 4.0, credit required). Image generation through a paid service is optional and asks first",
+   "works_with": "Claude Code",
+   "short": "A skill that audits an AI-looking UI for slop, sets a design direction and fixes the screen pass by pass.",
+   "what": "It looks for the usual signs of vibecoded UI: purple gradients, glows, emoji labels, shouty copy and uneven spacing. Then it sets a direction from your product and works through spacing, color, icons, copy, type, layout, details, visuals and motion, in that order. It works with Next.js, React, Vue, Svelte, Tailwind or plain HTML and CSS, and on a live site when all you have is a link. It can also make a short square video of the screen changing.",
+   "who": "Anyone whose app, dashboard or landing page looks AI-made and who wants it to look designed. If your screen already looks good, it says so and suggests small tweaks instead of a redesign.",
+   "needs": [
+    "Claude Code",
+    "For the story video: Playwright and ffmpeg",
+    "Optional: an image service like fal, Replicate, OpenAI images or Higgsfield, for hero images"
+   ],
+   "steps": [
+    {
+     "title": "Copy the skill into your skills folder",
+     "text": "For a single project, copy it into `.claude/skills/` inside that project instead.",
+     "code": "git clone https://github.com/heydamir/unslop\nmkdir -p ~/.claude/skills && cp -r unslop/skills/unslop ~/.claude/skills/"
+    },
+    {
+     "title": "Run it on a screen",
+     "text": "Type `/unslop` with what you want, or just ask in your own words. It audits the screen and proposes a direction before it edits anything, so you can steer it early.",
+     "code": "/unslop this dashboard"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "`/unslop my landing page and make the story video so I can post it`. Or try it first on the two vibecoded screens in the repo's examples folder."
+   },
+   "watch": [
+    "If no image service is connected, it offers to connect one as an MCP server. It shows the prompt and asks before every paid generation.",
+    "It edits your UI code, so work on a branch or commit first.",
+    "The licence is CC BY 4.0: you can use it commercially as long as you credit the author and link back to the repo."
+   ],
+   "sources": [
+    "https://github.com/heydamir/unslop",
+    "https://raw.githubusercontent.com/heydamir/unslop/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Mika",
+   "repo": "github.com/wangzan101/Mika",
+   "stars": "2k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0). You pay your model provider for the API key you bring",
+   "works_with": "Android phones, with any model that supports tool calling; also reachable from AI tools on your computer over MCP",
+   "short": "An Android app that takes a one-sentence request and does it on your phone: working your apps, browsing the web and running scripts.",
+   "what": "Mika drives apps on a hidden background screen while you keep using your phone. It reads the screen and taps and types like a person, so apps don't need special support. It also has a built-in browser, a local Linux sandbox for Python, Node and shell, scheduled tasks and a memory. There is no Mika server: your requests go only to the model provider you set up.",
+   "who": "Android users who want an agent that actually does things in their apps. It's an early public beta, mostly tested on one Android 14 phone, and many demos and built-in app notes cover apps popular in China.",
+   "needs": [
+    "Android 11 or later for chat, web and sandbox tasks. Android 12 or later to control apps, and Android 14 or later recommended",
+    "An arm64 phone for the Linux sandbox",
+    "An API key for a model that supports tool calling, or a ChatGPT Plus or Pro sign-in",
+    "Developer options and wireless debugging turned on for app control (paired once)"
+   ],
+   "steps": [
+    {
+     "title": "Install the APK",
+     "text": "Download the latest APK from the repo's Releases page (https://github.com/wangzan101/Mika/releases/latest) and install it."
+    },
+    {
+     "title": "Skip accessibility for now",
+     "text": "Mika turns accessibility on by itself after pairing. Android often blocks turning it on by hand for apps from GitHub, so choose Skip when the wizard reaches it."
+    },
+    {
+     "title": "Pair wireless debugging once",
+     "text": "Open \"Set up phone control\" in Settings. Turn on Developer options, USB debugging and Wireless debugging, then pair with the 6-digit code. Skip this if you only want web, files and chat."
+    },
+    {
+     "title": "Add a model",
+     "text": "In Settings, open \"Models\", pick a preset or Custom, enter your API key and tap \"Test and save\". Or tap \"Continue with ChatGPT\" to sign in instead. The main model must support tool calling."
+    },
+    {
+     "title": "Optional: use it from your computer",
+     "text": "With the phone on USB, this turns on computer access and prints a URL and token for your AI tool's MCP config. It only works over the cable.",
+     "code": "adb shell sh /sdcard/Android/data/com.wangzan101.mika/files/connect-computer.sh\nadb forward tcp:8765 tcp:8765"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The Mika app",
+    "text": "\"Check the weather at 8 every morning and tell me only if it will rain\", or \"Set alarms for 9:40, 9:50 and 10:00 tomorrow morning\"."
+   },
+   "watch": [
+    "In the default Ask mode, only steps that spend money are confirmed. Sending messages, posting, submitting forms, deleting and changing settings just happen. Autonomous mode doesn't even ask before paying.",
+    "Automating third-party apps and websites may break their terms of service and risks restricted features or account bans. The README says to use it at your own risk.",
+    "What you say, screen contents and screenshots go to the model provider you choose. Keys and memories are encrypted on the phone.",
+    "It needs wireless debugging and accessibility, which give it deep control of your phone.",
+    "Batch jobs, like greeting several recruiters, start without asking you to confirm the list first."
+   ],
+   "sources": [
+    "https://github.com/wangzan101/Mika",
+    "https://raw.githubusercontent.com/wangzan101/Mika/HEAD/README.md",
+    "https://raw.githubusercontent.com/wangzan101/Mika/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "GridCraft",
+   "repo": "github.com/storytold/gridcraft",
+   "stars": "6.9k",
+   "level": "Beginner",
+   "cost": "Free (MIT or Apache 2.0). No subscription, no licence server, no telemetry",
+   "works_with": "macOS, Windows, Linux, FreeBSD and the browser; agents through MCP, a CLI or a JSON control channel",
+   "short": "A free, open-source spreadsheet app in pure Rust with a ribbon, 500+ functions, pivot tables and an MCP server for agents.",
+   "what": "GridCraft is a clean-room spreadsheet with the layout you already know: ribbon, formula bar, sheet tabs, fill handle and Format Cells. XLSX is its native format, with CSV and TSV too, and it has dynamic arrays, LAMBDA, charts, sparklines and pivot tables. Every button, menu and keystroke is also a command that an agent can run over MCP, the CLI or a JSON control channel.",
+   "who": "People who want a free desktop spreadsheet, and anyone who wants an agent to read and edit spreadsheets. It's in alpha, and the team estimates it's about 50% ready for real work, so keep your important files in your usual tool for now.",
+   "needs": [
+    "To use it: nothing beyond the download for your system",
+    "To build from source: a Rust toolchain with `cargo`",
+    "For the web build: trunk and the `wasm32-unknown-unknown` target"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "The latest release on GitHub (https://github.com/storytold/gridcraft/releases/latest) has a signed .msi or portable zip for Windows, a signed .dmg for macOS, and AppImage, Flatpak, .deb, .rpm and tarball builds for Linux. `SHA256SUMS.txt` lists a checksum for every file."
+    },
+    {
+     "title": "Or run it from source",
+     "text": "This opens the desktop app with a sample workbook (sales, budget or grades).",
+     "code": "cargo run --release -p gridcraft -- --sample sales"
+    },
+    {
+     "title": "Connect your agent over MCP",
+     "text": "This adds a headless MCP server to Claude Code. It offers tools like `read_range`, `write_range`, `insert_chart` and `execute_command`, which reaches every GridCraft command.",
+     "code": "claude mcp add gridcraft -- gridcraft-cli mcp"
+    },
+    {
+     "title": "If it won't open on Windows",
+     "text": "Some AMD drivers crash at start. In PowerShell, from the app's folder, try another graphics backend.",
+     "code": "$env:WGPU_BACKEND = \"vulkan\"\n& .\\gridcraft.exe"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Evaluate a formula without opening the app: `gridcraft-cli eval '=XLOOKUP(\"b\",{\"a\",\"b\"},{1,2})'` returns 2."
+   },
+   "watch": [
+    "It's alpha. Depth, fidelity and file compatibility are still rough, and the team estimates about 50% readiness for real work.",
+    "Old .xls files open with values, formulas and number formats but not formatting. XLSB and ODS import data only, using saved values instead of formulas.",
+    "The MCP server and control channel let an agent change your workbooks, including real pointer and keyboard input in a running window."
+   ],
+   "sources": [
+    "https://github.com/storytold/gridcraft",
+    "https://raw.githubusercontent.com/storytold/gridcraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "claude-dashboard",
+   "repo": "github.com/JimLiu/baoyu-design",
+   "stars": "4.9k",
+   "level": "Intermediate",
+   "cost": "Free to use. Mixed licence: the local tooling is MIT, the skill text and editor adapted from Anthropic are not",
+   "works_with": "Cursor, Claude Code, Codex and the other agents the skills CLI supports",
+   "short": "Turns a CSV, TSV or JSON file into a local dashboard of charts, numbers and tables, with a Sources panel for every number.",
+   "what": "Your agent writes the datasets and a page of charts, numbers and tables into a folder under `designs/<slug>/`, then starts a live editor on your machine and gives you the link. The Sources panel traces every number back to its rows. Hand it a newer export later and it swaps the file in and recomputes the page. It is a local version of the claude.ai Dashboard artifact type, run by one Node script with nothing to install.",
+   "who": "Anyone with a spreadsheet export who wants a KPI tracker or recurring report without a BI tool. It doesn't connect to live data, so every refresh means giving it a new file.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Node.js 22 or newer",
+    "Your data as a CSV, TSV or JSON file, 8 MB at most"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "The skills CLI finds your agent and puts the skills in the right folder. This line from the README installs only some of the skills; drop `--skill claude-slides` if you only want the dashboard. Add `-g` to install for every project.",
+     "code": "npx skills add JimLiu/baoyu-design --skill claude-slides --skill claude-dashboard"
+    },
+    {
+     "title": "Or pick your agent",
+     "code": "npx skills add JimLiu/baoyu-design --agent claude-code"
+    },
+    {
+     "title": "Ask for a dashboard",
+     "text": "Ask in your own words, or call it by name: `/claude-dashboard` in Claude Code, `$claude-dashboard` in Codex. The agent writes the files, starts the editor and gives you its `http://127.0.0.1` link."
+    },
+    {
+     "title": "Update it later",
+     "text": "This updates all installed skills. Then start a new agent session so the updated files load.",
+     "code": "npx skills update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Turn this analytics CSV into a dashboard that compares the last 28 days with the 28 before.\""
+   },
+   "watch": [
+    "The repo says the skill instructions and editor are adapted from Anthropic's claude.ai Artifact types, stay Anthropic's and are not covered by its MIT licence. It is not affiliated with or endorsed by Anthropic. Read NOTICE.md before you reuse or share it.",
+    "Attached data files are plain files in the dashboard folder, so anyone you give the folder to can read them.",
+    "No connectors or live queries. Data that changes has to be gathered again when you ask for a refresh."
+   ],
+   "sources": [
+    "https://github.com/JimLiu/baoyu-design/tree/main/skills/claude-dashboard",
+    "https://raw.githubusercontent.com/JimLiu/baoyu-design/main/skills/claude-dashboard/SKILL.md",
+    "https://raw.githubusercontent.com/JimLiu/baoyu-design/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "seo-content-blog",
+   "repo": "github.com/Thibaultbm/claude-seo-geo",
+   "stars": "17",
+   "level": "Intermediate",
+   "cost": "Free (MIT). The scripts need no API key and no paid tools",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI and other agents that read skills from disk",
+   "short": "Specs, audits and benchmarks a blog post against the pages that rank, then writes it to rank on Google and get cited by AI engines.",
+   "what": "Give it a keyword, topic, draft or post URL. It runs four phases: a spec built on a 12-part article skeleton, an audit of your article, blog hub and author page with bundled Python scripts, a benchmark against the top 3 to 5 search results, and then the build. You get a scorecard, findings, the benchmark, a publish-ready article with metadata and JSON-LD, and an acceptance check.",
+   "who": "People who run a company blog and want posts that rank and get quoted by AI search. It's one of 20 SEO skills in the pack, so add the keyword research skill if you haven't picked your keyword yet.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Python 3.9 or newer for the audit scripts (standard library only)",
+    "Your post's URL or draft, and the competitor URLs you want to compare against"
+   ],
+   "steps": [
+    {
+     "title": "Add the pack in Claude Code",
+     "code": "/plugin marketplace add Thibaultbm/claude-seo-geo"
+    },
+    {
+     "title": "Then install it",
+     "code": "/plugin install claude-seo-geo@sorank"
+    },
+    {
+     "title": "Or use the skills CLI",
+     "text": "For other agents.",
+     "code": "npx skills add Thibaultbm/claude-seo-geo"
+    },
+    {
+     "title": "Or copy it by hand",
+     "code": "git clone --depth 1 https://github.com/Thibaultbm/claude-seo-geo.git\ncp -r claude-seo-geo/skills/* ~/.claude/skills/"
+    },
+    {
+     "title": "Ask about a post",
+     "text": "The right skill picks itself up from your request."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Our blog has no author box, no table of contents and no covers on the hub. Fix the templates.\""
+   },
+   "watch": [
+    "The skill treats a timed email capture popup (30 to 40 seconds on the page) as mandatory on every article page. Skip that part if you don't want popups.",
+    "If your workspace has an Obsidian vault or a folder of notes, it reads them first and appends what it did to an SEO action log there.",
+    "The audit and benchmark scripts fetch your pages and your competitors' pages.",
+    "Many thresholds are field rules of thumb from the author's agency audits, and the skill labels which ones are measured."
+   ],
+   "sources": [
+    "https://github.com/Thibaultbm/claude-seo-geo/tree/main/skills/seo-content-blog",
+    "https://raw.githubusercontent.com/Thibaultbm/claude-seo-geo/main/skills/seo-content-blog/SKILL.md",
+    "https://raw.githubusercontent.com/Thibaultbm/claude-seo-geo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "obsidian-second-brain",
+   "repo": "github.com/eugeniughelbur/obsidian-second-brain",
+   "stars": "5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Some research commands use paid APIs, at a few cents per call",
+   "works_with": "Claude Code, Codex CLI, Gemini CLI, OpenCode, Antigravity, Pi, Hermes and Grok Bot",
+   "short": "Runs your Obsidian vault as a second brain: it saves notes from chats, rewrites pages from new sources and tidies itself on a schedule.",
+   "what": "It gives your agent 49 commands for an Obsidian vault. `/obsidian-save` pulls the decisions, people, tasks and ideas out of a conversation and files each one in the right note. `/obsidian-ingest` takes a voice memo, photo, document or video link and updates your existing pages instead of adding one more summary. There are also research commands, a vault health check and Crew, a shared logbook so several agents know what the others did.",
+   "who": "Obsidian users who already work with a coding agent and want their notes kept up to date for them. If you don't keep a vault, you can still use Crew on its own, but most of the pack won't matter to you.",
+   "needs": [
+    "An Obsidian vault, or let it create one",
+    "A supported agent, such as Claude Code",
+    "Python 3.10 or newer and `uv` for the scripts",
+    "Optional: xAI Grok, Perplexity, Google Gemini, YouTube Data or OpenAI Whisper keys for some research commands"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin in Claude Code",
+     "code": "/plugin marketplace add eugeniughelbur/obsidian-second-brain\n/plugin install obsidian-second-brain@obsidian-second-brain"
+    },
+    {
+     "title": "Tell it where your vault is",
+     "text": "Add this to the `env` section of `~/.claude/settings.json`.",
+     "code": "\"env\": { \"OBSIDIAN_VAULT_PATH\": \"/path/to/your/vault\" }"
+    },
+    {
+     "title": "Set up the vault",
+     "text": "Restart Claude Code, then run this inside your vault. Plugin commands all start with `/obsidian-second-brain:`.",
+     "code": "/obsidian-second-brain:obsidian-init"
+    },
+    {
+     "title": "Or install with the script",
+     "text": "Use this if you want bare command names like `/obsidian-init`.",
+     "code": "git clone https://github.com/eugeniughelbur/obsidian-second-brain ~/.claude/skills/obsidian-second-brain\nbash ~/.claude/skills/obsidian-second-brain/install.sh\nbash ~/.claude/skills/obsidian-second-brain/scripts/setup.sh \"/path/to/your/vault\""
+    },
+    {
+     "title": "No vault yet?",
+     "text": "This creates one with folders, templates and boards.",
+     "code": "cd ~/.claude/skills/obsidian-second-brain\nuv run python scripts/bootstrap_vault.py --path ~/Documents/MyVault --name \"Your Name\"\nbash scripts/setup.sh ~/Documents/MyVault"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "After a meeting, run `/obsidian-save`. Before a big decision, run `/obsidian-challenge` to have it search your vault for past failures and reversed decisions on the same topic."
+   },
+   "watch": [
+    "The README also offers a one-line install that pipes a script from GitHub straight into bash. Read the script first if you use it.",
+    "The optional background agent runs headless with `--dangerously-skip-permissions`. It ships off, is limited to read, write and edit tools with no shell or network, and only adds and updates notes. Leave it off if you don't want that.",
+    "Paid research calls have no hard caps. The README gives rough costs such as about $0.40 to $0.80 for `/research-deep`, and logs spend to `~/.research-toolkit/usage.log`.",
+    "It rewrites existing pages from new sources. The README says it never deletes or changes notes destructively without asking, but back up your vault first.",
+    "The calendar command needs the Google Calendar MCP connector."
+   ],
+   "sources": [
+    "https://github.com/eugeniughelbur/obsidian-second-brain",
+    "https://raw.githubusercontent.com/eugeniughelbur/obsidian-second-brain/main/SKILL.md",
+    "https://raw.githubusercontent.com/eugeniughelbur/obsidian-second-brain/HEAD/README.md"
+   ]
+  }
+ ]
+}
