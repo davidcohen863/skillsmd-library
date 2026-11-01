@@ -1,0 +1,527 @@
+{
+ "issue": 34,
+ "date": "1 Nov 2026",
+ "checked": "1 Nov 2026",
+ "blurb": "Every repo and skill from the 1 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #34 had six repos and four AI skills, and this page covers all ten. Most of it is for builders: DeepSeek's proactive coding agent, a desktop team of agents, a free CAD app, pixel art effects, and skills for legal pages, product demos, SEO and cloud costs. If you're about to launch an app, start with legal-pages. If you want something you can open today, try CADCraft or Orkas.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "dsh-superagent",
+   "repo": "github.com/deepseek-ai/dsh-superagent-prototype",
+   "stars": "4.7k",
+   "level": "Advanced",
+   "cost": "Free (MIT). Model usage costs are not stated in the README",
+   "works_with": "DeepSeek Harness, GitHub, and optionally Feishu",
+   "short": "DeepSeek's research prototype of a coding agent that watches one GitHub repo, takes requests and answers with pull requests.",
+   "what": "It is a bundle for DeepSeek Harness that listens to GitHub and, if you want, Feishu. When an allowed person asks it for work, it opens a work item, does the job in its own session and folder, and replies in the same thread, for example with a pull request. A web panel shows what needs a person. The team's idea is that it acts only when asked or when a rule you wrote allows it.",
+   "who": "Teams who want to try a proactive agent on a real repo and are comfortable running and debugging research code. DeepSeek calls it a reference prototype, not a product, so skip it if you want something stable.",
+   "needs": [
+    "Node.js 22.19+ or 24+, pnpm, git 2.32+, Python 3.8+ and tmux",
+    "GitHub CLI (`gh`) 2.48 or later",
+    "A repository on github.com (GitHub Enterprise Server is not supported) and a local clone of it",
+    "A separate GitHub user account for the agent, with write access to the repo",
+    "A model provider configured for DeepSeek Harness",
+    "Optional: `lark-cli` and a Feishu or Lark bot app for chat requests"
+   ],
+   "steps": [
+    {
+     "title": "Or let your agent walk you through it",
+     "text": "The README says setup has many steps, so it suggests asking your coding agent to do it with you. It asks one question at a time and shows the full plan before installing.",
+     "code": "Read SETUP.md in this repository and set up dsh-superagent with me."
+    },
+    {
+     "title": "Give the agent account its own GitHub CLI",
+     "text": "For a manual setup, sign in as the agent account. The last command prints its login.",
+     "code": "mkdir -p ~/.local/bin\ncat > ~/.local/bin/gh-agent <<'EOF'\n#!/bin/sh\nGH_CONFIG_DIR=\"$HOME/.config/gh-agent\" exec gh \"$@\"\nEOF\nchmod +x ~/.local/bin/gh-agent\ngh-agent auth login\ngh-agent api user --jq .login"
+    },
+    {
+     "title": "Install the harness and the bundle",
+     "text": "Run this once, on a machine with no `superagent` profile yet. Replace `<this repository>` with the repo's address.",
+     "code": "npm install -g @deepseek-ai/dsh@0.2.1-rc.3\ngit clone <this repository> dsh-superagent && cd dsh-superagent\npnpm install && pnpm build\ndsh superagent --from-default-profile web --dump-config > /dev/null\ndsh plugin --profile superagent add \"link:$PWD\""
+    },
+    {
+     "title": "Add the machine settings",
+     "text": "Copy `examples/profile.cordis.patch.yml` to `~/.dsh/profiles/superagent/cordis.patch.yml` and fill in every `<placeholder>`. `stateDir` must be an absolute path."
+    },
+    {
+     "title": "Start it",
+     "text": "`start` runs it in a tmux session and prints any missing setup. Open the URL in the log and choose Superagent in the sidebar.",
+     "code": "scripts/dsh-superagent start\nscripts/dsh-superagent status"
+    },
+    {
+     "title": "Finish setup in the panel",
+     "text": "Under Sources, set the repo (`owner/name`) and the path to `gh-agent`. Under Policy, add the GitHub accounts allowed to ask for work. Until that list has someone in it, no request becomes a ticket. Under Execution, set the work folder and a prepare command."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your GitHub repo",
+    "text": "From an allowed account, open a new issue or comment that mentions the agent account. It picks it up on the next poll. Editing an old issue to add a mention does not count, so post a new comment."
+   },
+   "watch": [
+    "DeepSeek says this is research code for reference, not an official product. It may have bugs, and some ideas in their article are not built yet.",
+    "Both agent presets run with `danger-full-access` as your OS user. A worker can run programs and read your home folder. For isolation, the docs suggest a separate OS account that holds only the agent's credentials.",
+    "The agent comments, pushes branches and opens pull requests as its own GitHub account. A GitHub App cannot be used.",
+    "The plugin changes process-wide `PATH` and git settings, so keep the `superagent` profile separate from the one you work in.",
+    "Running the profile creation command again on an existing install replaces the profile and deletes its machine settings. Do not use it to upgrade."
+   ],
+   "sources": [
+    "https://github.com/deepseek-ai/dsh-superagent-prototype",
+    "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/HEAD/README.md",
+    "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/HEAD/docs/006-deployment.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Orkas",
+   "repo": "github.com/Orkas-AI/Orkas",
+   "stars": "7k",
+   "level": "Beginner",
+   "cost": "Free (MIT). The packaged app comes with 500 credits; paid plans start at $11.99 a month. With your own keys, your provider bills you",
+   "works_with": "macOS 12+, Windows 10+, Linux from source; runs Claude Code, Codex, OpenCode, OpenClaw and Hermes-Agent",
+   "short": "A desktop app where a Commander agent splits your goal into to-dos and hands them to 16 specialist agents and your coding agents.",
+   "what": "You tell the Commander what you need. It does small tasks itself and, for bigger ones, plans the steps and brings in its built-in specialists (research, writing, slides, video, office files, e-commerce) plus any CLI agents you already have installed. Projects keep goals, rules, memory and files between chats, and scheduled automations repeat routine work. Your data stays on your computer by default.",
+   "who": "People who want a team of agents for ongoing work like content, research, reports or store operations, and who like a desktop app over code. If you only want one chatbot or a library to build on, the README says it is not for you.",
+   "needs": [
+    "The packaged app: macOS 12+ or Windows 10+, and an Orkas sign-in",
+    "From source: Node 22.12+ on macOS, Windows or glibc 2.34+ Linux x64/arm64",
+    "Optional: your own API keys for Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, MiniMax or Doubao, or a local OpenAI-compatible endpoint"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "Get the installer from orkas.ai/download. The link detects your system. The packaged app asks you to sign in and gives you 500 credits for the built-in model, so you don't need an API key to start."
+    },
+    {
+     "title": "Or run it from source",
+     "text": "This is the only way to run it on Linux today. The first launch downloads its own Python, Node, an embedding model (about 95 MB), FFmpeg, whisper.cpp and other tools.",
+     "code": "git clone https://github.com/Orkas-AI/Orkas.git\ncd Orkas\n./run.sh           # macOS / Linux\nrun.cmd            # Windows"
+    },
+    {
+     "title": "Add a model",
+     "text": "In a source build, open Settings → AI Providers and add an API key or OAuth. For a local model such as Ollama or LM Studio, go to Account settings → Models → Chat → Add model → Custom and enter the base URL, model ID and key."
+    },
+    {
+     "title": "If native modules fail",
+     "text": "Use Node.js 24 LTS, then run this from the checkout. `npm run native:check` checks without installing.",
+     "code": "npm run native:repair"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Orkas",
+    "text": "Hand VideoStudio a reference clip and your own footage: \"Use reference.mp4 as a reference for a 30-second vertical promo. Keep its hook, typography and pacing, replace the content with my product and screen recordings, and show me the breakdown and plan first.\""
+   },
+   "watch": [
+    "The built-in Orkas model runs through Orkas's managed service. With your own keys, calls go straight to your provider.",
+    "Voice input sends your audio to Orkas for recognition and uses the key owner's credits.",
+    "Connectors reach Gmail, Google Drive, Slack, Shopify, Stripe and more. By default Orkas asks before it sends, posts or deletes anything.",
+    "It runs external CLI agents as local subprocesses on your machine.",
+    "Shared projects, cloud sync and web app publishing are only in the packaged app. Cloud sync stores the data you select on Orkas servers.",
+    "Automations only run while your computer is awake and Orkas is open."
+   ],
+   "sources": [
+    "https://github.com/Orkas-AI/Orkas",
+    "https://raw.githubusercontent.com/Orkas-AI/Orkas/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "pixelfx",
+   "repo": "github.com/patch-gg/pixelfx",
+   "stars": "1.9k",
+   "level": "Intermediate",
+   "cost": "Free (MIT), commercial use included. The Patch Pixel font is not covered",
+   "works_with": "Browser games (canvas, Phaser, PixiJS, Kaplay, three.js), any engine through sprite sheets, Claude Code",
+   "short": "244 pixel art effects written as small pieces of code, with sprite sheet export and an AI skill for making new ones.",
+   "what": "Fire, explosions, magic, weather, UI pops, pickups, critters and more, each one a file in `src/fx/<category>/<name>.js` with no images. You can play them in a browser game, recolor and mirror them, or export sprite sheets for engines like Godot and Unity. Effects that involve a character come with timing for the wind-up, hit freeze and recovery, and a skill teaches your agent to find, export and make effects.",
+   "who": "Indie game developers who want ready effects or a way to make their own with an agent. If you don't make games, there is little here for you.",
+   "needs": [
+    "Node.js, to run the tools in `tools/`",
+    "For the skill: Claude Code, or any agent that reads skills from `~/.claude/skills/`"
+   ],
+   "steps": [
+    {
+     "title": "Add it to a browser game",
+     "text": "No dependencies. You can also copy `src/core` and the effects you want instead.",
+     "code": "npm i github:patch-gg/pixelfx"
+    },
+    {
+     "title": "Export a sprite sheet for any engine",
+     "text": "This writes a transparent PNG of every frame and an Aseprite-style JSON. `node tools/sheets.mjs` exports the whole library to `sheets/`.",
+     "code": "node tools/render.mjs ice/frost-nova --sheet"
+    },
+    {
+     "title": "Recolor an effect",
+     "text": "Any effect takes a dark-to-bright palette of hex colors, so a fire can burn blue.",
+     "code": "node tools/render.mjs fire/torch --gif --opts '{\"palette\": [\"#102\",\"#215\",\"#43a\",\"#8cf\",\"#cff\",\"#fff\"]}'"
+    },
+    {
+     "title": "Install the skill",
+     "text": "Run this in Claude Code, or copy `skills/pixelfx` into `~/.claude/skills/`.",
+     "code": "/plugin marketplace add patch-gg/pixelfx\n/plugin install pixelfx@pixelfx"
+    },
+    {
+     "title": "Make your own effect",
+     "text": "Look at the contact sheet, fix the worst thing, render again. `node tools/serve.mjs` runs the gallery locally with your effects in it.",
+     "code": "node tools/new.mjs arcane/my-spell       # a working starting point (add --loop for a loop)\nnode tools/render.mjs arcane/my-spell    # records/arcane/my-spell/contact.png: look at it\nnode tools/check.mjs arcane/my-spell     # spills, seams, unseeded randomness, slow frames"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Make five takes on a coin pickup sparkle and show me the best two.\" Or: \"This hit effect feels floaty. Make it punchier.\""
+   },
+   "watch": [
+    "Effects drawn on the body paint the stock grey dummy. If you ship those with your own character, regenerate them.",
+    "Parts are adapted from Hugo Duprez's and Hollow Crown's MIT code. See NOTICE.md for what the licence does not cover."
+   ],
+   "sources": [
+    "https://github.com/patch-gg/pixelfx",
+    "https://raw.githubusercontent.com/patch-gg/pixelfx/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "CADCraft",
+   "repo": "github.com/storytold/cadcraft",
+   "stars": "7.3k",
+   "level": "Beginner",
+   "cost": "Free (MIT or Apache-2.0), no account and no subscription",
+   "works_with": "macOS, Windows, Linux, FreeBSD and the browser; AI agents through MCP or its CLI",
+   "short": "An open source 2D and 3D CAD and drafting app in Rust that works the way AutoCAD users expect, with a command line agents can drive.",
+   "what": "You type `L`, click two points, type `@5<45` and press Enter, and it behaves like the drafting tools you know: object snaps, polar tracking, grips, layers, dimensions, hatches, blocks and layouts. It reads and writes DXF and opens and saves DWG through the open source acadrust library. Every menu item is also a command, so an agent can draw, inspect and render over MCP, a JSON channel or the CLI.",
+   "who": "Drafters and engineers who want a free AutoCAD-style tool, and developers who want an agent to make or check drawings. It is in early development, so check the roadmap before relying on it for production work.",
+   "needs": [
+    "A download for your system from the latest GitHub release",
+    "To build from source: Rust 1.95 or later",
+    "For the web build: trunk"
+   ],
+   "steps": [
+    {
+     "title": "Download a build",
+     "text": "Get the installer or portable build for your system from github.com/storytold/cadcraft/releases. Check that the owner is `storytold`, then compare the checksum with the line in the release's `SHA256SUMS.txt`.",
+     "code": "shasum -a 256 cadcraft-<ver>-macos-universal.dmg     # macOS (on Linux: sha256sum FILE)\nGet-FileHash .\\cadcraft-<ver>-windows-x64.msi        # Windows PowerShell"
+    },
+    {
+     "title": "Or build it from source",
+     "code": "git clone https://github.com/storytold/cadcraft\ncd cadcraft\ncargo run --release -p cadcraft -- --sample       # opens the sample drawing"
+    },
+    {
+     "title": "Draw something",
+     "text": "Type these at the command line.",
+     "code": "line 0,0 @10,0 @0,5 c          a closed triangle\ncircle 5,2 1                    a circle\noffset 0.25                     then pick the circle and a side\nzoom e                          zoom to extents"
+    },
+    {
+     "title": "Connect your agent",
+     "text": "This runs an MCP server headless. To bridge it to the running app, start the app with `--control 7979` and use `cadcraft-cli mcp --connect 127.0.0.1:7979`.",
+     "code": "cadcraft-cli mcp"
+    },
+    {
+     "title": "Convert or render without the app",
+     "code": "cadcraft-cli info drawing.dxf\ncadcraft-cli convert drawing.dxf drawing.svg"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Draw a circle into the sample, save it and export a picture in one go: `cadcraft-cli run --sample --script 'CIRCLE 22,3 1\\n' --save out.dxf --export out.png`."
+   },
+   "watch": [
+    "It is in early, fast development. Things it doesn't model yet are dropped when you save a DXF or DWG, so keep a copy of files you open.",
+    "The README warns to download only from the storytold/cadcraft releases and to check the checksum first.",
+    "On Windows the app uses DirectX 12 by default. If it won't open, the README shows how to try another backend with `WGPU_BACKEND`.",
+    "MCP tools connected to the app include `screenshot` and `ui_click`.",
+    "The ArtCraft name and logos are trademarks and are not covered by the licence. Forks must remove them."
+   ],
+   "sources": [
+    "https://github.com/storytold/cadcraft",
+    "https://raw.githubusercontent.com/storytold/cadcraft/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Everything",
+   "repo": "github.com/HeyPuter/everything",
+   "stars": "6.2k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "A web browser; Node.js 22.12+ to run apps yourself",
+   "short": "The Puter team's repo of 51 open source apps meant to replace office, design, business and dev tools, many with a live demo.",
+   "what": "The Everything Project aims to rebuild and open source the world's software. This one repo holds all its apps: a spreadsheet, documents, slides, whiteboard and PDF tools, meetings and team chat, photo, video and 3D studios, CAD, accounting, CRM, help desk, an API client and games like chess and sudoku. Each app has its own folder under `src/`, and many have a Try it link on puter.com.",
+   "who": "Anyone curious about free stand-ins for tools like Excel, Slack or Photoshop, and developers who want to read or run the code. Some apps have no demo link yet, so judge each one on its own.",
+   "needs": [
+    "A browser to try the hosted demos",
+    "To run an app yourself: git and Node.js 22.12 or newer"
+   ],
+   "steps": [
+    {
+     "title": "Try an app in your browser",
+     "text": "Pick one from the README's tables and follow its Try it link, for example spreadsheet.puter.com or documents.puter.com."
+    },
+    {
+     "title": "Run an app locally",
+     "text": "Replace `[app-name]` with the app's folder name under `src/`, such as `spreadsheet`.",
+     "code": "git clone https://github.com/HeyPuter/everything.git\ncd everything/src/[app-name]\nnpm install\nnpm run dev"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your browser",
+    "text": "Open the hosted Spreadsheet or Documents app and do one small real task you would normally do in your usual office tool."
+   },
+   "watch": [
+    "Several apps, such as Notes, Assets, Property Management and API Client, have no demo URL yet.",
+    "The README does not say how the hosted demos store your data. Solitaire mentions optional cloud saves.",
+    "Third-party libraries in the repo may carry their own licences."
+   ],
+   "sources": [
+    "https://github.com/HeyPuter/everything",
+    "https://raw.githubusercontent.com/HeyPuter/everything/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "bootgpt",
+   "repo": "github.com/kerlenton/bootgpt",
+   "stars": "33",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "QEMU, or a real BIOS PC; built on macOS with Homebrew",
+   "short": "A tiny language model that runs from a PC's boot sector with no OS and dreams up a fake Linux boot log.",
+   "what": "The boot record is 512 bytes of hand-written assembly. It loads an 11.5 KB int8 model from the next 23 sectors and runs it in 16-bit real mode on a 386, with no OS or C runtime. The model is a small character-level network trained only to write a believable Linux boot log, with made-up timestamps and hardware. The Python training script simulates the exact integer math, so its output matches the boot sector character for character.",
+   "who": "People who enjoy boot sector tricks, assembly and tiny neural networks. There is nothing practical to use beyond the demo.",
+   "needs": [
+    "nasm and qemu (the README installs them with Homebrew)",
+    "Python 3 with numpy",
+    "Optional: a USB stick and a BIOS PC to boot it for real"
+   ],
+   "steps": [
+    {
+     "title": "Build and run it",
+     "text": "`build.sh` builds the image and `run.sh` boots it in QEMU. Any keypress reboots the machine.",
+     "code": "brew install nasm qemu\npython3 -m venv .venv && .venv/bin/pip install numpy\n./build.sh\n./run.sh"
+    },
+    {
+     "title": "Boot real hardware (optional)",
+     "text": "`disk.img` is a normal boot image. The README says you can write it to a USB stick with dd and boot any BIOS machine. It only reads its own sectors."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `./run.sh` and watch it print lines like `[  1.883084] NET: Registered protocol family 16`, mixed with half-garbled PCI and ACPI messages for hardware that never existed."
+   },
+   "watch": [
+    "The README gives no exact dd command. Only try the USB route if you know how to write an image to the right device.",
+    "The README does not name a licence.",
+    "The install line uses Homebrew. On other systems you need to get nasm and qemu yourself."
+   ],
+   "sources": [
+    "https://github.com/kerlenton/bootgpt",
+    "https://raw.githubusercontent.com/kerlenton/bootgpt/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "legal-pages",
+   "repo": "github.com/phuryn/product-engineering",
+   "stars": "77",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, Gemini CLI, OpenCode, GitHub Copilot and any agent that reads SKILL.md folders",
+   "short": "Drafts your privacy policy, terms, cookie banner and sign-up consent from what your code really collects, with a test that keeps them true.",
+   "what": "Your agent inventories what the app collects, where it stores it, for how long and which providers it reaches, then drafts the legal pages from that list instead of a template. A unit test fails when the code reaches a provider the policy doesn't name, or when a page sells something that isn't built. It runs during the build, before any stranger is asked for an email or a payment, and again whenever a change alters what a page describes.",
+   "who": "People building and launching a web app with a coding agent who need honest legal pages. It is a method, not legal advice, so you still bring the facts and have the final say, ideally with your counsel.",
+   "needs": [
+    "A supported coding agent",
+    "For `npx skills`: Node.js 22.20 or later",
+    "Your company's facts: legal entity name, address, a working contact email, where you sell and how long you keep data"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "legal-pages is part of the app-stack pack. The README installs all six packs; these two lines add the marketplace and app-stack. Add `--scope project` to keep it to one project.",
+     "code": "claude plugin marketplace add phuryn/product-engineering\nclaude plugin install app-stack@product-engineering"
+    },
+    {
+     "title": "Install in Codex",
+     "code": "codex plugin marketplace add phuryn/product-engineering\ncodex plugin add product@product-engineering   # and the other packs"
+    },
+    {
+     "title": "Install in any other agent",
+     "text": "Pick the skills and agents when it asks. You can also copy the skill folder into the folder your agent reads, such as `.claude/skills/` or `.agents/skills/`.",
+     "code": "npx skills add phuryn/product-engineering          # pick skills and agents interactively"
+    },
+    {
+     "title": "Give it your facts",
+     "text": "The agent asks for each by name: the legal entity, a contact address that receives mail, each provider's region and data agreement, where you sell, how long you keep each kind of data, and your sign-in provider's consent setting. Then you read and approve the full text."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Draft the privacy policy and terms for this app from what the code collects and sends, and add a test that keeps them in line with the code.\""
+   },
+   "watch": [
+    "It is not legal advice. You or your counsel decide what the pages say.",
+    "It refers to other skills in the same collection, such as `release-gate`, `product-analytics` and `clerk-production`.",
+    "Installing with `--scope project` writes to `.claude/settings.json`. Once committed, everyone who opens the repo in Claude Code gets the packs too.",
+    "The README says all packs together add about 2,600 tokens to every turn in Claude Code."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/phuryn/product-engineering/app-stack-skills-legal-pages",
+    "https://raw.githubusercontent.com/phuryn/product-engineering/main/app-stack/skills/legal-pages/SKILL.md",
+    "https://raw.githubusercontent.com/phuryn/product-engineering/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "stageshow",
+   "repo": "github.com/benjitaylor/skills",
+   "stars": "45",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Coding agents that support `npx skills`; React and plain CSS",
+   "short": "Builds fake product UI that looks like a real app, as a still or a short animated demo with a moving cursor.",
+   "what": "It helps your agent make marketing and docs visuals: browser and app windows, dashboards, phones, terminals, bento grids and cursor walkthroughs, built in React. It comes with a kit to copy from, gold examples to start from, rules on framing and motion, and a script that films the result so the agent can check its own work. The cursor and clicks are drawn illustrations, not browser automation.",
+   "who": "Designers and developers making hero images, feature cards or product demo loops for a site. If a real screenshot would do, you can skip it.",
+   "needs": [
+    "A coding agent and Node.js for `npx`",
+    "A React project to put the result in",
+    "npm, to run the examples preview with `npm run dev`"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "code": "npx skills add benjitaylor/skills --skill stageshow"
+    },
+    {
+     "title": "Describe the shot",
+     "text": "Say where it sits on the page, still or animated, and the one thing that happens. The skill plans the focal object, the action and the payoff before writing code."
+    },
+    {
+     "title": "Let it start from a gold example",
+     "text": "It copies the closest example, such as `hero-demo` or `static-card`, swaps in your product's look and words, then films and fixes it until it passes its own review."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Make an animated hero demo of our app: a cursor opens a menu and picks one option. Use our real icons and colors.\""
+   },
+   "watch": [
+    "The README says each skill carries its own licence and asset notices. Check the stageshow folder before shipping visuals commercially.",
+    "The skill says product studies are for borrowing an interaction, never another product's identity."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/benjitaylor/skills/stageshow",
+    "https://raw.githubusercontent.com/benjitaylor/skills/main/stageshow/SKILL.md",
+    "https://raw.githubusercontent.com/benjitaylor/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "seo-growth",
+   "repo": "github.com/shalintripathi/saas-marketing-agents",
+   "stars": "29",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code plugin; Codex, Cursor and others through `npx skills`; plain Markdown for Copilot, Aider and Windsurf",
+   "short": "Runs SEO for a B2B SaaS site with eight specialist agents, from keyword research and audits to AI search and forecasts.",
+   "what": "It routes your SEO question to one of eight agents: keyword research, content optimization, technical audits, link building, AI search, local and international SEO, programmatic pages, and a program lead for forecasts and roadmaps. Before any deliverable it reads a `brand-context.md` file from your project. Anything it can't back up with that file or your request comes back as a `[NEEDS INPUT: ...]` marker instead of a made-up claim.",
+   "who": "Marketers and founders at B2B SaaS companies who handle organic search. It is part of a 91-agent marketing pack, so if you only want SEO, expect to install more than that.",
+   "needs": [
+    "Claude Code, or another agent for the skills CLI install",
+    "About 15 minutes to fill in `brand-context.md` with your ICP, positioning, voice and proof"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin in Claude Code",
+     "text": "The 19 skills then load as `/saas-marketing:<skill>`, such as `/saas-marketing:seo-growth`.",
+     "code": "/plugin marketplace add shalintripathi/saas-marketing-agents\n/plugin install saas-marketing@saas-marketing-agents"
+    },
+    {
+     "title": "Or use the skills CLI",
+     "text": "This installs the same 19 skills into other agents that support SKILL.md.",
+     "code": "npx skills add shalintripathi/saas-marketing-agents"
+    },
+    {
+     "title": "Tell it who you are",
+     "text": "Copy `templates/brand-context.md` to `brand-context.md` in your project root and fill it in. The README calls this the biggest quality jump."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Conduct a full SEO audit of our website.\" Or: \"Can we actually rank for these? Which keywords are worth a brief?\""
+   },
+   "watch": [
+    "The plugin ships a campaign board pane that hooks `command.run`. The README says it only answers its own `/campaign-board` command.",
+    "Auto-update is off by default for community marketplaces. Turn it on under `/plugin` > Marketplaces, or update by hand.",
+    "Without `brand-context.md` it works from labelled assumptions, so expect generic output until you fill it in."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/shalintripathi/saas-marketing-agents/plugins-saas-marketing-skills-seo-growth",
+    "https://raw.githubusercontent.com/shalintripathi/saas-marketing-agents/main/plugins/saas-marketing/skills/seo-growth/SKILL.md",
+    "https://raw.githubusercontent.com/shalintripathi/saas-marketing-agents/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "cloud-finops",
+   "repo": "github.com/OptimNow/cloud-finops-skills",
+   "stars": "65",
+   "level": "Beginner",
+   "cost": "Free (CC BY-SA 4.0)",
+   "works_with": "Claude Code, Claude.ai, ChatGPT, Gemini, Cursor, Windsurf, Codex, Aider, Copilot, Kiro and MCP tools",
+   "short": "Answers cloud, AI and SaaS cost questions from how billing actually works, with runbooks for common waste.",
+   "what": "A library of FinOps references and waste runbooks covering AWS, Azure, GCP, OCI, Kubernetes, data platforms, AI inference and AI coding tool spend. Ask about an expiring commitment, a NAT gateway bill or splitting shared AI costs, and your assistant loads the matching reference and answers with decision rules and worked examples. It leaves out live prices, which go stale, and points to OptimNow's OptimToken site for current rates.",
+   "who": "FinOps practitioners, engineering leads and finance people who own a cloud or AI bill. It does not read your account, so you still run the detection queries yourself.",
+   "needs": [
+    "A supported AI assistant",
+    "Optional: `pip` for the MCP package"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "The plugin is the skill only. The MCP connector is separate.",
+     "code": "/plugin marketplace add https://github.com/OptimNow/cloud-finops-skills.git\n/plugin install cloud-finops@optimnow"
+    },
+    {
+     "title": "Install for Cursor, Codex, Copilot and others",
+     "text": "Replace `<name>` with your tool. This pipes a script into bash, so read it first.",
+     "code": "curl -sL https://raw.githubusercontent.com/OptimNow/cloud-finops-skills/main/install.sh | bash -s -- --tool <name>"
+    },
+    {
+     "title": "Or add the hosted MCP connector",
+     "text": "Nothing to install. In Claude.ai, add the same URL as a custom connector.",
+     "code": "claude mcp add --transport http cloud-finops https://mcp.optimnow.io/mcp"
+    },
+    {
+     "title": "Or run the MCP package yourself",
+     "text": "Then add it to your MCP client config. `./install.sh --tool mcp` prints the snippets.",
+     "code": "pip install cloud-finops-mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI assistant",
+    "text": "\"Which of our Savings Plans and reservations expire in the next 90 days, and what should we decide before they do?\""
+   },
+   "watch": [
+    "The README's one-line installers pipe a script from GitHub straight into bash. Read the script first.",
+    "The skill itself is static text that runs no code and calls no network. The hosted connector sends tool arguments to OptimNow's server in Paris, which logs requests and may keep your IP under Fly.io's default retention.",
+    "One MCP tool fetches live figures from optimtoken.optimnow.io.",
+    "It is not legal, tax or accounting advice, and it never reads your cloud account.",
+    "The model decides which file to read. If an answer shows no file read, ask it to check the playbook library."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/optimnow/cloud-finops-skills/plugins-cloud-finops-skills-cloud-finops",
+    "https://raw.githubusercontent.com/OptimNow/cloud-finops-skills/main/plugins/cloud-finops/skills/cloud-finops/SKILL.md",
+    "https://raw.githubusercontent.com/OptimNow/cloud-finops-skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
