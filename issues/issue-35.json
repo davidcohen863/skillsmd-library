@@ -1,0 +1,542 @@
+{
+ "issue": 35,
+ "date": "2 Nov 2026",
+ "checked": "4 Nov 2026",
+ "blurb": "Every repo and skill from the 2 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #35 had six repos and four AI skills, and this page covers all ten. Most of it is for people building with a coding agent: a plain English map of your app, a game studio template and skills for reviews, design references and module design. Start with Floorplan if you can't say how your app fits together. If you dictate a lot, Hex is the quickest win.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Floorplan",
+   "repo": "github.com/haydenschmitty/floorplan",
+   "stars": "2k",
+   "level": "Beginner",
+   "cost": "Free (MIT). It runs on your existing Claude or ChatGPT plan, with no API keys.",
+   "works_with": "Claude Code, Codex",
+   "short": "Your coding agent reads your codebase and draws an interactive map of it, with every part named in plain English.",
+   "what": "Floorplan is a plugin that maps your app. Scripts scan files, imports, routes and web requests, then the AI names each part and describes each file. You get a zoomable map in `floorplan/index.html` with screens, endpoints, outside services, a Health check and a Recent work view of what your AI just changed.",
+   "who": "People who built an app with AI help and can't say how it fits together, and teams onboarding someone new. It is made for apps you own. To study a big codebase function by function, the README points you to other tools.",
+   "needs": [
+    "Node.js 18 or newer",
+    "Claude Code or Codex",
+    "Optional: the Claude Code CLI, so the map's Ask bar can read your real code"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "Run these in the desktop app's Code tab or the CLI, then start a new session.",
+     "code": "claude plugin marketplace add haydenschmitty/floorplan\nclaude plugin install floorplan@floorplan"
+    },
+    {
+     "title": "Or install in Codex",
+     "text": "In the Codex app you can also open Plugins, choose Add a marketplace, enter `haydenschmitty/floorplan` and install Floorplan.",
+     "code": "codex plugin marketplace add haydenschmitty/floorplan\ncodex plugin add floorplan@floorplan"
+    },
+    {
+     "title": "Make your first map",
+     "text": "Open your project. If your frontend and backend are separate repos, open the folder that holds both. Ask \"Make me a floorplan of this app.\" In Codex you can type `$floorplan`. The map opens with a short tour."
+    },
+    {
+     "title": "Keep it current",
+     "text": "After more work, ask \"Update the floorplan.\" Only what changed gets re-read, and your latest changes light up under Recent work."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, then the map",
+    "text": "Ask your agent \"Fix the important issues from the floorplan's Health check\", or ask the map \"If I change the users table, what breaks?\""
+   },
+   "watch": [
+    "A first map takes a few minutes for a small app and longer for a big one. It uses your Claude or ChatGPT plan like any other task.",
+    "The AI reads your files through your own account. The map and its local server stay on your machine and only accept local connections.",
+    "It writes a `floorplan/` folder, and in Claude Code, if you say yes, a section in `CLAUDE.local.md`. Neither is committed.",
+    "The README says the Health check catches the classic mistakes in AI-built apps and is no substitute for a full audit."
+   ],
+   "sources": [
+    "https://github.com/haydenschmitty/floorplan",
+    "https://raw.githubusercontent.com/haydenschmitty/floorplan/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OpenDuet",
+   "repo": "github.com/CopilotKit/OpenDuet",
+   "stars": "1.8k",
+   "level": "Advanced",
+   "cost": "Free (MIT). You pay for your own model key. It needs a CopilotKit Intelligence project, and the free Developer plan is enough.",
+   "works_with": "Self-hosted web app, Slack, Microsoft Teams; OpenAI or Anthropic models",
+   "short": "A self-hosted agent that reads your mail and calendar, sends a morning brief and asks before it sends, pays, signs or deletes.",
+   "what": "OpenDuet is a proactive assistant built on CopilotKit's OpenBot platform. Each agent gets its own container with a browser, a `/workspace` folder and a shell, so it keeps working while you're away. It reads Gmail and Google Calendar, sorts what needs you from what can wait, and routes every action through a gateway that checks your policy and logs it.",
+   "who": "Developers who want to run and customise their own assistant and are fine with Docker, env files and Google OAuth setup. It is early and in active development, so skip it if you want a finished hosted product. There is no hosted or deploy guide yet.",
+   "needs": [
+    "Docker",
+    "Bun 1.3 or newer",
+    "Node, for `npx`",
+    "A model key (OpenAI by default, or Anthropic)",
+    "A CopilotKit Intelligence project",
+    "Optional: a Google OAuth client for Gmail and Calendar"
+   ],
+   "steps": [
+    {
+     "title": "Clone and install",
+     "text": "Run every command from the repository root.",
+     "code": "git clone https://github.com/CopilotKit/OpenDuet.git\ncd OpenDuet\ncp .env.example .env\nbun install"
+    },
+    {
+     "title": "Pick an Intelligence project",
+     "text": "The last command copies the key to `INTELLIGENCE_API_KEY`, which the server reads, and sets up the Learning container.",
+     "code": "npx --yes copilotkit@latest login\nnpx --yes copilotkit@latest project select\nbun openbot/scripts/setup-learning.ts"
+    },
+    {
+     "title": "Add your model key",
+     "text": "Put it in `.env`. For Anthropic instead, set `BOT_PROVIDER=anthropic` and `ANTHROPIC_API_KEY`.",
+     "code": "OPENAI_API_KEY=sk-..."
+    },
+    {
+     "title": "Start it",
+     "text": "This starts Postgres and each Bot's computer in Docker, runs migrations and starts the app. Open http://localhost:3010. `bash scripts/stop.sh` stops it.",
+     "code": "bash scripts/start.sh"
+    },
+    {
+     "title": "Optional: try Google with the fake",
+     "text": "A fake Google with an invented inbox ships for tests. Set `OPENDUET_FAKE_GOOGLE_URL=http://127.0.0.1:4900` in `.env`, restart, then follow the README's steps to enable and connect it.",
+     "code": "bun openbot/scripts/fake-google/server.ts --port 4900"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The OpenDuet app",
+    "text": "Ask the OpenDuet Bot to do something in its own browser and watch it work on its computer. Then choose what it must ask you about first in `/settings/approvals`."
+   },
+   "watch": [
+    "The CopilotKit runtime sends usage telemetry to CopilotKit. Set `COPILOTKIT_TELEMETRY_DISABLED=true` or `DO_NOT_TRACK=1` to turn it off.",
+    "Once connected it reads your Gmail and calendar. It sends a reply only after you answer.",
+    "Each agent has its own browser and shell. Its defaults ask before anything that sends, pays, signs or deletes, and a message to other people always asks first.",
+    "Web research tools share data with outside providers. The README says an administrator should review those risks before granting them.",
+    "It is early software and things will move. It is not affiliated with or endorsed by Anthropic."
+   ],
+   "sources": [
+    "https://github.com/CopilotKit/OpenDuet",
+    "https://raw.githubusercontent.com/CopilotKit/OpenDuet/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "The Day Trader skill",
+   "repo": "github.com/Jakeschincariol/day-trader-skill",
+   "stars": "4.4k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). No signup and no API key for the data tools.",
+   "works_with": "Claude Code, or any chat as a plain SKILL.md",
+   "short": "11 AI skills for day trading that scan charts, track news, plan entries and exits, and simulate a trade before you risk money.",
+   "what": "A pack of 11 skills backed by plain Python tools that read free public data from Yahoo Finance, Nasdaq Trader, SEC EDGAR and the House Clerk. They run in a chain: scan for setups, check news, time the entry, plan the exit, replay the trade 10,000 times, size it, check your limits and only then build an order. Everything lands in a `trader/` folder.",
+   "who": "People who already day trade and want a disciplined checklist with real numbers. The README says most people who day trade lose money and that this is not financial advice. Skip it if you're new to trading.",
+   "needs": [
+    "Claude Code, or any chat that accepts a pasted SKILL.md",
+    "Python 3.8 or newer (nothing to pip install)",
+    "Your name and email for the SEC tools",
+    "Optional: a brokerage connector such as Alpaca's MCP server, for orders"
+   ],
+   "steps": [
+    {
+     "title": "Install as a plugin",
+     "text": "Plugin skills show up namespaced, like `/day-trader-skill:trader-scanner`.",
+     "code": "/plugin marketplace add Jakeschincariol/day-trader-skill\n/plugin install day-trader-skill@day-trader-skill"
+    },
+    {
+     "title": "Or copy the folders",
+     "text": "This gives plain names like `/trader-scanner`. Copy into your repo's `.claude/skills/` instead to keep it to one project.",
+     "code": "git clone https://github.com/Jakeschincariol/day-trader-skill.git\ncp -r day-trader-skill/trader-* ~/.claude/skills/"
+    },
+    {
+     "title": "Identify yourself to the SEC",
+     "text": "Put this in `trader/config.json`, or set the `SEC_USER_AGENT` environment variable.",
+     "code": "\"sec_user_agent\": \"Your Name you@example.com\""
+    },
+    {
+     "title": "Run a scan",
+     "text": "Start with `/trader-scanner`, then follow the chain: news, entry, exit, timemachine, budget, risk, broker."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Look for opening range breakouts so far today with `python3 trader-scanner/scan.py orb --at 10:15`, then replay a planned trade with `python3 trader-timemachine/timemachine.py run --write`."
+   },
+   "watch": [
+    "Not financial advice. The README says you can lose money.",
+    "Only `/trader-broker` can lead to an order, and only after `/trader-risk` passes it and you type yes. Set your brokerage tool to Needs approval, never Always allow.",
+    "Paper trading is the default. Keys live in environment variables, never in the chat.",
+    "Yahoo Finance's chart endpoint is not an official API. It can lag, change or rate-limit you, so check against your broker.",
+    "The Time Machine is a simulation from the last 60 days of bars, not a prediction."
+   ],
+   "sources": [
+    "https://github.com/Jakeschincariol/day-trader-skill",
+    "https://raw.githubusercontent.com/Jakeschincariol/day-trader-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Claude Code Game Studios",
+   "repo": "github.com/Donchitos/Claude-Code-Game-Studios",
+   "stars": "32.9k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code; Godot 4, Unity, Unreal Engine 5",
+   "short": "A project template that runs a Claude Code session like a game studio, with 49 agents, 74 skills and 15 hooks.",
+   "what": "You clone it as the starting point for your game. It gives your session directors, department leads and specialists, each with set duties and review gates, plus slash commands for every phase from brainstorm to release. A `modes.rigor` setting decides how much process it enforces, and the default `minimal` is the lightest.",
+   "who": "Solo developers and small teams making a game with Claude Code who want structure and review. The agents ask before they write, so it isn't autopilot. If you want a game generated for you in one go, this isn't that.",
+   "needs": [
+    "Git",
+    "Claude Code",
+    "Python 3, which every skill and hook uses to read `project.yaml`",
+    "Bash (comes with Git for Windows on Windows)",
+    "Recommended: jq"
+   ],
+   "steps": [
+    {
+     "title": "Clone it as your project",
+     "code": "git clone https://github.com/Donchitos/Claude-Code-Game-Studios.git my-game\ncd my-game"
+    },
+    {
+     "title": "Start Claude Code in the root folder",
+     "text": "Use the folder that holds `CLAUDE.md` and `project.yaml`. Starting in a subfolder skips the hooks, deny rules and ask-first mode.",
+     "code": "claude"
+    },
+    {
+     "title": "Run /start",
+     "text": "It asks where you are, from no idea to existing work, and sends you to the right workflow. It also writes `project.yaml` for you."
+    },
+    {
+     "title": "Or jump straight in",
+     "text": "Use `/brainstorm` for ideas, `/setup-engine godot 4.7` to set your engine, or `/project-stage-detect` on an existing project."
+    },
+    {
+     "title": "Change the process weight",
+     "text": "View settings with `/settings`, or raise rigor when the project grows.",
+     "code": "/settings modes.rigor=full"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Run `/start`, pick vague concept, and let `/brainstorm` write a one-page brief. Then go `/create-stories` and `/dev-story`."
+   },
+   "watch": [
+    "15 hooks run on every session. Most exit at once when the command or file isn't relevant. A commit that stages data JSON is blocked if Python is missing.",
+    "Permission rules in `settings.json` auto-allow test runs and block force push, `rm -rf` and reading `.env` files.",
+    "The three director agents ask for Opus and 16 others name Sonnet. The rest use your session's model.",
+    "The README measured that the heavier `standard` rigor wrote 30 docs before any code and did not make a better game."
+   ],
+   "sources": [
+    "https://github.com/Donchitos/Claude-Code-Game-Studios",
+    "https://raw.githubusercontent.com/Donchitos/Claude-Code-Game-Studios/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Hex",
+   "repo": "github.com/anomalyco/hex",
+   "stars": "3.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "macOS (Apple silicon), Windows, Linux",
+   "short": "Local voice dictation. Hold a key, speak, and it types what you said into whatever app you're in.",
+   "what": "Hex transcribes speech on your device and pastes the text into the app you're using. You hold a shortcut, speak and let go. Experimental features sit in Labs, at the bottom of the sidebar.",
+   "who": "Anyone who wants dictation that doesn't send audio to a server once it's set up. The macOS download is for Apple silicon only.",
+   "needs": [
+    "A Mac with Apple silicon, a Windows x64 or ARM64 PC, or Linux on x86_64 or ARM64",
+    "A microphone"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "The README has stable and dev builds for each platform: a DMG for Mac, installers for Windows, and an executable, .deb or .rpm for Linux. Stable is the current release: https://github.com/anomalyco/hex"
+    },
+    {
+     "title": "Or install with Homebrew",
+     "code": "brew install --cask anomalyco/tap/hex"
+    },
+    {
+     "title": "Or on Linux",
+     "text": "Use the AUR, Nix or the install script. The script pipes a download into your shell.",
+     "code": "yay -S hex-bin\nnix profile add github:anomalyco/hex\ncurl -fsSL https://anoma.ly/hex/install-linux.sh | sh"
+    },
+    {
+     "title": "Dictate",
+     "text": "Hold the shortcut, speak, then let go. Hex pastes into the app you're in."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Any app",
+    "text": "Click into a text box, hold the shortcut, say a sentence and let go."
+   },
+   "watch": [
+    "The first run downloads a speech model. After that, the README says nothing leaves your machine.",
+    "The Linux install script pipes a download straight into your shell. Read the script first, or use a package.",
+    "Dev builds update themselves from the dev channel.",
+    "The project doesn't take pull requests. Open an issue instead."
+   ],
+   "sources": [
+    "https://github.com/anomalyco/hex",
+    "https://raw.githubusercontent.com/anomalyco/hex/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "OmniDiff",
+   "repo": "github.com/ivankovic/omnidiff",
+   "stars": "589",
+   "level": "Intermediate",
+   "cost": "Free (AGPL-3.0). A paid commercial licence is available through GitHub Sponsors.",
+   "works_with": "Linux, macOS, Windows; git, jj, VS Code, Neovim",
+   "short": "A content-aware diff tool in Rust that shows what really changed in code, pictures, fonts, archives and PDFs.",
+   "what": "OmniDiff diffs 25 languages structurally with tree-sitter, so it highlights the part of a line that changed. It also diffs pictures pixel by pixel, fonts glyph by glyph, archives file by file and PDFs page by page. It has a terminal viewer, a plain text mode for scripts, JSON output and setup wizards for git and jj.",
+   "who": "Developers who review a lot of diffs, especially with binary assets that git just calls different. If your company can't use AGPL software, you'd need the commercial licence.",
+   "needs": [
+    "One of: Homebrew, apt, Nix, a prebuilt binary, or a Rust toolchain (rustc 1.92 or later) with a C compiler",
+    "git or jj, for version control use"
+   ],
+   "steps": [
+    {
+     "title": "Install with Homebrew",
+     "text": "On macOS and Linux. Prebuilt binaries are also on the GitHub releases page.",
+     "code": "brew install ivankovic/omnidiff/omnidiff"
+    },
+    {
+     "title": "Or build from source",
+     "text": "The first build takes a few minutes.",
+     "code": "cargo install --locked omnidiff"
+    },
+    {
+     "title": "Or on Debian and Ubuntu",
+     "text": "This adds a signed apt repository.",
+     "code": "sudo install -d -m 0755 /etc/apt/keyrings\ncurl -fsSL https://ivankovic.github.io/omnidiff/apt/omnidiff-archive-keyring.gpg \\\n  | sudo tee /etc/apt/keyrings/omnidiff-archive-keyring.gpg > /dev/null\necho \"deb [signed-by=/etc/apt/keyrings/omnidiff-archive-keyring.gpg] \\\nhttps://ivankovic.github.io/omnidiff/apt stable main\" \\\n  | sudo tee /etc/apt/sources.list.d/omnidiff.list > /dev/null\nsudo apt update && sudo apt install omnidiff"
+    },
+    {
+     "title": "Compare two files",
+     "text": "Press `?` in the viewer for the keys.",
+     "code": "omnidiff BEFORE AFTER"
+    },
+    {
+     "title": "Hook it into git",
+     "text": "The wizard asks whether to set it up globally or for this repo. Then use `git difftool` for the full viewer. For jj, run `omnidiff jj configure`.",
+     "code": "omnidiff git configure"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `GIT_EXTERNAL_DIFF=omnidiff git diff` in a repo with a changed image or font and see what changed inside it."
+   },
+   "watch": [
+    "It is AGPL-3.0. Organisations that can't meet AGPL terms need the paid commercial licence.",
+    "`git diff` and `git log -p` always get plain text. Only `git difftool` opens the interactive viewer.",
+    "PDF support has fewer than ten judged test cases, and only 57% of PDFs diff in under 100ms."
+   ],
+   "sources": [
+    "https://github.com/ivankovic/omnidiff",
+    "https://raw.githubusercontent.com/ivankovic/omnidiff/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "review-document",
+   "repo": "github.com/onmax/comark-ui",
+   "stars": "34",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Coding agents that support skills",
+   "short": "Turns review findings you already have into one short Markdown write-up: verdict first, each finding ranked with evidence and a fix.",
+   "what": "The skill organises a code, design or QA review into a document the reader can act on. It starts with a verdict (approve, approve with changes, request changes or blocked), ranks findings as blocking, should fix or nit, and gives each one a location, evidence and the smallest fix. It ends with what you checked and what you didn't, then lints the page with the Comark linter.",
+   "who": "People who write reviews or audits for someone else to act on. It doesn't find problems for you. It only writes up findings you already have.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Vite+ (`vp`) or pnpm, for the install and the lint step"
+   ],
+   "steps": [
+    {
+     "title": "Add the skills",
+     "text": "This is the README's install command for the repo's agent skills. It names the `comark-ui` skill, so check that review-document is in the list it offers. Without Vite+, `pnpm dlx` takes the same arguments.",
+     "code": "vp dlx skills add onmax/comark-ui"
+    },
+    {
+     "title": "Give it your findings",
+     "text": "Ask your agent to write up the review. It picks a verdict, merges findings with one cause and ranks them blocking first."
+    },
+    {
+     "title": "Lint the result",
+     "text": "The skill runs this and fixes problems until there are none. Then read the rendered page once as the reader would.",
+     "code": "vp dlx --package comark-linter --package comark-ui comark-lint review.md"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Write up the findings from this code review as a review document.\""
+   },
+   "watch": [
+    "It organises findings. The review itself is still your job.",
+    "The output uses Comark blocks such as `::diff` and `::tests`, so it renders best where Comark UI is set up.",
+    "The README's only skill install command names the `comark-ui` skill, not review-document."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/onmax/comark-ui/skills-review-document",
+    "https://raw.githubusercontent.com/onmax/comark-ui/main/skills/review-document/SKILL.md",
+    "https://raw.githubusercontent.com/onmax/comark-ui/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "gather",
+   "repo": "github.com/raphaelsalaja/skills",
+   "stars": "43",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Coding agents that support skills, Claude Code plugin",
+   "short": "Collects design references from your own saves, boards and pattern sites onto one linked board before you start a design.",
+   "what": "Before a design is built, gather turns your brief into short searches and runs them across every connected source at once, such as Pond, marked.dev, Are.na, Cosmos, Pinterest and Mobbin. A bundled collector downloads the images and fills one local board as results land. Each reference gets a note on the part to take and a link back to its source.",
+   "who": "Designers and front-end developers who want inspiration for one screen or part, gathered in one place. It does the most when you've connected your own libraries and boards.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Node, to run the bundled collector",
+    "Accounts on the reference sources you want to search"
+   ],
+   "steps": [
+    {
+     "title": "Install the collection",
+     "text": "This adds all the skills in the repo, gather included.",
+     "code": "npx skills add raphaelsalaja/skills"
+    },
+    {
+     "title": "Or as a Claude Code plugin",
+     "text": "Plugin skills take a prefix, such as `/userinterface:audit`.",
+     "code": "/plugin marketplace add raphaelsalaja/skills\n/plugin install userinterface@userinterface"
+    },
+    {
+     "title": "Ask for inspiration",
+     "text": "gather applies on its own when you ask for references or inspo. Name the screen, the platform and what you want to look at. It asks once about sources you haven't connected."
+    },
+    {
+     "title": "Review the board",
+     "text": "The collector serves the board locally and fills it live. Copy your picks back to the agent as the brief for the next step.",
+     "code": "node <skill>/collect.mjs .gather/<brief> --serve"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask for references for a desktop settings page, looking for grouping and density. With no number given, it gathers at least 20 from three sources or more."
+   },
+   "watch": [
+    "It downloads every image and video into a `.gather/` folder, which stays out of version control.",
+    "When Mobbin warns that monthly usage is high, it stops searching Mobbin.",
+    "When a source needs a login or a CAPTCHA, it stops and asks you."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/raphaelsalaja/skills/skills-gather",
+    "https://raw.githubusercontent.com/raphaelsalaja/skills/main/skills/gather/SKILL.md",
+    "https://raw.githubusercontent.com/raphaelsalaja/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ux",
+   "repo": "github.com/lobehub/lobehub",
+   "stars": "83.6k",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Coding agents working in the LobeHub codebase",
+   "short": "LobeHub's own UX checklists for empty, loading and error states, lists at scale, drafts and buttons, for building its screens.",
+   "what": "This is the skill LobeHub uses when building or reviewing user-facing flows in its own app. It covers four design values, a few interaction principles and checklists grouped by what the user is doing: reading, editing, acting, waiting on feedback and discovering features. It points to LobeHub components such as `NavItem` and its `DESIGN.md`.",
+   "who": "People contributing to LobeHub. Anyone else can read the checklists for ideas, but much of it refers to LobeHub's own components and files.",
+   "needs": [
+    "Git and pnpm, to clone LobeHub for local development",
+    "A coding agent that reads skills"
+   ],
+   "steps": [
+    {
+     "title": "Clone LobeHub",
+     "text": "These are the README's local development steps. The skill lives in the repo at `.agents/skills/ux`.",
+     "code": "git clone https://github.com/lobehub/lobehub.git\ncd lobehub\npnpm install"
+    },
+    {
+     "title": "Run the app",
+     "code": "pnpm dev"
+    },
+    {
+     "title": "Work on a screen",
+     "text": "The skill isn't called by name. It applies when your agent designs or builds a user-facing flow. Start with its quick review checklist, then read the module for the surface you're on."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent, in the LobeHub repo",
+    "text": "\"Review this list page against the ux skill's Read checklist.\""
+   },
+   "watch": [
+    "The README gives no install command for the skill on its own. It comes with the LobeHub repo.",
+    "It assumes LobeHub's components and `DESIGN.md`, so outside that codebase parts of it won't apply."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/lobehub/lobehub/agents-skills-ux",
+    "https://raw.githubusercontent.com/lobehub/lobehub/canary/.agents/skills/ux/SKILL.md",
+    "https://raw.githubusercontent.com/lobehub/lobehub/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "codebase-design",
+   "repo": "github.com/mattpocock/skills",
+   "stars": "306.1k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, GitHub Copilot, Gemini CLI, Cursor and other agents",
+   "short": "Gives your agent a shared vocabulary for deep modules, so it designs interfaces that are small, testable and easy to navigate.",
+   "what": "The skill teaches the agent to design deep modules: a lot of behaviour behind a small interface, placed at a clean seam and tested through that interface. It defines terms like module, interface, seam, adapter, depth, leverage and locality, and asks the agent to use them exactly. It also includes the deletion test and rules for testable code.",
+   "who": "Developers whose AI-built codebase is getting hard to change. Other skills in the pack, such as `/improve-codebase-architecture`, lean on it. It's model-invoked, so the agent reaches for it when the task fits.",
+   "needs": [
+    "A supported coding agent"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "The plugin updates itself.",
+     "code": "claude plugin install mattpocock-skills@claude-plugins-official"
+    },
+    {
+     "title": "Or in Codex",
+     "code": "codex plugin marketplace add mattpocock/skills\ncodex plugin add mattpocock-skills@mattpocock"
+    },
+    {
+     "title": "Or any other agent",
+     "text": "Include `setup-matt-pocock-skills` when it asks which skills to take. Pick one install method per agent, or you get every skill twice.",
+     "code": "npx skills@latest add mattpocock/skills -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose"
+    },
+    {
+     "title": "Set up each repo",
+     "text": "Run `/setup-matt-pocock-skills` once per repo. It asks about your issue tracker, triage labels and where to save docs."
+    },
+    {
+     "title": "Ask about a module",
+     "text": "Ask your agent to design or improve a module's interface. It applies the skill when the task fits."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `/improve-codebase-architecture` to scan for deepening opportunities, then pick one to work through."
+   },
+   "watch": [
+    "Skills installed with `npx skills` don't update themselves. Run `npx skills@latest update`.",
+    "The README says `/improve-codebase-architecture` is a survey that finds candidates. It won't untangle an old codebase for you."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/mattpocock/skills/skills-engineering-codebase-design",
+    "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/codebase-design/SKILL.md",
+    "https://raw.githubusercontent.com/mattpocock/skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
