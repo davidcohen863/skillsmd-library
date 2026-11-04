@@ -1,0 +1,565 @@
+{
+ "issue": 37,
+ "date": "4 Nov 2026",
+ "checked": "4 Nov 2026",
+ "blurb": "Every repo and skill from the 4 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #37 had six repos and four AI skills, and this page covers all ten. It's a mixed batch: a fast IntelliJ style IDE, a local AWS emulator, a TV debloater, a fraud decision platform, and skills for SEO, posting to X, calling other agents and editing Figma files. If you build on AWS, start with Floci. If your TV is full of ads, try CleanYourTV.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenIDEA",
+   "repo": "github.com/l0ng-ai/openidea",
+   "stars": "5.9k",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "macOS, Windows and Linux",
+   "short": "A fast native IDE with a Rust core that keeps the IntelliJ IDEA keymap, tool windows and search everywhere.",
+   "what": "OpenIDEA takes the IntelliJ IDEA way of working and puts it in a native app with a Rust core. It has an editor, code insight, a debugger, Git, a terminal, and database and HTTP clients, for 60+ languages. In the team's own test on a Python project of about 770 files, it was ready in 1.1 seconds and used 169 MB, against 13.2 seconds and 2011 MB for IntelliJ IDEA.",
+   "who": "People who like the IntelliJ keymap and habits but want something lighter and quicker to open. If you rely on deep Python analysis, note the README says IDEA analyses Python more deeply, so the two aren't doing the same work.",
+   "needs": [
+    "A computer running macOS, Windows or Linux"
+   ],
+   "steps": [
+    {
+     "title": "Download it",
+     "text": "The README's Download link goes to the latest release on GitHub. Pick the build for your system: https://github.com/l0ng-ai/openidea/releases/latest"
+    },
+    {
+     "title": "Open a project",
+     "text": "Install the build and open a project folder. The keymap, tool windows and search everywhere work the way they do in IntelliJ IDEA."
+    },
+    {
+     "title": "Optional: run the benchmark yourself",
+     "text": "The README says you can run the same comparison on your own machine and projects with the scripts in `perf/compare`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "OpenIDEA",
+    "text": "Open a project you already use in IntelliJ IDEA and see how long the window and the CPU take to settle, the same test the README's benchmark runs."
+   },
+   "watch": [
+    "The README has no install steps beyond the Download link, so check the release page for which file fits your system.",
+    "The benchmark numbers come from the team's own run on a 32-core Windows 11 machine. They also say IDEA does more Python analysis, so ready does not mean the same thing on both.",
+    "It is not affiliated with JetBrains."
+   ],
+   "sources": [
+    "https://github.com/l0ng-ai/openidea",
+    "https://raw.githubusercontent.com/l0ng-ai/openidea/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Roast Room",
+   "repo": "github.com/nateherkai/roast-room",
+   "stars": "1.9k",
+   "level": "Beginner",
+   "cost": "Free (MIT). Runs on your Claude plan; the optional API mode bills your Anthropic API account",
+   "works_with": "Claude Code",
+   "short": "A council of AI advisors built from public figures' work argues your business decision and gives a scored verdict and a PDF.",
+   "what": "You bring a hard business decision and a council of AI advisors argues it out. Twelve advisors ship with it, each built from that person's public letters, essays, talks and videos, with seven on the default board. Claude Code acts as the Chair, runs the rounds and writes a scored verdict, while a small local web app shows the advisors around a table and lets you download a PDF.",
+   "who": "Founders and small business owners who want a structured second opinion on pricing, hiring or strategy calls. It needs Claude Code, so skip it if you use a different agent.",
+   "needs": [
+    "Claude Code (the README says your Claude plan covers it, no API key needed)",
+    "Node.js 20 or newer, for the room",
+    "Optional, for `/newroaster` portraits: a kie.ai key and Python with `opencv-python`",
+    "Optional: `yt-dlp` and `pdftotext` (Poppler) for better source fetching"
+   ],
+   "steps": [
+    {
+     "title": "Clone it",
+     "code": "git clone https://github.com/nateherkai/roast-room.git\ncd roast-room"
+    },
+    {
+     "title": "Start the room",
+     "text": "Then open http://localhost:4730 and leave it open. The room is optional; the council runs the same in Claude Code without it.",
+     "code": "npm start"
+    },
+    {
+     "title": "Open Claude Code in the same folder",
+     "code": "claude"
+    },
+    {
+     "title": "Ask your question",
+     "text": "Type `/roast-room` and your decision. Answer the Chair's questions, watch the council argue, then click Download PDF. The full report lands in `sessions/<date>-<decision>/verdict.md`."
+    },
+    {
+     "title": "Optional: add your own advisor",
+     "text": "Claude finds the person's public work, builds their brain and agent, and tests the new seat.",
+     "code": "/newroaster Morgan Housel"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code, in the roast-room folder",
+    "text": "/roast-room I run a coaching business at $30k a month with 15 clients at $2,000 each. Should I raise to $3,500 for everyone, raise for new clients only, or keep $2,000? Close rate is about 50% and I have $40k in the bank. Success is $45k a month by March. I'm leaning toward raising for everyone because I'm underpaid."
+   },
+   "watch": [
+    "A full council is three sub-agent runs per seat (21 for seven), so it uses a real share of your plan. Use `--quick` for small calls.",
+    "Building a new advisor is about 8 to 10 sub-agent runs and fetches web pages and YouTube transcripts to your machine.",
+    "The optional API mode needs an `ANTHROPIC_API_KEY` in `.env` and bills your API account, about 25 calls per full council.",
+    "The advisors are simulations built from public work. They are not the people and none of them endorses the project.",
+    "Portraits need a kie.ai key in `.env`, about 5 image jobs per advisor. Without one you get a placeholder face."
+   ],
+   "sources": [
+    "https://github.com/nateherkai/roast-room",
+    "https://raw.githubusercontent.com/nateherkai/roast-room/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "DS Bot",
+   "repo": "github.com/Fei2411/DS-Bot",
+   "stars": "5.5k",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0). DeepSeek bills model use by usage",
+   "works_with": "DeepSeek Harness (DSH); Windows, macOS and Linux",
+   "short": "A desktop app and DeepSeek Harness plugin for a team of long-lived bots that remember you, message each other and share group chats.",
+   "what": "DS Bot turns DeepSeek Harness into bots you create and then talk and work with. A main bot called Chief manages the other bots and group chats and walks you through setup. Bots have memory, can hand work to each other with @, and can create and edit Word, PowerPoint and Excel files.",
+   "who": "People who want a small team of AI bots on their own computer, set up by chatting with a bot. It is a community project, not an official DeepSeek product.",
+   "needs": [
+    "A DeepSeek account or a DeepSeek API key",
+    "For the plugin: DSH with at least one model set up",
+    "For DSH Web: Node.js 22.19 or later and pnpm",
+    "On Linux: glibc 2.28 or newer"
+   ],
+   "steps": [
+    {
+     "title": "Download the desktop app",
+     "text": "It brings its own DSH. From the releases page get `DS-Bot-<version>-win-x64.exe` for Windows, the `mac-arm64` or `mac-x64` zip for macOS, or the AppImage or `.deb` for Linux: https://github.com/Fei2411/DS-Bot/releases"
+    },
+    {
+     "title": "Install it",
+     "text": "On Windows, double-click the installer. It installs for your user only, without administrator rights. On macOS, drag DS Bot into Applications. On Linux, make the AppImage executable and open it, or install the deb."
+    },
+    {
+     "title": "Set up a model",
+     "text": "At first start, choose where the app keeps its data, then set up a model in its settings."
+    },
+    {
+     "title": "Or add it as a plugin in DSH Desktop",
+     "text": "In the sidebar, select Plugins, then Add plugin. Enter `ds-bot`, select Install, then Enable now."
+    },
+    {
+     "title": "Or run it in DSH Web",
+     "code": "npx @deepseek-ai/dsh@0.2.1-rc.5 plugin --profile web add ds-bot\nnpx @deepseek-ai/dsh@0.2.1-rc.5 web"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "DS Bot",
+    "text": "Talk to Chief, the main bot that is there the first time you open DS Bot. The author recommends setting up your other bots and group chats just by talking to it."
+   },
+   "watch": [
+    "The installer is not signed yet, so Windows and macOS warn about it. The README says to check the file's SHA256 against `SHA256SUMS.txt` on the release page if your antivirus blocks it, and not to turn Smart App Control off.",
+    "Bots use your own model quota, and they read and write files and run commands when you ask them to.",
+    "The main bot has very high rights over the other bots and group chats. Group chats cost more than one bot.",
+    "A local MCP command that a bot adds needs your approval before it runs.",
+    "Data stays on your computer in the DSH home folder, and uninstalling the plugin does not delete it."
+   ],
+   "sources": [
+    "https://github.com/Fei2411/DS-Bot",
+    "https://raw.githubusercontent.com/Fei2411/DS-Bot/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Floci",
+   "repo": "github.com/floci-io/floci",
+   "stars": "29.2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "AWS CLI, AWS SDKs, Terraform, CDK, OpenTofu, Testcontainers, Docker",
+   "short": "A free local AWS emulator: point your AWS tools at localhost and test S3, DynamoDB, Lambda, EC2 and more without an account.",
+   "what": "Floci runs AWS-shaped services on your machine for development, testing and CI, with no cloud account, auth token or paid feature gates. You point your SDK, CLI or infrastructure code at `http://localhost:4566`. Services like Lambda, RDS, ECS, EC2 and EKS run in real Docker containers, and it works as a drop-in replacement for LocalStack.",
+   "who": "Developers who build on AWS and want fast local tests or CI without touching a real account. If you don't use AWS, skip it; the same family has separate emulators for Azure, GCP and OCI.",
+   "needs": [
+    "Docker, or the standalone `floci-aws` binary from a release",
+    "The AWS CLI or an AWS SDK to talk to it"
+   ],
+   "steps": [
+    {
+     "title": "Create a compose file",
+     "text": "Save this as `compose.yaml`.",
+     "code": "services:\n  floci:\n    image: floci/floci:latest\n    ports:\n      - \"4566:4566\""
+    },
+    {
+     "title": "Start Floci",
+     "code": "docker compose up"
+    },
+    {
+     "title": "Point your AWS tools at it",
+     "text": "Credentials can be any non-empty values.",
+     "code": "export AWS_ENDPOINT_URL=http://localhost:4566\nexport AWS_DEFAULT_REGION=us-east-1\nexport AWS_ACCESS_KEY_ID=test\nexport AWS_SECRET_ACCESS_KEY=test"
+    },
+    {
+     "title": "Or use the Floci CLI",
+     "text": "The README calls the official CLI the fastest way. It links to the floci-cli repo for installing it.",
+     "code": "floci start\neval $(floci env)"
+    },
+    {
+     "title": "Open the web console",
+     "text": "Go to `http://localhost:4566/_floci/ui`. The console needs the Docker socket mounted: add `/var/run/docker.sock:/var/run/docker.sock` under `volumes`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Make a bucket and a table, then list them: `aws s3 mb s3://my-bucket`, then `aws dynamodb list-tables` after creating `demo-table` with the README's create-table command."
+   },
+   "watch": [
+    "Docker-backed services (Lambda, RDS, ECS, EC2, EKS and others) and the web console need the Docker socket, and the README's `docker run` example runs as root. That gives the container control of your Docker.",
+    "By default data lives in memory and is lost when the container stops. Set `FLOCI_STORAGE_MODE` if you want it kept.",
+    "Some services are partial. For example, Data Lifecycle Manager stores schedules but does not create snapshots."
+   ],
+   "sources": [
+    "https://github.com/floci-io/floci",
+    "https://raw.githubusercontent.com/floci-io/floci/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "CleanYourTV",
+   "repo": "github.com/Gathin23/cleanyourtv",
+   "stars": "51.6k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Android TV and Google TV; Claude Code, Codex, Gemini CLI or Antigravity CLI to do it for you",
+   "short": "Strips ads and bloatware from an Android or Google TV over Wi-Fi and gives it a clean Apple TV style home screen.",
+   "what": "It uses the TV's own debug bridge over Wi-Fi to back up its settings, disable the maker's telemetry, ad services and preloaded apps, and install a small launcher as the new home screen. Nothing is rooted or uninstalled, so one restore command undoes it. You can let a coding assistant run it from the repo's prompt in about fifteen minutes, or run the scripts yourself.",
+   "who": "Owners of an Android TV or Google TV who are tired of sponsored rows and are fine with a terminal. Samsung, LG, Roku, Vizio and Hisense VIDAA sets are not supported, and Fire TV gets the debloat only.",
+   "needs": [
+    "An Android TV or Google TV on the same Wi-Fi as your computer",
+    "Python 3",
+    "A JDK from 17 through 22 and Android SDK platform 34 with build-tools 34, to build the launcher",
+    "Optional: a coding assistant such as Claude Code, Codex, Gemini CLI or Antigravity CLI"
+   ],
+   "steps": [
+    {
+     "title": "Turn on debugging on the TV",
+     "text": "Settings, Device Preferences, About, then press OK on Build seven times. Go back to Developer options and turn USB debugging on. Turn on Network or ADB debugging too if you see it."
+    },
+    {
+     "title": "Clone the repo",
+     "text": "Cloning matters: the assistant reuses the repo's scripts, which hold the backup and the restore record.",
+     "code": "git clone https://github.com/Gathin23/cleanyourtv"
+    },
+    {
+     "title": "Let your assistant do it",
+     "text": "Open the folder in your coding assistant, paste `PROMPT.md` and fill in your TV model. Accept \"Allow USB debugging?\" on the TV, then answer its checklist: which apps you use, the dock, and whether to keep the voice assistant, Chromecast and updates."
+    },
+    {
+     "title": "Or set up the tools by hand",
+     "code": "python3 -m venv tools/venv && tools/venv/bin/pip install -r tools/requirements.txt\nexport TV_HOST=192.168.1.50"
+    },
+    {
+     "title": "Apply a debloat list and install the launcher",
+     "text": "Use the list for your model from `examples/`. This example is for a Xiaomi Mi TV 4A.",
+     "code": "tools/disable.sh examples/xiaomi-mi-tv-4a/debloat.txt\nTV_HOST=192.168.1.50 launcher/build-and-install.sh"
+    },
+    {
+     "title": "Restore if you change your mind",
+     "text": "Keep the list you applied.",
+     "code": "TV_HOST=192.168.1.50 tools/restore.sh examples/<your tv>/debloat.txt"
+    },
+    {
+     "title": "Close debugging when done",
+     "text": "In Developer options turn USB, Network and Wireless debugging off, revoke the authorisations, reboot, then check the port is closed.",
+     "code": "python3 tools/adb-closed.py <tv ip>"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Check what you're working with first: `tools/venv/bin/python -I tools/tv.py --probe` prints the TV's model, Android version and firmware."
+   },
+   "watch": [
+    "Network ADB is plaintext on port 5555, and on some firmware any device on your network gets a shell. Turn debugging off when you're done.",
+    "The risk is disabling something the TV relies on. If it won't start far enough to re-enable apps in Settings, a factory reset is usually the way back.",
+    "A firmware update brings the packages back and returns Home to the stock launcher. Run `tools/check.py` with `--fix` after one.",
+    "Changing a TV's software may affect its warranty or support. You run it at your own risk.",
+    "Only cleanyour.tv and this repo are official. Other sites using the name are not, and it has no app in any app store."
+   ],
+   "sources": [
+    "https://github.com/Gathin23/cleanyourtv",
+    "https://raw.githubusercontent.com/Gathin23/cleanyourtv/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Kairos",
+   "repo": "github.com/finic-ai/kairos",
+   "stars": "164",
+   "level": "Advanced",
+   "cost": "Free to self-host (Apache 2.0). Kairos Cloud and Grayson API pricing are not stated in the README",
+   "works_with": "Claude Code, Cursor, Codex, VS Code over MCP; TypeScript and Python SDKs",
+   "short": "Open source real-time fraud and risk decisions for sign-ups, logins, orders and payouts, tuned by your coding agent over MCP.",
+   "what": "Kairos decides each sign-up, login, order, payment and payout as it happens: approve, step up, review or block, with a risk score and reasons. It is built around Grayson, Finic's decision model, which answers plain-language questions about a request and works before you have many fraud labels. Your coding agent can connect over MCP to build workflows, run experiments on model variants and ship the winner.",
+   "who": "Teams who run payments, a marketplace or a shop and need fraud checks without buying Sardine, Sift or SEON. You need developers to send it events, so skip it if you want a no-code add-on.",
+   "needs": [
+    "A Kairos Cloud account, or for self-hosting: Node.js 22, pnpm 10 and a Grayson API key from portal.finic.ai",
+    "A Kairos secret key for your code, and an MCP key for your agent"
+   ],
+   "steps": [
+    {
+     "title": "Sign up for Kairos Cloud",
+     "text": "At kairos.finic.ai, create a sandbox environment and a secret key."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "In the console, open Settings, MCP, turn on the tool groups your agent needs and create a key. Then in Claude Code, with your key in place of `ksk_…`:",
+     "code": "claude mcp add --transport http kairos https://kairos.finic.ai/mcp --header \"Authorization: Bearer ksk_…\""
+    },
+    {
+     "title": "Install an SDK",
+     "code": "npm install @finic-ai/kairos      # or: pip install finic-kairos"
+    },
+    {
+     "title": "Define an action and ask for a decision",
+     "text": "The README's TypeScript example defines a withdrawal check, tracks a login, then calls `kairos.decide` with the user and amount. It returns approve, step_up, review or block with a risk score and reasons."
+    },
+    {
+     "title": "Or self-host it",
+     "text": "From a copy of the repo. The server starts its own Postgres, then the API runs on http://localhost:8787 and the console on http://localhost:5273. For a team, use `docker compose up --build`.",
+     "code": "pnpm install\ncp .env.example .env     # set GRAYSON_API_KEY\npnpm kairos dev"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent, connected over MCP",
+    "text": "\"Our chargebacks went up. Find a better model for shopify_order and publish it if it wins.\""
+   },
+   "watch": [
+    "Your agent's MCP key lets it build workflows and publish model versions. Turn on only the tool groups it needs; every action is recorded under its key.",
+    "You send Kairos your users' sign-ups, logins, orders and payouts. On Kairos Cloud they go to kairos.finic.ai.",
+    "Self-hosting still needs a Grayson API key from Finic, since the decision model is theirs.",
+    "The Shopify app is not self-serve. The README says to contact the Finic team on Discord or by email for it."
+   ],
+   "sources": [
+    "https://github.com/finic-ai/kairos",
+    "https://raw.githubusercontent.com/finic-ai/kairos/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "seo-audit",
+   "repo": "github.com/fcakyon/claude-codex-settings",
+   "stars": "1.2k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex CLI, Cursor, Antigravity CLI, and other skills hosts",
+   "short": "Audits a page or site for organic search in priority order and tells you which fixes to do first.",
+   "what": "The skill works down five layers in order: can the page be indexed, is the foundation sound, is the page optimised, does it deserve to rank, and does it have credibility. It is strict about what a fetch can and can't show, so it won't claim speed scores, rankings or traffic it can't see, and it names the tool to check those instead. It also has checks from live audits, such as Next.js putting metadata in the body where AI crawlers miss it.",
+   "who": "Site owners, marketers and developers who want a careful SEO review of a page that isn't ranking. It reads server HTML, so for rendered schema, speed and index data you still need Search Console, PageSpeed Insights or a crawler.",
+   "needs": [
+    "A supported coding agent",
+    "Node.js, for the optional `check_head.mjs` and `check_llms_txt.mjs` scripts"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace in Claude Code",
+     "code": "claude plugin marketplace add fcakyon/claude-codex-settings"
+    },
+    {
+     "title": "Install the SEO plugin",
+     "text": "It brings seo-audit plus three more SEO skills: programmatic-seo, schema and site-architecture.",
+     "code": "claude plugin install seo-skills@claude-settings"
+    },
+    {
+     "title": "Or in Codex",
+     "code": "codex plugin marketplace add fcakyon/claude-codex-settings\ncodex plugin add seo-skills@claude-settings"
+    },
+    {
+     "title": "Or with the skills CLI",
+     "code": "npx skills add https://github.com/fcakyon/claude-codex-settings/tree/main/plugins/seo-skills --skill '*'"
+    },
+    {
+     "title": "Optional: check what crawlers see",
+     "text": "From the skill's folder, this fetches a page as a browser, Googlebot, GPTBot, ClaudeBot and PerplexityBot and flags metadata a crawler finds only in the body.",
+     "code": "node scripts/check_head.mjs <url>"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Audit this page for SEO and tell me why it isn't ranking, with the fixes in order: <your URL>\""
+   },
+   "watch": [
+    "It only reports what it can read from a fetch. It won't measure Core Web Vitals, index status, rankings or backlinks, and it tells you which tool does.",
+    "Pages that inject schema with JavaScript look schema-free to a fetch. The skill sends you to Google's Rich Results Test to check the rendered page.",
+    "The crawler check spoofs bot user agents, so a site that verifies crawler IPs may block those requests."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/fcakyon/claude-codex-settings/plugins-seo-skills-skills-seo-audit",
+    "https://raw.githubusercontent.com/fcakyon/claude-codex-settings/main/plugins/seo-skills/skills/seo-audit/SKILL.md",
+    "https://raw.githubusercontent.com/fcakyon/claude-codex-settings/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "twitter-send-skill",
+   "repo": "github.com/zeenie-ai/OpenCompany",
+   "stars": "1.1k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). X API access level and model costs are your own",
+   "works_with": "OpenCompany, with an X Developer account",
+   "short": "Lets an OpenCompany AI agent post, reply, quote, retweet, like and delete on X, including threads.",
+   "what": "This skill is the playbook for OpenCompany's Twitter Send tool node. Once the node is connected to an AI agent, the agent can tweet, reply, quote, retweet, like, unlike and delete its own tweets through the X API v2. It builds threads by replying to the ID of the previous tweet, and it refreshes the OAuth token on a 401 or 403.",
+   "who": "OpenCompany users who want an AI employee to run an X account. It is not a standalone skill for other agents, since it relies on OpenCompany's node and credentials.",
+   "needs": [
+    "OpenCompany (desktop app, server install or source)",
+    "An X Developer account with the right API access level",
+    "OAuth scopes `tweet.read`, `tweet.write`, `like.read`, `like.write`, `users.read` and `offline.access`",
+    "An AI model connected in OpenCompany"
+   ],
+   "steps": [
+    {
+     "title": "Install OpenCompany",
+     "text": "Download the desktop app for Windows, macOS on Apple Silicon or Linux from the latest release: https://github.com/zeenie-ai/OpenCompany/releases/latest. It downloads its supporting software on first launch."
+    },
+    {
+     "title": "Or install it on a server",
+     "text": "This pipes a script from the internet into bash, so read it first. Then open the URL the CLI prints, by default http://localhost:5678.",
+     "code": "curl -fsSL https://opencompany.sh/install.sh | bash\ncompany start"
+    },
+    {
+     "title": "Connect a model and X",
+     "text": "In Settings, Connectors, connect an AI model, then connect Twitter through OAuth."
+    },
+    {
+     "title": "Wire up the tool",
+     "text": "In Dev mode's visual editor, connect the Twitter Send node to an AI Agent's `input-tools` handle."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "An OpenCompany employee with Twitter Send connected",
+    "text": "Ask it to post a short three-part thread. It sends the first tweet, then replies to the returned tweet ID for each next part."
+   },
+   "watch": [
+    "The agent posts and deletes as your X account. OpenCompany's Ask first default makes supported send actions drafts for approval, so keep that on while you test.",
+    "Text over 280 characters is clipped before sending, so content past that is lost.",
+    "X API rate limits are strict and set by X. Space out quick actions.",
+    "The OpenCompany builds are not code-signed yet, so your system may warn about the installer.",
+    "Work sent to a cloud AI provider is processed by that provider. Provider charges and limits apply."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/zeenie-ai/opencompany/server-skills-social-agent-twitter-send-skill",
+    "https://raw.githubusercontent.com/zeenie-ai/OpenCompany/main/server/skills/social_agent/twitter-send-skill/SKILL.md",
+    "https://raw.githubusercontent.com/zeenie-ai/OpenCompany/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "castmate",
+   "repo": "github.com/coreyhaines31/makerskills",
+   "stars": "882",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Uses your own accounts on the agent CLIs it calls",
+   "works_with": "Claude Code as the host; Codex, Claude, Gemini, Amp, OpenCode, Cursor, Kiro and Antigravity CLIs as castmates",
+   "short": "Hands a task to another agent CLI like Codex or Gemini, or sends one prompt to several and combines their answers.",
+   "what": "Castmate lets your main agent call the other AI coding CLIs you already have installed and logged in. Delegate mode gives one of them a job, optionally with write access. Fan-out mode gets read-only second opinions from two to four at once, and rounds mode lets them build on and challenge each other's findings before your agent writes one synthesis.",
+   "who": "Developers who use more than one coding agent and want cross-checks on plans, diffs or bug hunts. One other logged-in agent CLI is enough to start.",
+   "needs": [
+    "Claude Code, or another Agent Skills host",
+    "Python 3, to run `scripts/castmate.py`",
+    "At least one other agent CLI installed and logged in (the skill suggests Codex)",
+    "For Gemini CLI on a personal account: a `GEMINI_API_KEY`"
+   ],
+   "steps": [
+    {
+     "title": "Install the makerskills plugin in Claude Code",
+     "code": "/plugin marketplace add coreyhaines31/makerskills\n/plugin install makerskills@makerskills"
+    },
+    {
+     "title": "Set the config folder",
+     "text": "Add this to `~/.zshenv`, then reload your shell. Castmate keeps your models, casting rules and run outputs there.",
+     "code": "export MAKERSKILLS_CONFIG=\"$HOME/.config/makerskills\""
+    },
+    {
+     "title": "Check your castmates",
+     "text": "`list` shows what is installed. `test` checks each one is logged in and replies OK.",
+     "code": "python3 <skill-dir>/scripts/castmate.py list\npython3 <skill-dir>/scripts/castmate.py test codex fable"
+    },
+    {
+     "title": "Cast",
+     "text": "Ask in plain words, for example \"ask codex\" or \"get a second opinion\". Your agent confirms the exact list and access before it runs anything."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Claude Code",
+    "text": "\"Have codex write the migration.\" Or, for a review: \"Fan this out and cross-check this plan with another model.\""
+   },
+   "watch": [
+    "Only Codex limits `--write` to the working folder. Claude, Gemini, Antigravity and the others run with your full file access and are only asked to stay in it.",
+    "Some read-only modes are best-effort: repo or user config can still give the castmate more access. The skill says not to cast those on code you didn't write without warning first.",
+    "Each castmate can take 2 to 15 minutes, and every round costs as much as a full fan-out.",
+    "Never paste an API key into chat. The skill says to put `GEMINI_API_KEY` in your shell profile instead.",
+    "Antigravity's installer edits shell profiles."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/coreyhaines31/makerskills/skills-castmate",
+    "https://raw.githubusercontent.com/coreyhaines31/makerskills/main/skills/castmate/SKILL.md",
+    "https://raw.githubusercontent.com/coreyhaines31/makerskills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "open-pencil",
+   "repo": "github.com/open-pencil/open-pencil",
+   "stars": "9.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cursor, Windsurf, Codex and other skills hosts",
+   "short": "Teaches your coding agent to open, inspect, edit and export Figma .fig files with the OpenPencil CLI and MCP server.",
+   "what": "OpenPencil is an open source design editor that reads and writes Figma `.fig` files. This skill teaches your agent its CLI and MCP server, in two modes: headless on a `.fig` file, or live on the document open in the editor. The agent can print the node tree, query nodes with XPath, pull design tokens, lint for accessibility, run Figma Plugin API scripts and export to PNG, SVG, PDF or JSX.",
+   "who": "Designers and front-end developers who want an agent to work with Figma files without Figma. The project says it is in active development with some rough edges.",
+   "needs": [
+    "A supported coding agent",
+    "npm or Bun, for the CLI and MCP server",
+    "Optional: the OpenPencil desktop app, for app mode"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill",
+     "code": "npx skills add open-pencil/open-pencil"
+    },
+    {
+     "title": "Install the CLI",
+     "code": "npm install -g @open-pencil/cli\n# or: bun add -g @open-pencil/cli"
+    },
+    {
+     "title": "Optional: add the MCP server",
+     "text": "Set `OPENPENCIL_MCP_ROOT` to limit file access to one folder. It defaults to the current folder.",
+     "code": "npm install -g @open-pencil/mcp\nclaude mcp add --scope user open-pencil -- openpencil-mcp"
+    },
+    {
+     "title": "Optional: install the editor",
+     "text": "On macOS with Homebrew. Or download it from the releases page, or use the web app at app.openpencil.dev.",
+     "code": "brew install --cask openpencil"
+    },
+    {
+     "title": "Look inside a file",
+     "code": "openpencil tree design.fig"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal or your coding agent",
+    "text": "Find small frames and export one at 2x: `openpencil query design.fig \"//FRAME[@width < 300]\"`, then `openpencil export design.fig --node 1:23 -s 2 -o button@2x.png`."
+   },
+   "watch": [
+    "`eval` with `-w` runs JavaScript against your file and writes the result back. Keep a copy of the original.",
+    "Official app builds send one anonymous ping a day and share usage stats only if you agree. The privacy page lists every field and how to turn it off.",
+    "The desktop app starts a local MCP server on 127.0.0.1 ports 7600 and 7601 when `@open-pencil/mcp` is installed globally.",
+    "The built-in AI chat uses your own API key for the provider you pick."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/open-pencil/open-pencil/skills-open-pencil",
+    "https://raw.githubusercontent.com/open-pencil/open-pencil/master/skills/open-pencil/SKILL.md",
+    "https://raw.githubusercontent.com/open-pencil/open-pencil/HEAD/README.md"
+   ]
+  }
+ ]
+}
