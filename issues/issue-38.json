@@ -1,0 +1,435 @@
+{
+ "issue": 38,
+ "date": "5 Nov 2026",
+ "checked": "5 Nov 2026",
+ "blurb": "Every repo and skill from the 5 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #38 had five repos and four AI skills. This page covers eight of them. The batch leans toward people who build with agents: a data layer from NVIDIA, a background runner for your CLI agent, a shell guard and skills for Gemini, Scenario and entity SEO. If you let an agent run shell commands, start with tirith. For something fun, try teardown.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Auto Ontology",
+   "repo": "github.com/NVIDIA/auto-ontology",
+   "stars": "6.1k",
+   "level": "Advanced",
+   "cost": "Free (Apache 2.0). It needs an NVIDIA API key; prices are not stated in the README",
+   "works_with": "Any MCP client, plus a CLI, a REST API and a web UI",
+   "short": "NVIDIA's library that builds a checked map of what your database tables mean, so an AI agent answers data questions with SQL you can verify.",
+   "what": "Auto Ontology reads your database metadata and builds an ontology: business terms, reviewed SQL expressions and how tables join. People certify that draft. Then an agent answers questions in plain English, and every answer comes back with its SQL and the steps behind it. It connects to ten engines, including PostgreSQL, MySQL, Snowflake, Databricks, DuckDB and SQLite.",
+   "who": "Data and platform teams who want agents to answer analytics questions they can check. It runs as a full stack with Docker, Postgres and model endpoints, so skip it if you just want a quick chat with a spreadsheet.",
+   "needs": [
+    "Docker with Compose v2",
+    "uv",
+    "An NVIDIA API key (`nvapi-...`) from build.nvidia.com, or your own OpenAI-compatible model endpoints"
+   ],
+   "steps": [
+    {
+     "title": "Clone it and create .env",
+     "text": "In `.env`, set `DEFAULT_MODELS_API_KEY`, `AUTH_SECRET`, `APP_URL`, `POSTGRES_PASSWORD`, `CONNECTION_STRINGS`, `AUTO_ONTOLOGY_ADMIN_PASSWORD` and `PGADMIN_PASSWORD`. Replace every default password.",
+     "code": "git clone https://github.com/NVIDIA/auto-ontology.git && cd auto-ontology\ncp .env.example .env"
+    },
+    {
+     "title": "Start Postgres and load the sample database",
+     "text": "The quickstart uses Wide World Importers, Microsoft's sample sales database. Use the Postgres password you set.",
+     "code": "docker compose up -d --wait postgres\ngit clone https://github.com/NVIDIA/auto-ontology-eval.git ../auto-ontology-eval\n(cd ../auto-ontology-eval && uv sync && cp .env.example .env && \\\n  POSTGRES_PASSWORD='<the same password>' \\\n  uv run python scripts/seed/seed_wwi.py --database-name wideworldimporters --drop)"
+    },
+    {
+     "title": "Start the rest of the stack",
+     "code": "docker compose up -d --build"
+    },
+    {
+     "title": "Turn on semantic compilation",
+     "text": "Open http://localhost:3000, sign in with the admin email and password from `.env`, and turn on Settings, Semantic Compilation. Wait until it says Semantic compilation is ready."
+    },
+    {
+     "title": "Optional: connect your agent over MCP",
+     "text": "The MCP server gives any MCP client read-only tools over the ontology, and each user signs in.",
+     "code": "AUTO_ONTOLOGY_API_URL=http://localhost:3000 \\\n  uvx --from \"git+https://github.com/NVIDIA/auto-ontology.git#subdirectory=mcp\" auto-ontology-mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Chat in the Auto Ontology web UI",
+    "text": "Ask: What was revenue for the USB food flash drive - sushi roll in Pennsylvania in June 2015? The answer should come back with its SQL and the steps that produced it."
+   },
+   "watch": [
+    "Compose publishes Postgres, pgAdmin and the web app on your machine, so replace every default password before you start it.",
+    "Keep ports 3001 and 3002 on a private network. The backend trusts the user ID the frontend forwards, and the ingestion service has no authentication of its own.",
+    "If you set `KUMO_RFM_API_KEY`, the agent uploads your connected tables to the hosted KumoRFM service for predictive questions. Check what that sends first.",
+    "The project is not accepting outside contributions."
+   ],
+   "sources": [
+    "https://github.com/NVIDIA/auto-ontology",
+    "https://raw.githubusercontent.com/NVIDIA/auto-ontology/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Scenario Agent Skills",
+   "repo": "github.com/scenario-labs/skills",
+   "stars": "2.7k",
+   "level": "Intermediate",
+   "cost": "Skills are free (MIT). Scenario usage is billed to your Scenario account; prices are not stated in the README",
+   "works_with": "Claude Code, Cursor, Codex, Copilot and 70+ other agents",
+   "short": "AI skills that teach your coding agent to make images, video, audio, textures and 3D assets through the Scenario MCP server.",
+   "what": "A large set of AI skills for Scenario, a content generation platform. They cover images, video, audio, textures, skyboxes, 3D assets and custom trained models, plus skills for holding one character or style steady across a set and for dry-run pricing before a run. A separate group of expert skills drives desktop tools like Blender, Maya, Unity, Godot and Unreal Engine.",
+   "who": "Game developers, artists and marketers who want an agent to produce assets in a consistent style. You need a Scenario account, so skip it if you don't plan to use Scenario.",
+   "needs": [
+    "A coding agent that supports AI skills",
+    "Node.js, for `npx`",
+    "A Scenario account (OAuth sign-in) or a Scenario API key"
+   ],
+   "steps": [
+    {
+     "title": "Pick the skills you want",
+     "text": "This opens a menu grouped by topic. Nothing is selected at first, so choose before you press enter. INSTALL.md also has one command per role.",
+     "code": "npx skills add scenario-labs/skills"
+    },
+    {
+     "title": "Or install one skill",
+     "code": "npx skills add scenario-labs/skills --skill scenario"
+    },
+    {
+     "title": "Connect the Scenario MCP server",
+     "text": "Or add `https://mcp.scenario.com/mcp` to any MCP client and sign in with your Scenario account.",
+     "code": "claude mcp add --transport http scenario https://mcp.scenario.com/mcp"
+    },
+    {
+     "title": "Stay up to date",
+     "code": "npx skills update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Generate four style-matched potion icons with transparent backgrounds for my RPG inventory."
+   },
+   "watch": [
+    "The default commands install the latest copy from `main`. To install a reviewed state, pin a release commit with `npx skills@1.7.4 add scenario-labs/skills#<commit> --skill <name>`.",
+    "Generations run on your Scenario account. The skills include dry-run pricing and team spend caps, but the README gives no prices.",
+    "The expert tool skills drive apps installed on your machine, like Blender or Unity, and need those apps rather than the MCP server."
+   ],
+   "sources": [
+    "https://github.com/scenario-labs/skills",
+    "https://raw.githubusercontent.com/scenario-labs/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Agent Autoloop",
+   "repo": "github.com/KKKKhazix/agent-autoloop",
+   "stars": "3.0k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Model usage is billed to your own agent account",
+   "works_with": "Claude Code, Codex, ACP agents, DeepSeek Harness and other CLI agents, on macOS and Linux",
+   "short": "Runs your command line agent in the background on schedules or events, and sends you a card only when it needs a decision.",
+   "what": "Agent Autoloop is a small hub that hands work to your CLI agent from schedules, GitHub or GitLab webhooks and HTTP events. The agent works one round and exits. When it needs you, for things like deleting data or spending money, it sends a card to a desktop notification, Feishu, DingTalk, WeCom, Slack or Discord. While it waits, no agent process runs and no tokens are spent. Your answer resumes the same conversation.",
+   "who": "People who want an agent to handle recurring jobs, like a morning brief or new GitHub issues, without sitting at the terminal. Windows users should wait, since it doesn't run there yet.",
+   "needs": [
+    "macOS or Linux (WSL2 for now on Windows)",
+    "Node 24, Git and curl",
+    "At least one command line agent that is already signed in"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "The installer pipes a script from GitHub into your shell. It installs the newest release.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/KKKKhazix/agent-autoloop/main/install.sh | sh"
+    },
+    {
+     "title": "Do a test run",
+     "text": "Your agent asks a sample question. Answer it with the number shown, then check the status.",
+     "code": "agent-autoloop try"
+    },
+    {
+     "title": "Answer and check",
+     "code": "agent-autoloop answer 1 2\nagent-autoloop status"
+    },
+    {
+     "title": "Write your rules",
+     "text": "Edit `~/.agent-autoloop/rules.json` to say what job goes to which agent in which folder, for example a cron rule for a 9am brief. Then check it.",
+     "code": "agent-autoloop check"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `agent-autoloop try`, pick a color when the card asks, then run `agent-autoloop status` to see the agent pick the work back up, with rounds, tokens and cost for today."
+   },
+   "watch": [
+    "The install command pipes a script straight into your shell. Read install.sh first.",
+    "It runs your signed-in agent unattended. The README says providers generally recommend API keys over personal subscriptions for automated work, and model usage is billed to your account.",
+    "CLI output, default notifications and the recipe docs are in Chinese for now.",
+    "Windows is not supported yet. The author plans it after 7 to 8 November."
+   ],
+   "sources": [
+    "https://github.com/KKKKhazix/agent-autoloop",
+    "https://raw.githubusercontent.com/KKKKhazix/agent-autoloop/HEAD/README.md",
+    "https://raw.githubusercontent.com/KKKKhazix/agent-autoloop/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "teardown",
+   "repo": "github.com/elvarofficial/teardown",
+   "stars": "2.0k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code",
+   "short": "A skill that builds any machine as an offline 3D simulator page you can take apart, with live readouts and an optional video.",
+   "what": "Ask how a machine works and the agent builds it as one offline HTML page. The machine runs in the middle, panels around it show its numbers, a button opens the part doing the work, and the page tours itself when left alone. It can also record a video of the tour. Three examples ship with it: a V8, a Cessna and a Strandbeest.",
+   "who": "Anyone curious about how engines, watches or other machines work, and teachers who want a visual. The install command targets Claude Code.",
+   "needs": [
+    "Claude Code",
+    "Node.js 20 or newer",
+    "Optional: ffmpeg for video and Python 3 for sound"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill",
+     "code": "npx skills add elvarofficial/teardown -g -a claude-code"
+    },
+    {
+     "title": "Install its dependencies",
+     "text": "Run this once, in the installed skill folder.",
+     "code": "npm install && npx playwright install chromium"
+    },
+    {
+     "title": "Optional: open an example",
+     "text": "This writes `teardown-out/dist/v8-live.html`.",
+     "code": "node sims/build.mjs v8-live"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Build me a simulator of a 4-stroke motorcycle engine I can take apart."
+   },
+   "watch": [
+    "The setup step downloads a Chromium browser through Playwright.",
+    "Video and sound need extra tools: ffmpeg and Python 3."
+   ],
+   "sources": [
+    "https://github.com/elvarofficial/teardown",
+    "https://raw.githubusercontent.com/elvarofficial/teardown/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "kimi-k3-in-c",
+   "repo": "github.com/FareedKhan-dev/kimi-k3-in-c",
+   "stars": "10.6k",
+   "level": "Advanced",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "Linux x86-64, macOS arm64 and Windows x86-64",
+   "short": "Runs the 2.78 trillion parameter Kimi K3 model on one CPU with as little as 8 GB of RAM, in plain C99 with no GPU.",
+   "what": "A Kimi K3 inference engine in portable C99, with no BLAS, framework or GPU. It streams the model from disk, so 8 GB of RAM works and more memory only makes it faster. The README measures 26.5 seconds per token on 8 GB and 5.6 seconds on 128 GB or more, with the same output at every size. A test suite checks the engine against a PyTorch reference without downloading the model.",
+   "who": "People interested in how a huge model can run on ordinary hardware. It is slow, and the checkpoint is 1.56 TB, so skip it if you want a usable chat model.",
+   "needs": [
+    "About 1.7 TB of free disk, ideally fast local storage",
+    "A CPU with AVX2 and FMA (x86-64) or NEON (arm64)",
+    "8 GB of RAM or more",
+    "GCC 9+ or Clang 10+, with GNU make or CMake",
+    "Python 3.9+ for the download and pack tools",
+    "A Hugging Face token"
+   ],
+   "steps": [
+    {
+     "title": "Clone, build and test",
+     "text": "This needs no checkpoint, network or Python, and takes about a minute.",
+     "code": "git clone https://github.com/FareedKhan-dev/kimi-k3-in-c.git\ncd kimi-k3-in-c\n\nmake -j            # seconds. Seven C files, a compiler and OpenMP\nmake test          # under a minute"
+    },
+    {
+     "title": "Check your machine",
+     "text": "It checks the toolchain, sizes your RAM to a preset, measures your disk and prints the next command.",
+     "code": "./scripts/k3-doctor.sh"
+    },
+    {
+     "title": "Download the checkpoint",
+     "text": "1.56 TB, so this takes hours. It is resumable, and it verifies every shard at the end.",
+     "code": "export HF_TOKEN=hf_your_token_here          # read from the environment, never echoed\n./scripts/download-model.sh ~/k3model       # resumable, re-run to continue"
+    },
+    {
+     "title": "Pack the trunk",
+     "text": "About four minutes, once. It writes a 109 GB file, so put it on your fastest disk.",
+     "code": "./scripts/pack-trunk.sh ~/k3model ~/k3trunk"
+    },
+    {
+     "title": "Run it",
+     "code": "./bin/k3 ~/k3model --trunk ~/k3trunk --preset workstation \\\n         --tok ~/k3model --prompt \"The capital of France is\" --gen 8 --incremental"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Before downloading anything, run `make test`. It should end with ENGINE MATCHES THE REFERENCE EXACTLY and ALL WEIGHTLESS TESTS PASSED."
+   },
+   "watch": [
+    "The checkpoint is 1.56 TB plus a 109 GB packed file. The download takes hours.",
+    "A partial download produces wrong tokens without failing loudly. Treat a FAIL from the verify step as a stop.",
+    "It is slow: the README measures 26.5 seconds per token on 8 GB of RAM. The first token of a run also loads every pinned layer from disk.",
+    "Pick a preset that matches your RAM. `./bin/k3 --list-presets` shows them."
+   ],
+   "sources": [
+    "https://github.com/FareedKhan-dev/kimi-k3-in-c",
+    "https://raw.githubusercontent.com/FareedKhan-dev/kimi-k3-in-c/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "gemini-api-cli",
+   "repo": "github.com/google-gemini/gemini-skills",
+   "stars": "4.4k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README. Calls are billed to the Gemini API project behind your key",
+   "works_with": "Claude Code, Cursor, Codex, Antigravity and other skills hosts",
+   "short": "Teaches your coding agent the gemini-api command line tool, for images, speech, music, video, transcription and file or YouTube analysis.",
+   "what": "This skill teaches your agent `gemini-api`, a command line client for the Gemini API. It can generate images, speech, music and video and save them to disk, analyse PDFs, recordings and YouTube links, transcribe audio and video, and run Deep Research. It also covers multi-turn calls, JSON output with a schema and a `--dry-run` that previews requests offline.",
+   "who": "Developers who want Gemini media and analysis from the shell, in scripts or in CI. For calls inside app code, the skill points to the SDK skills instead.",
+   "needs": [
+    "A coding agent that supports AI skills",
+    "A Gemini API key",
+    "macOS or Linux for the install script"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill",
+     "text": "Browse the list and pick gemini-api-cli.",
+     "code": "npx skills add google-gemini/gemini-skills --list"
+    },
+    {
+     "title": "Or install the plugin in Claude Code",
+     "code": "/plugin marketplace add google-gemini/gemini-skills\n/plugin install gemini-skills@gemini-skills"
+    },
+    {
+     "title": "Install the gemini-api CLI",
+     "text": "Set `GEMINI_VERSION=<tag>` to pin a release.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh | bash"
+    },
+    {
+     "title": "Add your key",
+     "text": "For agents and CI, use an environment variable. On your own machine, `gemini-api configure --api-key \"...\"` saves it to the OS keychain.",
+     "code": "export GEMINI_API_KEY=\"...\""
+    },
+    {
+     "title": "Check which key is active",
+     "code": "gemini-api whoami"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal or your coding agent",
+    "text": "Make a two-voice clip: `gemini-api tts \"Alice: Ready to ship? Bob: Checks are green.\" --multi-speaker \"Alice=Kore,Bob=Puck\" --out ./dialogue.wav`."
+   },
+   "watch": [
+    "The CLI install pipes a script straight into bash. Read it first.",
+    "An exported `GEMINI_API_KEY` overrides keys saved in the keychain or config file, and that key's project gets billed. Run `gemini-api whoami` to see which one won.",
+    "Calls are stored on the server by default. Set `store` to false to turn that off.",
+    "The repo says it is not an officially supported Google product."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/google-gemini/gemini-skills/skills-gemini-api-cli",
+    "https://raw.githubusercontent.com/google-gemini/gemini-skills/main/skills/gemini-api-cli/SKILL.md",
+    "https://raw.githubusercontent.com/google-gemini/gemini-skills/main/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "entity-seo",
+   "repo": "github.com/saadsalmankhan/entity-seo-skill",
+   "stars": "11",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, or as a plain Markdown playbook",
+   "short": "Maps you, your brand, company and products as linked entities, then helps your site, schema and profiles describe those links the same way.",
+   "what": "An entity SEO skill that lists your entities, writes down why each link between them exists and saves it all in one `entities.yaml` file. It then runs separate actions: audit, on-site fixes like a JSON-LD graph and a page per entity, copy for your profiles, articles, measurement and an optional report. It also covers on-site SEO, GEO and AEO, and ships free scripts for Search Console rank and Knowledge Graph checks.",
+   "who": "Individuals and companies whose name, brand and products don't line up in search, or who get outranked by someone with the same name. It promises no rankings.",
+   "needs": [
+    "Claude Code, or just read the Markdown files",
+    "For the optional scripts: Python 3, `google-auth`, a Search Console service account key and a Knowledge Graph Search API key"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "The folder name becomes the skill name. For a team, put it in `<repo>/.claude/skills/entity-seo/` and commit it.",
+     "code": "git clone https://github.com/saadsalmankhan/entity-seo-skill.git ~/.claude/skills/entity-seo"
+    },
+    {
+     "title": "Restart your agent",
+     "text": "Restart Claude Code, or reload, so it picks up the skill."
+    },
+    {
+     "title": "Run it",
+     "text": "With no argument it picks the next action. Or name one, like `/entity-seo map` or `/entity-seo audit`. It asks for your name, domain and profiles first and asks you to confirm the map before changing anything."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Do entity SEO for me and my company."
+   },
+   "watch": [
+    "The `site` action changes your codebase. It asks you to confirm the entity map first.",
+    "The optional scripts need a Search Console service account key and a Knowledge Graph API key. The README says to keep them `chmod 600` and out of git.",
+    "No guarantees on rankings, and the README says results take weeks."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/saadsalmankhan/entity-seo-skill/skill",
+    "https://raw.githubusercontent.com/saadsalmankhan/entity-seo-skill/main/SKILL.md",
+    "https://raw.githubusercontent.com/saadsalmankhan/entity-seo-skill/main/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "tirith",
+   "repo": "github.com/sheeki03/tirith",
+   "stars": "2.8k",
+   "level": "Intermediate",
+   "cost": "Free (AGPL-3.0)",
+   "works_with": "zsh, bash, fish, PowerShell, plus setup for Claude Code, Codex, Cursor, Gemini CLI and many more agents",
+   "short": "Checks shell commands and pasted text for lookalike URLs, hidden characters and supply chain tricks before they run, for you and your agent.",
+   "what": "tirith is a shell hook and CLI that checks commands before they run. It catches pipe-to-shell patterns, lookalike domains, ANSI escape tricks, invisible characters, shortened URLs, poisoned AI configs and known bad packages from a signed threat database. It can also scan a repo for hidden content and hook into coding agents so their shell commands get checked too.",
+   "who": "Developers who paste install commands or let agents run shell commands. It is a gate before running, so it doesn't replace an antivirus or a sandbox.",
+   "needs": [
+    "macOS, Linux or Windows",
+    "One of Homebrew, npm, cargo, mise, apt/dnf or Docker to install it"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "Other options are `npm install -g tirith` and `cargo install tirith`.",
+     "code": "brew install tirith"
+    },
+    {
+     "title": "Turn on the shell hook",
+     "text": "Add the line for your shell to its profile file, for example `~/.zshrc`.",
+     "code": "eval \"$(tirith init --shell zsh)\"   # in ~/.zshrc\neval \"$(tirith init --shell bash)\"  # in ~/.bashrc\ntirith init --shell fish | source   # in ~/.config/fish/config.fish"
+    },
+    {
+     "title": "Check it works",
+     "code": "tirith doctor"
+    },
+    {
+     "title": "Optional: protect your coding agent",
+     "text": "There is a `tirith setup <tool>` command for each supported agent. For example:",
+     "code": "tirith setup claude-code --with-mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Check a risky install line before running it: `tirith check -- 'curl https://example.com/install.sh | bash'`."
+   },
+   "watch": [
+    "It checks commands before they run. It does not sandbox them afterwards, watch the network or detect unknown malware.",
+    "In bash preexec mode it only warns by default. Set `TIRITH_BASH_PREEXEC_ENFORCE=1` to block.",
+    "`tirith check` can query outside sources like OSV and Safe Browsing, and refreshes its threat database in the background once a day. Use `--offline` or `TIRITH_OFFLINE=1` to stop that. The README says there is no telemetry.",
+    "For agents with MCP-only setup, the tools are there but the agent isn't forced to call them. Run `tirith doctor` and restart the agent after setup."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/sheeki03/tirith/skill",
+    "https://raw.githubusercontent.com/sheeki03/tirith/main/SKILL.md",
+    "https://raw.githubusercontent.com/sheeki03/tirith/main/README.md"
+   ]
+  }
+ ]
+}
