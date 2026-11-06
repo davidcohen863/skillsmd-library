@@ -1,0 +1,247 @@
+{
+ "issue": 39,
+ "date": "6 Nov 2026",
+ "checked": "6 Nov 2026",
+ "blurb": "Every repo and skill from the 6 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #39 had five repos and four AI skills, and this page covers seven of them. Most of it is for people who already work with a coding agent: a browser it can drive, a local audit of what it did, a design skill and a video recorder. If you let an agent run commands on your machine, start with Stroq. For something quick and visual, try stack-diagram.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "agent-browser",
+   "repo": "github.com/vercel-labs/agent-browser",
+   "stars": "46.2k",
+   "level": "Intermediate",
+   "cost": "Free (Apache-2.0)",
+   "works_with": "Any coding agent that can run shell commands, plus MCP clients",
+   "short": "A command line browser from Vercel Labs that your AI agent drives one short shell command at a time.",
+   "what": "agent-browser is a native Rust CLI that gives an AI agent a browser. `snapshot` returns the page as compact text, with a ref such as `@e1` for each element. The agent acts on a ref, reads the page again to check the result, and repeats. The browser stays open between commands, and a background daemon controls it over the Chrome DevTools Protocol.",
+   "who": "People who want their coding agent to open pages, click through flows, fill forms or take screenshots from the shell. If your agent never needs a browser, you can skip it.",
+   "needs": [
+    "npm, or Homebrew",
+    "Chrome for Testing, which `agent-browser install` downloads the first time"
+   ],
+   "steps": [
+    {"title": "Install the CLI", "text": "With Homebrew, run `brew install agent-browser` and then `agent-browser install`. On Linux, `agent-browser install --with-deps` also installs the browser's system libraries.", "code": "npm install -g agent-browser\nagent-browser install"},
+    {"title": "Try the quick start", "text": "Refs describe the page at the moment of the snapshot. After a navigation or a page change, take a new snapshot before using refs again.", "code": "agent-browser open example.com\nagent-browser snapshot -i\nagent-browser click @e1\nagent-browser get url\nagent-browser close"},
+    {"title": "Give your agent the skill", "text": "The installed skill is a small stub that tells the agent to load `agent-browser skills get core`, so its instructions always match the CLI you have installed.", "code": "npx skills add vercel-labs/agent-browser"},
+    {"title": "Optional: use it over MCP", "text": "This starts an MCP server over stdio for MCP clients.", "code": "agent-browser mcp"}
+   ],
+   "try": {"label": "From the README", "where": "Your terminal", "text": "Run `agent-browser open example.com`, then `agent-browser snapshot -i`. You should see `- link \"Learn more\" [ref=e1]`."},
+   "watch": [
+    "Your agent gets a real browser it can click, type and run `eval` in, so any site it visits is open to it. The Security docs cover an auth vault, domain allowlists and action policies.",
+    "A headless browser's daemon keeps running in the background and exits after one hour without commands.",
+    "A click fails when the target is hidden, disabled, outside the viewport or covered, for example by a consent banner. Dismiss it, take a new snapshot and retry."
+   ],
+   "sources": [
+    "https://github.com/vercel-labs/agent-browser",
+    "https://raw.githubusercontent.com/vercel-labs/agent-browser/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Stroq",
+   "repo": "github.com/AGGIB/Stroq",
+   "stars": "138",
+   "level": "Beginner",
+   "cost": "Free (Apache-2.0)",
+   "works_with": "Claude Code, Codex, Cursor, Copilot CLI, Windsurf, Antigravity and OpenClaw",
+   "short": "Checks your coding agent's past sessions for commands that came from text it read and keys that left your machine.",
+   "what": "Stroq reads your Claude Code and Codex sessions from the last 30 days. It prints a card showing how many commands came from text your agent read, which keys left your machine, and the moments worth a look, each with its evidence. It can also hook into your agent so every tool call is judged before it runs. The hooks deny `curl | sh` and outbound calls that carry a known secret, and they ask you first when a command repeats text the agent read.",
+   "who": "Anyone who lets a coding agent run shell commands and wants to know what it actually did. The one-off card needs no install. The hooks are for people who want a filter in front of every action.",
+   "needs": [
+    "Node.js 22 or newer"
+   ],
+   "steps": [
+    {"title": "See the card for your own sessions", "text": "It reads your last 30 days of sessions, your key files and the folders your agent worked in. It prints key names, never values.", "code": "npx @stroq/cli"},
+    {"title": "Look at the evidence behind a moment", "text": "Every moment on the card has its own `show` line.", "code": "npx @stroq/cli show 1"},
+    {"title": "Check whether your keys went anywhere", "code": "npx @stroq/cli sent"},
+    {"title": "Guard your next session", "text": "This adds Stroq's hooks to your agent.", "code": "npx @stroq/cli init"},
+    {"title": "Optional: open the console", "text": "It is a private page on 127.0.0.1. Open the whole link it prints, because it carries a key that changes each time.", "code": "npx @stroq/cli console"}
+   ],
+   "try": {"label": "From the README", "where": "Your terminal", "text": "Run `npx @stroq/cli attack` to watch Stroq run 36 known attacks against your policy in a throwaway sandbox."},
+   "watch": [
+    "Stroq reads your agent session transcripts and your key files. The README says it sends nothing, has no telemetry and writes only a small cache under `~/.stroq`.",
+    "`init` and the console change your agent's settings to add hooks. The console shows the exact file change first, and `npx @stroq/cli uninstall` removes Stroq.",
+    "Matching is text level, so a command the model writes from scratch does not trace back to a source. The README calls it a filter, and says a key can still leave in a script, a file or a variable without showing up.",
+    "Adding hooks from the console needs macOS or Linux. On Windows, use `stroq init`."
+   ],
+   "sources": [
+    "https://github.com/AGGIB/Stroq",
+    "https://raw.githubusercontent.com/AGGIB/Stroq/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "stack-diagram",
+   "repo": "github.com/caru-ini/stack-diagram",
+   "stars": "1.9k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor and other agents that support skills",
+   "short": "An AI skill that turns one sentence about your stack into an architecture diagram with the official logos.",
+   "what": "You describe your stack in a sentence and your agent draws the architecture diagram. Logos come from svgl, devicon, gilbarbara/logos or the brand's own repository, and AWS, Google Cloud and Azure use their own icon sets. Lines are routed around labels, and the agent renders and checks the diagram before handing it over. You get one self-contained HTML file by default, or PNG, a React component or an artifact, in light and dark themes.",
+   "who": "Developers who want a clean diagram of their stack to drop into a repo or a wiki, or to share as a link.",
+   "needs": [
+    "An agent that supports skills",
+    "Python 3.9 or newer",
+    "Network access to fetch the logos",
+    "Playwright with Chromium, only for PNG export"
+   ],
+   "steps": [
+    {"title": "Install the skill", "text": "In the Claude apps, upload `stack-diagram.zip` from the repo's Releases page as a skill instead.", "code": "npx skills add caru-ini/stack-diagram"},
+    {"title": "Describe your stack", "text": "Ask your agent in plain words, naming each service and how they connect."}
+   ],
+   "try": {"label": "From the README", "where": "Your coding agent", "text": "Diagram our stack: Next.js and a Hono API on Vercel. Postgres on Neon, auth with Clerk, payments with Stripe. GitHub Actions deploys."},
+   "watch": [
+    "After drawing, the agent offers once to post the diagram to a public gallery at stacks.caru.moe. It shows what would be public and posts only after you say yes twice. Your prompt is never sent.",
+    "Logos are downloaded at build time and stay the trademarks of their owners."
+   ],
+   "sources": [
+    "https://github.com/caru-ini/stack-diagram",
+    "https://raw.githubusercontent.com/caru-ini/stack-diagram/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Claude Animated Shorts",
+   "repo": "github.com/mromidev/claude-animated-shorts",
+   "stars": "1.9k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code",
+   "short": "An AI skill that makes 55 to 70 second vertical cartoon shorts with three.js and Remotion, rendered on your own PC.",
+   "what": "The skill makes vertical animated story shorts: 2D characters in a colourful 3D world, with ink outlines, lens blur, gliding cameras, a march score and sound effects. It renders everything with three.js inside Remotion on your own machine, with no AI video generator. The agent works through topic and facts, script, voice, a shot plan, stills and renders, and checks your frames against measured reference reports.",
+   "who": "Creators who want to make story shorts and are comfortable with a Node and Remotion setup. Skip it if you want a one-click video app.",
+   "needs": [
+    "Remotion with `@remotion/three`",
+    "Node, Python 3 and ffmpeg",
+    "A voice track (`voice.wav`) you record or generate, plus word timings from any speech to text tool",
+    "A big drive for Remotion's temp folder"
+   ],
+   "steps": [
+    {"title": "Copy the skill folder", "text": "Copy the repo folder to `~/.claude/skills/cartoon-3d-short/`. You can clone it there or download the ZIP."},
+    {"title": "Point Remotion's temp folder at a big drive", "text": "Set `REMOTION_TMP` to a folder on a big drive. Every Remotion bundle copies `public/` (about 1.3 GB) into the temp folder."},
+    {"title": "Ask for a short", "text": "Your agent then follows `SKILL.md` step by step, and you get the final 2K render and the sound mix."}
+   ],
+   "try": {"label": "From the README", "where": "Claude Code", "text": "Use the cartoon short skill and make a short about a history or science story you want to tell."},
+   "watch": [
+    "Each Remotion bundle copies about 1.3 GB, so disk space goes fast.",
+    "The README says story, characters and voice should be your own. The reference frames are included for style study only.",
+    "The README only describes setup in Claude Code."
+   ],
+   "sources": [
+    "https://github.com/mromidev/claude-animated-shorts",
+    "https://raw.githubusercontent.com/mromidev/claude-animated-shorts/HEAD/README.md",
+    "https://raw.githubusercontent.com/mromidev/claude-animated-shorts/HEAD/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ex-USSR Kinship Research",
+   "repo": "github.com/DenisSergeevitch/ex-ussr-kinship-research",
+   "stars": "2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Codex, Claude Code and other Agent Skills runtimes",
+   "short": "A genealogy skill that turns your agent into a careful family history researcher for the former USSR and Russian Empire.",
+   "what": "The skill covers all 15 former Soviet republics. Your agent reads church books, civil records, military, deportation and repression files and unindexed archive scans, and keeps every find traceable. Claims get plain statuses such as `single-source` or `corroborated`, and an audit script flags weak corroboration before you write conclusions. The instructions are in Russian, but the agent talks to you in your own language, and the default result is an HTML report with a family tree.",
+   "who": "Anyone researching family roots in the former Soviet Union who wants evidence they can check. It refuses to look up current addresses, phones or accounts of living people, so it is no use for finding someone today.",
+   "needs": [
+    "An agent that supports skills",
+    "Python 3 (most scripts need only the standard library)",
+    "Node.js, only for the optional Skills CLI",
+    "Pillow for `scan_montage.py`, and Chrome, Chromium or Edge for PDF export, both optional"
+   ],
+   "steps": [
+    {"title": "Install the skill", "text": "The CLI lets you pick your agent and installs into the current project by default. Add `-g` to install it for every project.", "code": "npx skills add https://github.com/DenisSergeevitch/ex-ussr-kinship-research"},
+    {"title": "Or clone it into your agent's skills folder", "text": "For Codex, clone into `~/.codex/skills/` instead. For one project, put the folder in `.claude/skills/` inside the repo.", "code": "git clone https://github.com/DenisSergeevitch/ex-ussr-kinship-research ~/.claude/skills/ex-ussr-kinship-research"},
+    {"title": "Start a case outside the skill folder", "text": "Run this from the skill folder. Keep private case data outside the skill's Git checkout.", "code": "python scripts/init_case.py --case-dir ~/kinship-cases/my-case --research-question \"Who were Maria's parents?\" --subject-label \"Maria\""},
+    {"title": "Check the evidence before the report", "code": "python scripts/audit_evidence.py --case-dir ~/kinship-cases/my-case"}
+   ],
+   "try": {"label": "From the README", "where": "Your coding agent", "text": "My great-grandfather was exiled to Kazakhstan in the 1930s. Help me find his parents in church records."},
+   "watch": [
+    "When you authorise it, the agent can send requests to archives, libraries and museums by email or official web tools. The README says connecting a mailbox alone does not authorise sending, attachments or paid services.",
+    "It uses your own signed in browser session for FamilySearch, and you do the sign ins yourself. It may try a CAPTCHA once and then hands it to you.",
+    "It does not upload your documents or DNA data to third party services without your explicit consent.",
+    "Case files hold personal family data, so keep them out of the skill's checkout and check staged files before you contribute."
+   ],
+   "sources": [
+    "https://github.com/DenisSergeevitch/ex-ussr-kinship-research",
+    "https://raw.githubusercontent.com/DenisSergeevitch/ex-ussr-kinship-research/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "hallmark",
+   "repo": "github.com/Nutlope/hallmark",
+   "stars": "48.5k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex CLI, Cursor and OpenCode",
+   "short": "A design skill from Together AI for building new web pages that look designed instead of generated.",
+   "what": "Hallmark deals three themes from a catalog of fifty, builds the page around what the visitor came to do, and lints the result in a real browser against the tells of machine made pages. A fresh reviewer has the last word. A hard floor covers contrast, focus, reduced motion, phone layouts and invented facts, so it never adds a made up number, quote or logo. It can also redesign or audit an existing page when you name it.",
+   "who": "Anyone who asks an agent to build landing pages or sites and is tired of the same look. It stays out of an existing design unless you call it by name.",
+   "needs": [
+    "Node 18 or later",
+    "`puppeteer-core` and Chrome, only for the browser checks and screenshots"
+   ],
+   "steps": [
+    {"title": "Install the skill", "text": "`-g` installs it for every project. Leave it off to install into the current one. Add `--agent claude-code` (or `codex`, `opencode`, `cursor`, `github-copilot`) for one harness only.", "code": "npx skills add nutlope/hallmark -g"},
+    {"title": "Optional: add the browser checks", "text": "Without this, the static checks still run.", "code": "npm i -g puppeteer-core"},
+    {"title": "Build a page", "text": "Type `/hallmark` and your prompt in Claude Code, Cursor or OpenCode, or `$hallmark` in Codex CLI. If it does not fire on its own, say use hallmark to build it."},
+    {"title": "Redesign or audit an existing page", "code": "/hallmark redesign ./src/app\n/hallmark audit ./index.html"}
+   ],
+   "try": {"label": "From the README", "where": "Your coding agent", "text": "Run `/hallmark audit ./index.html` on a page you already have. It only reports and changes nothing."},
+   "watch": [
+    "Before it builds, it asks once for your material: screenshots, photos, real numbers and quotes. Without them it uses stand ins and leaves facts out.",
+    "It can run your app or dev server to capture screenshots of your real product.",
+    "Photos come from Wikimedia Commons under their own licences, and Hallmark credits each one on the page.",
+    "The SKILL.md has an optional step that uses `TOGETHER_API_KEY` when it is set."
+   ],
+   "sources": [
+    "https://github.com/Nutlope/hallmark",
+    "https://raw.githubusercontent.com/Nutlope/hallmark/HEAD/README.md",
+    "https://raw.githubusercontent.com/Nutlope/hallmark/main/skills/hallmark/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "feature-demo-recording",
+   "repo": "github.com/kirodotdev/KiroCrew",
+   "stars": "4.8k",
+   "level": "Advanced",
+   "cost": "Free. Narration through Polly costs a little in your own AWS account; prices are not stated",
+   "works_with": "Kiro Crew",
+   "short": "Records a real browser and cuts it into a narrated demo film or a silent clip for a PR or QA pass.",
+   "what": "This skill ships inside Kiro Crew, a local workspace for long running agent work. It records a real browser with Playwright and cuts the capture into either a narrated film, with slides, subtitles and a camera that punches in on what is being discussed, or a silent evidence clip. Narration is generated and measured first, then the recording is paced to it, so voice and picture stay in sync. A final check fails the video on drift, silence or a black frame.",
+   "who": "Developers who make product demos or PR videos and can handle a pipeline of Python, Playwright, ffmpeg and Node. Its recorder and house style are built around Kiro Crew's own dashboard.",
+   "needs": [
+    "Kiro Crew built from source: Python 3.12+, Node.js 22.12+ and npm, plus `kiro-cli` signed in for the default backend",
+    "A Python with `kiro_crew` importable, and one with `playwright` installed",
+    "ffmpeg with libx264, and ffprobe",
+    "Node 18+ and `npx`",
+    "For narration: `piper` with a voice model, or the `aws` CLI for Polly"
+   ],
+   "steps": [
+    {"title": "Clone and build Kiro Crew", "text": "The skill's scripts need an interpreter that can import `kiro_crew`. The build's virtual environment is one.", "code": "git clone https://github.com/kirodotdev/KiroCrew.git\ncd KiroCrew\nmake build\nsource .venv/bin/activate"},
+    {"title": "Configure and start it", "code": "kirocrew setup\nkirocrew doctor\nkirocrew gateway"},
+    {"title": "Check the skill's dependencies", "text": "The skill lives in `src/kiro_crew/apps/builtins/dev_fleet/skills/feature-demo-recording`. Run from your video project folder, with `$PY` set to the Python that imports `kiro_crew`. `--install` installs what it can at user level.", "code": "$PY <skill>/references/deps.py\n$PY <skill>/references/deps.py --install"},
+    {"title": "Write and measure the narration", "text": "Copy `references/script.example.json`, write your lines, then measure them. Use `--silent` for an evidence clip with no audio.", "code": "$PY <skill>/references/narrate.py script.json --out-dir assets/audio"},
+    {"title": "Record, compose and render", "text": "Copy `references/record_template.py` and adapt only the beat blocks. Then transcode with ffmpeg, compose, and render with `npm run check` and `npm run render`.", "code": "$PY <skill>/references/compose.py --brand brand.json"},
+    {"title": "Verify before you share it", "text": "A non zero exit means do not deliver.", "code": "$PY <skill>/references/verify_align.py renders/<file>.mp4"}
+   ],
+   "try": {"label": "A first prompt", "where": "Kiro Crew", "text": "Record a silent evidence clip of the new settings page for my PR."},
+   "watch": [
+    "The capture stays on your machine. Narration with `piper` stays local, Polly runs in your own AWS account, and `--silent` sends nothing.",
+    "The renderer `hyperframes` comes from npm and the composition loads GSAP from a CDN, so the first render needs network.",
+    "The skill says never to let real user data into the frame. Record from an isolated setup or fresh demo data.",
+    "Kiro Crew sends one anonymous heartbeat a day by default. `kirocrew telemetry disable` turns it off."
+   ],
+   "sources": [
+    "https://github.com/kirodotdev/KiroCrew",
+    "https://raw.githubusercontent.com/kirodotdev/KiroCrew/HEAD/README.md",
+    "https://raw.githubusercontent.com/kirodotdev/KiroCrew/main/src/kiro_crew/apps/builtins/dev_fleet/skills/feature-demo-recording/SKILL.md"
+   ]
+  }
+ ]
+}
