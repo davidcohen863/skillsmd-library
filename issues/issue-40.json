@@ -1,0 +1,221 @@
+{
+ "issue": 40,
+ "date": "7 Nov 2026",
+ "checked": "7 Nov 2026",
+ "blurb": "Every repo and skill from the 7 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #40 had three repos and three AI skills, and this page covers all six. Two of the repos replace the ad-filled home screen on your TV, so they suit anyone with a TV and a computer on the same Wi-Fi. The skills are for people who work with a coding agent. If you own a Google TV, LG or Samsung set, start with Free My TV. If you clean up meeting recordings, try transcript-fixer.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "benjitaylor/skills",
+   "repo": "github.com/benjitaylor/skills",
+   "stars": "2.3k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Coding agents that install skills with `npx skills`, in a React project",
+   "short": "Benji Taylor's AI skills for design and motion. Its one skill, Stageshow, has your agent build faux product UI in React.",
+   "what": "A small collection of the skills Benji Taylor uses with coding agents for design and motion work. Right now it holds one: Stageshow. It helps your agent build faux product UI that looks like the real product, as stills, feature cards, cursor demos and bento grids, in React. It comes with guidance on composition and motion, a kit to copy from, examples, and tools that film the result so the agent can check its work.",
+   "who": "Developers and designers who need product illustrations or animated walkthroughs for a marketing page, feature card or docs hero. The kit is React, so skip it if you don't work in React.",
+   "needs": [
+    "Node and npm (the preview needs Node 20.19 or later)",
+    "React 18 or later in the project you copy the kit into",
+    "Chrome installed locally, or `CHROME_PATH` set, for the filming tools"
+   ],
+   "steps": [
+    {"title": "Add the skill", "code": "npx skills add benjitaylor/skills --skill stageshow"},
+    {"title": "Optional: preview the examples", "text": "From the `stageshow` folder. On macOS and Linux open http://stageshow.localhost:1355. On Windows, open the local URL Vite prints.", "code": "npm install\nnpm run dev"},
+    {"title": "Use the kit in your project", "text": "Copy `kit/` into your React project. Its components import their own CSS.", "code": "import { Stage, Window, type Act } from './kit'"},
+    {"title": "Check the result", "text": "The skill films the demo and checks it. `--gate` prints a verdict, and the skill does not hand over until it says `rehearsal passed`.", "code": "node scripts/film.mjs '<your URL>' --select '.your-demo' --gate"}
+   ],
+   "try": {"label": "From the SKILL.md", "where": "Your coding agent", "text": "Ask for a mocked product UI or an animated cursor walkthrough of your app, for example a hero illustration for a feature card. The skill starts from the closest gold example, such as `static-card` or `hero-demo`."},
+   "watch": [
+    "These are drawn illustrations. A scripted `a.click()` only draws the cursor pressing. They do not automate real application controls.",
+    "Some real-product studies in `examples/` import `lucide-react`. If you copy one into another project, install that icon package or swap the icons.",
+    "Each skill has its own licence and third-party asset notices. Stageshow's are in `NOTICE.md`."
+   ],
+   "sources": [
+    "https://github.com/benjitaylor/skills",
+    "https://raw.githubusercontent.com/benjitaylor/skills/HEAD/README.md",
+    "https://raw.githubusercontent.com/benjitaylor/skills/HEAD/stageshow/README.md",
+    "https://raw.githubusercontent.com/benjitaylor/skills/HEAD/stageshow/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Free My TV",
+   "repo": "github.com/simbasjungles/free-my-tv",
+   "stars": "6k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). The TMDB key for the trending picks is free.",
+   "works_with": "Google TV and Android TV (Android 8 or newer), LG webOS 3 or newer, Samsung Tizen TVs from 2015 on",
+   "short": "A fast home screen for your TV with no ads, your own apps up front, and one button to go back to the factory screen.",
+   "what": "Free My TV replaces your TV's home screen with one that has no sponsored rows or autoplaying promos. It shows the streaming apps you pick on a glass shelf, trending picks from apps you already have, the weather, and a screensaver. On Google TV it becomes the home screen. On LG and Samsung it installs as an app through the TV maker's own Developer Mode, and their home screen stays.",
+   "who": "Anyone tired of ads on a Google TV, Android TV, LG or Samsung set who is fine turning on developer mode and typing a few commands on a computer. If you never want to touch adb, skip it.",
+   "needs": [
+    "A computer on the same Wi-Fi as the TV",
+    "adb, for the ready APK on Google TV and Android TV",
+    "Python 3 for LG TVs, and a free LG developer account",
+    "A free TMDB key if you want the trending picks"
+   ],
+   "steps": [
+    {"title": "Turn on USB debugging on the TV", "text": "Settings → System → About → press Android TV OS build 7 times. Then Settings → System → Developer options → turn on USB debugging. Write down the TV's IP address."},
+    {"title": "Install the ready APK", "text": "Download `FreeMyTV.apk` from the latest release and install it with adb, not by opening the APK on the TV. Swap in your TV's IP.", "code": "adb connect 192.168.1.50:5555\nadb install -r FreeMyTV.apk"},
+    {"title": "Switch it on", "text": "On the TV, open Free My TV → Home Screen → Free My TV. When the TV asks Allow USB debugging? for Free My TV, tick Always allow and accept."},
+    {"title": "Add your TMDB key", "text": "In Home Settings → TMDB key, scan the QR code with your phone and paste the key, or type the short API Key with the remote."},
+    {"title": "On an LG TV instead", "text": "Install Developer Mode from the LG Content Store, turn on Dev Mode Status and Key Server, then build and install from your computer. The first install asks for the TV's passphrase.", "code": "git clone https://github.com/simbasjungles/free-my-tv && cd free-my-tv\npython3 webos/build.py\npython3 webos/install.py 192.168.1.50"},
+    {"title": "On a Samsung TV instead", "text": "Turn on Developer mode (Apps, then `1 2 3 4 5` on the remote) and set Host PC IP. Then open TizenBrew Installer on your computer, connect to the TV and install from GitHub with `simbasjungles/free-my-tv`."},
+    {"title": "To undo it", "text": "On the TV: Free My TV → Home Screen → Original. The factory home screen, screensaver and every app come back."}
+   ],
+   "try": {"label": "From the README", "where": "An AI coding agent on your computer", "text": "With USB debugging on, ask your agent: \"Install Free My TV (github.com/simbasjungles/free-my-tv) on my TV at 192.168.1.50. I live in Lisbon.\" Swap in your TV's IP and city. It builds the app and asks before anything important."},
+   "watch": [
+    "On Google TV it turns off the stock home screen, the screensaver and some maker apps (without uninstalling them). Picture, sound, inputs, remote pairing and the Play Store are on a protected list.",
+    "On Android 14, Google Play Protect may hold the install with Risky app blocked. The README says to choose More details → Install anyway.",
+    "It uses an accessibility service for some remote buttons and, only while the Now Playing widget is on, a notification listener. It says it never reads a notification.",
+    "No accounts or analytics. It talks to TMDB and Open-Meteo, the release APK checks GitHub for updates once a week, and other services only when you set them up.",
+    "The phone page for sending your TMDB key is plain HTTP on your Wi-Fi. On a network you don't trust, type the key instead.",
+    "LG Developer Mode lasts about 40 days unless you press EXTEND or run `webos/renew.py`."
+   ],
+   "sources": [
+    "https://github.com/simbasjungles/free-my-tv",
+    "https://raw.githubusercontent.com/simbasjungles/free-my-tv/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Aerial",
+   "repo": "github.com/pengchujin/aerial-tv",
+   "stars": "10.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Android TV 5.0 and later (Aerial Lite for 4.0 to 4.4), aimed at Xiaomi, TCL, Skyworth, Sony and other China-market TVs, boxes and projectors",
+   "short": "A clean, ad-free home screen modelled on Apple TV for China-market Android TVs, with aerial screensavers and a full undo.",
+   "what": "Aerial is an Android TV home screen with no ads and no recommendation feed: just your apps, a wallpaper and aerial-film screensavers. You can sort apps into folders, hide them, and rearrange them from your phone by scanning a QR code. On TVs that only accept their own home screen, it uses an accessibility service to switch back to Aerial whenever the stock home screen appears.",
+   "who": "Owners of China-market TVs from Xiaomi, TCL, Skyworth, Sony, Hisense and others who are tired of the stock launcher's ads. The README has a supported-TVs table, so check your model there first. Some models can't be taken over yet.",
+   "needs": [
+    "adb on a computer on the same network as the TV",
+    "ADB debugging turned on in the TV's settings (the README lists the steps per brand)",
+    "The TV's IP address"
+   ],
+   "steps": [
+    {"title": "Turn on ADB debugging", "text": "On other Android TVs: Settings → Device Preferences → About → press Build 7 times, then turn on USB debugging in Developer options. Xiaomi, TCL, Haier and OPPO have their own steps in the README."},
+    {"title": "Install with one command (macOS or Linux)", "text": "`KEEP_ADB=1` turns ADB back on after Xiaomi switches it off in standby, so you can update later.", "code": "curl -fsSL https://aerial.qust.me/install.sh | KEEP_ADB=1 TV=192.168.1.20 bash"},
+    {"title": "Or install by hand", "text": "Download `aerial-standard.apk` first. Run the last line about 5 seconds after Aerial shows: it makes Aerial smoother and takes some tens of seconds.", "code": "adb connect 192.168.1.20:5555\nadb install -r aerial-standard.apk\nadb shell pm grant app.orchard.tv android.permission.WRITE_SECURE_SETTINGS\nadb shell cmd notification allow_listener app.orchard.tv/app.orchard.tv.guard.RevivalListener\nadb shell appops set app.orchard.tv SYSTEM_ALERT_WINDOW allow\nadb shell am start -n app.orchard.tv/.MainActivity\nadb shell cmd package compile -m speed -f app.orchard.tv"},
+    {"title": "If the TV refuses home-screen apps", "text": "Add `-s guard` to the end of the one command, or use `aerial-guard.apk`."},
+    {"title": "To undo it", "text": "Add `--uninstall` to remove Aerial as well.", "code": "curl -fsSL https://aerial.qust.me/install.sh | TV=192.168.1.20 bash -s restore"}
+   ],
+   "try": {"label": "From the README", "where": "Your TV", "text": "After installing, press Home. If Android asks which app to use, choose Aerial, then Always. If the old launcher comes back, open Aerial from the app list and follow Make Aerial Your Home Screen."},
+   "watch": [
+    "The one-line install and undo pipe a script from aerial.qust.me straight into bash. Read the script before you run it.",
+    "The manual install grants `WRITE_SECURE_SETTINGS`, a notification listener and the overlay permission. On China-market TVs it also uses an accessibility service to keep itself as the home screen. The README says it only looks at which window is in front and reads no notifications.",
+    "`KEEP_ADB=1` keeps ADB debugging switched on.",
+    "The aerial films play from Apple's servers, the photo of the day comes from Bing, and the weather from Open-Meteo.",
+    "A boot ad comes from the TV's firmware and stays. Some models in the supported list only work with limits or can't be taken over."
+   ],
+   "sources": [
+    "https://github.com/pengchujin/aerial-tv",
+    "https://raw.githubusercontent.com/pengchujin/aerial-tv/HEAD/README.md",
+    "https://raw.githubusercontent.com/pengchujin/aerial-tv/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "ai-decision-authority",
+   "repo": "github.com/alirezarezvani/claude-skills",
+   "stars": "29.3k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Gemini CLI, Cursor and other agents the repo supports",
+   "short": "Decides which marketing tasks an AI agent can run alone, which need a human to approve, and which a human should own.",
+   "what": "Before you let an agent act on a marketing or go-to-market task without review, this skill asks three questions: can it be corrected if wrong, who sees it, and how often does it happen. Then it puts the task in one of three zones: AI-primary, collaborative or human-primary. Each zone has a rule, and it always names what breaks if the task is put in the wrong zone. It works for one decision or a list of thirty workflows.",
+   "who": "Marketing leads and ops people writing an AI review policy or deciding what an agent may send on its own. If you don't run AI on marketing work, skip it.",
+   "needs": [
+    "A coding agent that loads skills"
+   ],
+   "steps": [
+    {"title": "In Claude Code: add the marketplace", "code": "/plugin marketplace add alirezarezvani/claude-skills"},
+    {"title": "Install the marketing bundle", "text": "Most skills in this repo ship inside a domain bundle. This one lives in the marketing folder.", "code": "/plugin install marketing-skills@claude-code-skills"},
+    {"title": "Other agents", "text": "Codex, Cursor, Gemini CLI, Copilot and others can use the open-source `skills` installer.", "code": "npx skills add alirezarezvani/claude-skills"}
+   ],
+   "try": {"label": "From the SKILL.md", "where": "Your coding agent", "text": "Ask whether your agent can draft the weekly newsletter and schedule it. The skill's own example splits that into free drafting and a human-gated send, and reports reversibility, exposure, frequency, the zone and the rule."},
+   "watch": [
+    "The framework comes from one enterprise deployment across 16 product launches. The skill says it was observational, not a controlled study, and its 70% figure may not transfer to you.",
+    "It gives advice and changes no permissions on its own."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/alirezarezvani/claude-skills/marketing-skill-skills-ai-decision-authority",
+    "https://raw.githubusercontent.com/alirezarezvani/claude-skills/main/marketing-skill/skills/ai-decision-authority/SKILL.md",
+    "https://raw.githubusercontent.com/alirezarezvani/claude-skills/HEAD/README.md",
+    "https://raw.githubusercontent.com/alirezarezvani/claude-skills/HEAD/.claude-plugin/marketplace.json"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "higgsfield-generate",
+   "repo": "github.com/higgsfield-ai/skills",
+   "stars": "1.9k",
+   "level": "Beginner",
+   "cost": "The skills are free (MIT). Higgsfield's own prices are not stated in the README.",
+   "works_with": "Claude Code, Cursor, Codex and other agents that load Markdown skills",
+   "short": "Lets your AI agent make images, videos, 3D models and audio through Higgsfield AI, including branded ads.",
+   "what": "This skill wraps the `higgsfield` command line tool so your agent can submit jobs to Higgsfield's models. It picks a default model for each job, such as GPT Image 2.6 for images and Seedance 2.5 for video. It also runs Marketing Studio for branded ad videos with avatars and products, and Virality Predictor, which scores a finished video's hook and attention.",
+   "who": "Marketers and creators who already use or want to use Higgsfield for ads and visual content. If you don't want a Higgsfield account, skip it.",
+   "needs": [
+    "A Higgsfield account",
+    "The Higgsfield CLI, which the install sets up",
+    "GitHub CLI v2.90 or newer, only for the `gh skill install` route"
+   ],
+   "steps": [
+    {"title": "Install the skills", "text": "The README's recommended route. Each install method also handles the Higgsfield CLI install and sign-in.", "code": "npx skills add higgsfield-ai/skills"},
+    {"title": "Or, inside Claude Code", "code": "/plugin marketplace add higgsfield-ai/skills\n/plugin install higgsfield@higgsfield"},
+    {"title": "Or use the setup script", "code": "git clone --depth 1 https://github.com/higgsfield-ai/skills.git\ncd skills\n./setup"},
+    {"title": "Sign in", "text": "If `higgsfield account status` says you are not signed in, run this yourself.", "code": "higgsfield auth login"}
+   ],
+   "try": {"label": "From the SKILL.md", "where": "Your coding agent", "text": "Say \"generate an image\" or \"make a video\" with your prompt. The agent replies with the media link from the CLI."},
+   "watch": [
+    "If the CLI is missing, the skill tells your agent to install it by piping a script from GitHub straight into `sh`: `curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh`. Read the script first.",
+    "Your agent gets to run shell commands for this skill, and local files you pass are uploaded to Higgsfield.",
+    "Jobs run on Higgsfield's service. The skill tells the agent not to pre-estimate cost and to prefer the quality default unless you ask for cheaper."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/higgsfield-ai/skills/higgsfield-generate",
+    "https://raw.githubusercontent.com/higgsfield-ai/skills/main/higgsfield-generate/SKILL.md",
+    "https://raw.githubusercontent.com/higgsfield-ai/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "transcript-fixer",
+   "repo": "github.com/daymade/claude-code-skills",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). An API key is only needed for the optional route without an agent.",
+   "works_with": "Claude Code (the README's install route). The skill also covers Codex.",
+   "short": "Fixes speech-to-text mistakes like misheard words and wrong names in meeting notes, lectures and interviews.",
+   "what": "transcript-fixer cleans up transcripts in two passes. First, a dictionary pass applies corrections you already know. Then your agent reads the whole transcript and fixes one-off errors, checks uncertain names and terms, and saves fixes that keep coming back. It handles Chinese and English homophones and technical terms, and it leaves anything it can't resolve unchanged and queued for review.",
+   "who": "People who record meetings, lectures or interviews and get messy speech-to-text output, especially mixed Chinese and English. If your transcripts are already clean and you only want minutes, the repo points to its meeting-minutes-taker skill instead.",
+   "needs": [
+    "Python 3.10 or newer",
+    "uv",
+    "Claude Code to install the plugin"
+   ],
+   "steps": [
+    {"title": "Add the marketplace", "code": "claude plugin marketplace add https://github.com/daymade/claude-code-skills"},
+    {"title": "Install the audio suite", "text": "transcript-fixer only ships in this suite, with speech-to-text, meeting minutes and text-to-speech skills.", "code": "claude plugin install daymade-audio@daymade-skills"},
+    {"title": "Set it up once", "text": "From the skill folder.", "code": "uv run scripts/fix_transcription.py --init"},
+    {"title": "Run the dictionary pass", "text": "This alone is not the full job. Then load transcript-fixer so your agent does the whole-transcript pass.", "code": "uv run scripts/fix_transcription.py --input meeting.md --stage 1"}
+   ],
+   "try": {"label": "From the SKILL.md", "where": "Your coding agent", "text": "Point it at a transcript file and say \"fix this transcript\". It runs the dictionary pass, then reads the whole thing and corrects what it can back up."},
+   "watch": [
+    "It never rewrites speech for fluency and, by default, never guesses who is speaking. Unresolved wording stays as it was and goes to a review queue.",
+    "Before it corrects a person's name it reads your people roster. If that is missing or conflicts, it leaves the name alone.",
+    "It keeps its corrections in a SQLite database. The README's `--add` command teaches it new ones.",
+    "The optional route without an agent uses the GLM API and needs an API key."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/daymade/claude-code-skills/daymade-audio-transcript-fixer",
+    "https://raw.githubusercontent.com/daymade/claude-code-skills/main/daymade-audio/transcript-fixer/SKILL.md",
+    "https://raw.githubusercontent.com/daymade/claude-code-skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
