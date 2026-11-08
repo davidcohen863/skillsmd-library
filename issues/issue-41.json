@@ -1,0 +1,506 @@
+{
+ "issue": 41,
+ "date": "8 Nov 2026",
+ "checked": "8 Nov 2026",
+ "blurb": "Every repo and skill from the 8 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #41 had five repos and four AI skills, and this page covers all nine. The skills are for people who work with a coding agent: wigolo adds free local web search, and openstatus-mcp lets the agent run your status page. Two repos rebuild Switch games you own as native apps, one is a fridge-controller honeypot for security people, and waymark is for Python developers on Postgres. If you use a coding agent, start with wigolo.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Awesome Short Drama Skills",
+   "repo": "github.com/UnderleveledBuilder/awesome-short-drama-skills",
+   "stars": "2.0k",
+   "level": "Beginner",
+   "cost": "Free list (CC0 1.0). Each listed skill has its own licence",
+   "works_with": "Agents that load standard SKILL.md skills, including Claude Code, Codex, OpenClaw, Qwen Code, Kimi Code, Trae, Qoder, Doubao desktop and WorkBuddy",
+   "short": "A hand-checked list of 83 AI skills for making short vertical dramas, from novel adaptation and scripts to storyboards and video prompts.",
+   "what": "A curated list of AI skills for short dramas and AI manju (serialized comic-style dramas). It covers adapting novels, episode outlines, hooks and paywall points, script review, storyboards, character assets, and prompts for video models such as Seedance, MiniMax and Kling. The maintainer also ran three rounds of blind tests on the script, premise and series-outline skills and published the rankings. The list ships as a skill itself, short-drama-skill-finder, which helps your agent choose.",
+   "who": "Writers and small studios making AI short dramas, especially for Hongguo or Douyin. Most of the listed projects come from China's short-drama scene and many are documented in Chinese, though the list has an English README. If you don't make video drama, skip it.",
+   "needs": [
+    "A coding agent or desktop agent that supports skills",
+    "Node and npm for `npx skills add`",
+    "Access to a video model such as Seedance, MiniMax or Kling if you want to render the prompts"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill finder",
+     "text": "The list is also a skill. This installs short-drama-skill-finder.",
+     "code": "npx skills add UnderleveledBuilder/awesome-short-drama-skills"
+    },
+    {
+     "title": "Pick a skill from the list",
+     "text": "Start from the test results at the top (scripts, premises, series outline), the Suggested stacks, or the All-in-one group if you want to go from a novel all the way to video prompts."
+    },
+    {
+     "title": "Install the one you chose",
+     "text": "Standard skills install by owner and repo. Each group in the README ends with ready-made commands. For example:",
+     "code": "npx skills add zenstory-ai/drama-skills"
+    },
+    {
+     "title": "Using a Chinese agent",
+     "text": "OpenClaw takes `-a openclaw`. Kimi Code, Qwen Code, CodeBuddy, Trae, Qoder, Lingma and MiniMax Code take `-a` with their own names. For QwenWork put the folder in `~/.qwenworkcn/skills/`, for WorkBuddy in `~/.workbuddy/skills/`, and in Doubao desktop upload it from the Skills page.",
+     "code": "npx skills add owner/repo -a openclaw"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "After installing the finder, ask: \"I use Codex to adapt novels into short dramas. Which skill should I install?\""
+   },
+   "watch": [
+    "\"Checked by hand\" means the README, folders and classification were reviewed. It does not mean the output was tested, apart from the skills in the published test rounds.",
+    "The default install commands use the skills CLI and were not verified one by one. Follow each repo's own README where they differ.",
+    "Skills can ship scripts, so read a skill's SKILL.md before installing it. The maintainer turned down one repo that copied a popular skill and then pushed an installer download. A normal skill never needs an .exe or .dmg.",
+    "The test rounds used only one model, so rankings may differ on yours."
+   ],
+   "sources": [
+    "https://github.com/UnderleveledBuilder/awesome-short-drama-skills",
+    "https://raw.githubusercontent.com/UnderleveledBuilder/awesome-short-drama-skills/HEAD/README.md",
+    "https://raw.githubusercontent.com/UnderleveledBuilder/awesome-short-drama-skills/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "coldframe",
+   "repo": "github.com/hedgerow-dev/coldframe",
+   "stars": "44",
+   "level": "Advanced",
+   "cost": "Free (MIT). Hosting it costs whatever your server costs",
+   "works_with": "Python 3 standard library; podman or Docker for deployment",
+   "short": "A honeypot that poses as a supermarket fridge controller and logs who connects, the passwords they try and the exploits they use.",
+   "what": "coldframe pretends to be an internet-facing refrigeration supervisor, either a Danfoss AK-SM 800A or a Copeland/Dixell XWEB EVO. It copies what scanners see on real units, lets weak logins succeed onto a fake dashboard, and tags requests that match public exploits by CVE. Every request goes to a JSON log, and nothing the attacker does is real. It is one Python file with no dependencies outside the standard library.",
+   "who": "Security researchers and defenders who want to watch attacks on refrigeration controllers. You need to be comfortable running and locking down a public server. It does not protect real controllers.",
+   "needs": [
+    "Python 3",
+    "For a public decoy: a server (the README suggests an Ubuntu 24.04 droplet) and rootful podman or Docker",
+    "A provider firewall where you can limit SSH to your own address"
+   ],
+   "steps": [
+    {
+     "title": "Try it locally",
+     "text": "Open http://localhost:8080. Every request shows up as a JSON line on stdout and in `events.jsonl`.",
+     "code": "PERSONA=danfoss HTTP_PORT=8080 python3 -I honeypot.py"
+    },
+    {
+     "title": "Run the tests",
+     "text": "They start the honeypot on loopback and attack it.",
+     "code": "python3 -I test_honeypot.py"
+    },
+    {
+     "title": "Quickest deploy",
+     "text": "Create an Ubuntu 24.04 server and paste `cloud-init.yaml` into the User data box. Change `PERSONA=danfoss` to `dixell` for the XWEB persona. About two minutes after boot it listens on port 80 (and 443 for Danfoss). Then allow only the decoy's ports from anywhere and SSH from your own address."
+    },
+    {
+     "title": "Or build the container yourself",
+     "text": "Each build makes a fresh self-signed certificate. Podman needs a UID range for `--userns=auto`, once per host.",
+     "code": "podman build -t coldframe .\necho \"containers:2147483647:2147483648\" | sudo tee -a /etc/subuid /etc/subgid"
+    },
+    {
+     "title": "Run it",
+     "text": "Use rootful podman or Docker. Rootless port forwarding makes every attacker look like the same internal IP. For Modbus, add `-e MODBUS_PORT=5020 -p 502:5020`.",
+     "code": "sudo podman run -d --name coldframe --restart=always \\\n  --read-only --cap-drop=ALL --security-opt no-new-privileges --userns=auto \\\n  --memory 128m --pids-limit 512 --log-opt max-size=10m \\\n  -p 80:8080 -p 443:8443 \\\n  -v coldframe-logs:/logs:U \\\n  -e PERSONA=danfoss \\\n  coldframe"
+    },
+    {
+     "title": "Read the log",
+     "code": "python3 -I summary.py --hours 24 --ignore <your-own-ip> < events.jsonl"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Start the Danfoss persona locally, open http://localhost:8080, log in with the weak login `Supervisor` / `12345`, press a defrost button, and watch the `login_attempt` and `control` events appear in `events.jsonl`."
+   },
+   "watch": [
+    "You are putting a server on the internet to attract attackers. Expose only the ports the persona would really have, block outbound traffic except DNS and package updates, and keep SSH open only to your own address.",
+    "Log fields come from attackers. Treat them as untrusted when you view or process them.",
+    "The code is public, so anyone can fingerprint its exact responses. The README suggests changing the persona strings, page layout and certificate subject for your deployment.",
+    "Some scanners flag industrial devices on cloud IPs as likely honeypots.",
+    "The vendor favicon and Danfoss start page are not included. Point `FAVICON_FILE` or `INDEX_FILE` at copies only if you have the right to use them, and only on private deployments."
+   ],
+   "sources": [
+    "https://github.com/hedgerow-dev/coldframe",
+    "https://raw.githubusercontent.com/hedgerow-dev/coldframe/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "waymark",
+   "repo": "github.com/piercefreeman/waymark",
+   "stars": "130",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Python, Postgres",
+   "short": "Durable background jobs for Python on top of Postgres. Workflows are compiled once and survive restarts and crashes.",
+   "what": "waymark lets you write background workflows as ordinary async Python that keep going through server restarts, task crashes and long jobs. It needs only Postgres. Workflows are compiled to bytecode for a durable virtual machine in a Rust runtime, so your code is never replayed and doesn't have to be deterministic. It has per-call retries and timeouts, parallel fan-out, durable sleep, cron schedules and a built-in webapp.",
+   "who": "Python developers already on Postgres who want durable jobs without running a separate broker. The author says not to use it in production yet. Skip it if you need under 100 ms task handling or more than about 10k actions coordinated at once.",
+   "needs": [
+    "Python and a package manager (the README uses uv)",
+    "A Postgres database",
+    "Node.js and npm, plus Rust, only if you build from source"
+   ],
+   "steps": [
+    {
+     "title": "Install",
+     "text": "One Python package holds the client and server binaries.",
+     "code": "uv add waymark"
+    },
+    {
+     "title": "Write actions and a workflow",
+     "text": "Actions are plain async functions marked `@action`. The workflow is a class marked `@workflow` with an async `run()` method that calls them. The README's example fetches users and sends welcome emails in parallel."
+    },
+    {
+     "title": "Run the node against your database",
+     "text": "The webapp is then on http://localhost:24119.",
+     "code": "export WAYMARK_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/waymark\nexport WAYMARK_HTTP_ENABLED=true  # the webapp, on http://localhost:24119\nuv run waymark-executor"
+    },
+    {
+     "title": "Start a workflow",
+     "text": "From any Python process. The run is queued to Postgres and executed by the node, not inline in your web server.",
+     "code": "await WelcomeEmailWorkflow().run(user_ids)"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your Python project",
+    "text": "Follow the Quickstart at waymark.sh/python/quickstart, then give one action a retry policy with `self.run_action(..., retry=RetryPolicy(attempts=5, backoff_seconds=10), timeout=timedelta(minutes=2))`."
+   },
+   "watch": [
+    "The README says not to use it in production yet. The spec changes quickly and there is no backwards compatibility before 1.0.0.",
+    "Workflow code must use supported patterns. Some patterns still slip past the compiler; they are listed under known issues in the docs.",
+    "It runs on Postgres alone, so very high job volumes will eventually tax your database."
+   ],
+   "sources": [
+    "https://github.com/piercefreeman/waymark",
+    "https://raw.githubusercontent.com/piercefreeman/waymark/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "nxnative",
+   "repo": "github.com/seedds/nxnative",
+   "stars": "13.5k",
+   "level": "Advanced",
+   "cost": "Free (MIT). You need your own games",
+   "works_with": "iPhone 15 Pro or newer and M1 or later iPads on iOS / iPadOS 26, and Macs. Built on a Mac with Xcode 27.2",
+   "short": "Turns your own Switch game files into an iPhone, iPad or Mac app that runs the game's code natively, with graphics rebuilt on Metal.",
+   "what": "One script takes your game's NSP files and your `prod.keys` and builds an IPA. No emulator is involved: the game's own code runs directly on the Apple chip, and Switch graphics are redrawn with Metal. Some Switch 2 games play on the Mac too. Nothing from any game is in the repo.",
+   "who": "People with a recent Mac, their own Switch game dumps and the patience for a long first build. Only games on the tested list are supported; for others the script guesses settings and the app may not start. Community Mac apps (NX2Apple, NX Play, NxNative Launcher, LumaNX) wrap it if you'd rather avoid the command line.",
+   "needs": [
+    "A Mac with macOS 26.6 or later, Xcode 27.2, Homebrew and an arm64 Python 3.12 or newer",
+    "Xcode's iOS platform for an iPhone build",
+    "Your game files (`.nsp`, `.xci`, `.nsz` or `.xcz`) and your `prod.keys`",
+    "Free disk space of about twice the game's size plus 10 GB",
+    "A sideloading tool such as AltStore, Sideloadly or LiveContainer"
+   ],
+   "steps": [
+    {
+     "title": "Select Xcode 27.2",
+     "text": "The shaders are built with its Metal compiler.",
+     "code": "sudo xcode-select -s /Applications/Xcode.app"
+    },
+    {
+     "title": "Install the tools (once)",
+     "code": "xcodebuild -downloadComponent MetalToolchain\ngit clone https://github.com/seedds/nxnative.git && cd nxnative\nbrew install xcodegen zstd glslang\nbrew install --cask dotnet-sdk\npython3 -m pip install lz4 \"capstone>=5,<6\" fonttools nsz zbic \"backports.zstd; python_version < '3.14'\""
+    },
+    {
+     "title": "Put your game in a folder",
+     "text": "The game, plus its update and DLC if you have them."
+    },
+    {
+     "title": "Build",
+     "text": "The IPA appears in the game's folder. The first build takes 30 to 60 minutes. Add `--platform mac-app` to get a Mac app instead.",
+     "code": "python3 scripts/build_ipa_from_nsp.py ~/Games/MarioWonder -k ~/keys/prod.keys"
+    },
+    {
+     "title": "Install on your phone",
+     "text": "Sideload the IPA. If your tool offers Increased Memory Limit, turn it on. If the game is too big, build again with `--romfs separate`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your Mac",
+    "text": "Build one of the tested games from the Games list as a Mac app with `--platform mac-app` first, then try the iPhone build."
+   },
+   "watch": [
+    "Use only games you own. The README requires your own game files and `prod.keys` and does not say how to get them.",
+    "You install the result by sideloading, outside the App Store.",
+    "Textures need an iPhone 15 Pro or newer, or an M1 or later iPad. Older iPhones can't read the format.",
+    "Switch 2 games are tested on the Mac only."
+   ],
+   "sources": [
+    "https://github.com/seedds/nxnative",
+    "https://raw.githubusercontent.com/seedds/nxnative/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "TotK Recomp",
+   "repo": "github.com/valentderah/totk-pc-recomp",
+   "stars": "5.8k",
+   "level": "Intermediate",
+   "cost": "Free (MIT for the project's code). You need your own copy of the game",
+   "works_with": "Windows 10 or later and Linux (including Steam Deck), x86-64 with a Vulkan 1.3 GPU",
+   "short": "Rebuilds Tears of the Kingdom from your own game files as a native Windows or Linux app, with Vulkan, high frame rates and mod support.",
+   "what": "TotK Recomp is a static recompilation of The Legend of Zelda: Tears of the Kingdom into native x86-64 code, so no emulator is involved. A setup program builds the game from your own files on your machine. It supports updates 1.1.0, 1.2.1 and 1.4.3, up to 144 fps (experimental), custom resolutions, FSR 1, DLSS on RTX cards, HDR10, ultrawide, gamepad remapping, and mods and cheats made for emulators.",
+   "who": "Owners of the game who have dumped it from their own console and want to play on a PC or Steam Deck. It is in early development, so expect visual bugs and crashes. No game files are included and the project won't tell you how to get them.",
+   "needs": [
+    "Your own dump of Tears of the Kingdom: the base game and the 1.1.0, 1.2.1 or 1.4.3 update",
+    "An x86-64 CPU with SSE4.2",
+    "A GPU with Vulkan 1.3 and `VK_EXT_external_memory_host`",
+    "About 36 GiB free during setup (20 GiB after)",
+    "On Linux: kernel 6.7 or later and glibc 2.34 or later"
+   ],
+   "steps": [
+    {
+     "title": "Windows: download the setup",
+     "text": "Download `TotK-Setup-<version>-windows.zip` from Releases and unpack it. Start `TotK-Setup.exe`."
+    },
+    {
+     "title": "Linux: download the setup",
+     "text": "Download `TotK-Setup-x86_64.AppImage` from Releases. On a Steam Deck, do this in Desktop Mode.",
+     "code": "chmod +x TotK-Setup-x86_64.AppImage"
+    },
+    {
+     "title": "Build the game",
+     "text": "Pick your game files, the language and an install folder, and press Start. The setup builds the game once."
+    },
+    {
+     "title": "Play",
+     "text": "Run `totk.exe` (Windows) or `totk` (Linux) from the install folder. F1 opens settings and F10 the performance overlay. To update, run a newer setup on the same folder; saves and settings are kept."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your PC",
+    "text": "Open the in-game settings with F1, turn on DLSS or FSR, and try a higher frame rate. Mods made for emulators go in the `mods` folder next to `totk.exe`."
+   },
+   "watch": [
+    "The built game contains the game itself. The README says it is for your own use and not to share it.",
+    "The Windows setup is unsigned, so SmartScreen will warn you.",
+    "With an NVIDIA RTX GPU the setup downloads `nvngx_dlss.dll` from NVIDIA's DLSS SDK repository unless you untick Download NVIDIA DLSS.",
+    "Discord Rich Presence is off by default.",
+    "Early development: the game is playable, but visual bugs and crashes are expected."
+   ],
+   "sources": [
+    "https://github.com/valentderah/totk-pc-recomp",
+    "https://raw.githubusercontent.com/valentderah/totk-pc-recomp/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "omh-sales-pipeline-review",
+   "repo": "github.com/rlaope/oh-my-hermes",
+   "stars": "5.1k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, opencode, OpenClaw and pi, or Hermes Agent with oh-my-hermes",
+   "short": "Give it a CRM export and it writes a pipeline health, forecast and follow-up review that cites the records behind each finding.",
+   "what": "A workflow skill from oh-my-hermes for sales pipeline reviews. You supply a CRM export or pipeline snapshot, and it checks the as-of time, currency, stage and amount definitions, duplicates and owners before any figure. Then it reviews deal health, stale and slipped deals, forecast scenarios and calibration against past forecasts, and hands off follow-ups with owners and due dates. It proposes CRM corrections but never makes them.",
+   "who": "Sales leaders and business owners who run a recurring pipeline or forecast review from exports. It is for the whole portfolio. For one account's discovery or outreach the skill points you to a different OMH skill.",
+   "needs": [
+    "A coding agent that supports skills",
+    "git, to clone the repo",
+    "A pipeline snapshot with its as-of time, plus your currency, amount, stage and forecast definitions",
+    "For calibration: prior forecasts, actuals and the quota or target"
+   ],
+   "steps": [
+    {
+     "title": "Clone the repo",
+     "code": "git clone https://github.com/rlaope/oh-my-hermes.git \"$HOME/oh-my-hermes\""
+    },
+    {
+     "title": "Run your agent's installer from your project",
+     "text": "Replace `.cursor` with `.claude`, `.codex`, `.opencode`, `.openclaw` or `.pi`. Add `--user` to install for every project instead.",
+     "code": "cd /path/to/your/project\nsh \"$HOME/oh-my-hermes/.cursor/install.sh\""
+    },
+    {
+     "title": "On Windows",
+     "code": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$HOME/oh-my-hermes/.cursor/install.ps1\""
+    },
+    {
+     "title": "Ask for a review",
+     "text": "Phrases like \"sales pipeline review\", \"pipeline health\" or \"deal review\" trigger it. Attach the export and say when it was taken."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "\"Here is this week's pipeline export as of Monday 09:00; review deal health, slipped close dates, and whether the commit forecast holds up against last quarter's calls.\""
+   },
+   "watch": [
+    "The installer adds OMH's whole workflow catalog, not only this skill. A reinstall replaces any `SKILL.md` you edited.",
+    "If the as-of time, stage definitions, currency basis or owners are missing, it stops with `HOLD` and asks rather than computing on partial data.",
+    "With only one snapshot, stage movement and slipped close dates come back as unavailable.",
+    "It does not change CRM records or send alerts. Corrections stay proposals, and raw export rows are not kept in its saved outputs unless you approve it."
+   ],
+   "sources": [
+    "https://github.com/rlaope/oh-my-hermes/tree/main/agent-skills/omh-sales-pipeline-review",
+    "https://raw.githubusercontent.com/rlaope/oh-my-hermes/main/agent-skills/omh-sales-pipeline-review/SKILL.md",
+    "https://raw.githubusercontent.com/rlaope/oh-my-hermes/HEAD/README.md",
+    "https://raw.githubusercontent.com/rlaope/oh-my-hermes/main/docs/INSTALLATION.md",
+    "https://raw.githubusercontent.com/rlaope/oh-my-hermes/main/docs/AGENT-SKILLS.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "webperf-core-web-vitals",
+   "repo": "github.com/nucliweb/webperf-snippets",
+   "stars": "1.5k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cursor, OpenCode, Gemini CLI, VS Code extensions and other Agent Skills agents, with Chrome DevTools MCP",
+   "short": "Measures a page's LCP, CLS and INP with tested scripts and walks your agent through debugging whichever one is slow.",
+   "what": "One of the WebPerf Snippets skills. Your agent runs seven fixed, CI-tested JavaScript snippets in your browser through Chrome DevTools MCP and reads the structured result each returns. It has workflows for a full Core Web Vitals audit, an LCP deep dive, CLS and INP debugging, and video as LCP. Decision trees pick the next snippet from the last result.",
+   "who": "Front-end developers chasing a slow LCP, layout shifts or sluggish interactions. You need Chrome DevTools MCP, or the CLI as a fallback. If you only want a score, the CLI alone is simpler.",
+   "needs": [
+    "A coding agent that supports skills",
+    "Chrome DevTools MCP 1.11.0 or later, to run scripts by path",
+    "Without it: the webperf-snippets CLI with Playwright and Chromium"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs all the WebPerf skills into `~/.claude/skills/`.",
+     "code": "npx skills add nucliweb/webperf-snippets"
+    },
+    {
+     "title": "Or install from a clone",
+     "code": "git clone https://github.com/nucliweb/webperf-snippets.git\ncd webperf-snippets\nnpm run install-skills   # into .claude/skills/ of the current project\nnpm run install-global   # into ~/.claude/skills/, for every project"
+    },
+    {
+     "title": "Let Chrome DevTools MCP read the scripts",
+     "text": "For skills outside your project, add `--workspace` with the real folder of the skills, not a symlink. Without it the skills still work after one failed call per session.",
+     "code": "\"args\": [\"-y\", \"chrome-devtools-mcp@latest\", \"--workspace=/absolute/path/to/skills\"]"
+    },
+    {
+     "title": "Without Chrome DevTools MCP",
+     "text": "Run the same snippets with the CLI.",
+     "code": "npm install --save-dev webperf-snippets playwright\nnpx playwright install chromium\nnpx webperf-snippets <url> --snippet <Name> --json"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Audit this page for Core Web Vitals\" or \"Debug slow LCP\""
+   },
+   "watch": [
+    "With Chrome DevTools MCP your agent drives your Chrome, including pages you are logged in to.",
+    "This copy of the skill is the Antigravity build, and its settings name a Gemini model. `npx skills add` installs from the same repo.",
+    "Several follow-up scripts in the CLS and INP workflows live in the webperf-interaction skill and are marked pending here."
+   ],
+   "sources": [
+    "https://github.com/nucliweb/webperf-snippets/tree/main/dist/antigravity/webperf-core-web-vitals",
+    "https://raw.githubusercontent.com/nucliweb/webperf-snippets/main/dist/antigravity/webperf-core-web-vitals/SKILL.md",
+    "https://raw.githubusercontent.com/nucliweb/webperf-snippets/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "openstatus-mcp",
+   "repo": "github.com/openstatusHQ/openstatus",
+   "stars": "9.2k",
+   "level": "Beginner",
+   "cost": "Self-hosting is open source (AGPL-3.0). The managed service has flat pricing; amounts not stated in the README",
+   "works_with": "Any MCP client, including Claude Code, Claude Desktop, ChatGPT, Cursor, Codex, opencode and VS Code",
+   "short": "Lets your agent read your openstatus monitors and post or resolve incidents, status updates and maintenance windows.",
+   "what": "A skill that teaches your agent to use the openstatus MCP server, a remote endpoint with 23 tools. Your agent can check monitor health and latency, read response logs, notification channels and audit logs, and open, update and resolve status reports or schedule maintenance on your status pages. It can also search the openstatus docs and pricing pages.",
+   "who": "Teams that already use openstatus for uptime monitoring and status pages and want to run incidents from their agent. If you don't use openstatus, this skill does nothing for you.",
+   "needs": [
+    "An openstatus workspace (managed or self-hosted)",
+    "An MCP client",
+    "For headless use: an openstatus API key from Settings > General"
+   ],
+   "steps": [
+    {
+     "title": "Connect with OAuth",
+     "text": "Point your client at the endpoint. It opens a consent screen where you choose the workspace and read-only or read & write access.",
+     "code": "claude mcp add --transport http --scope user openstatus https://api.openstatus.dev/mcp"
+    },
+    {
+     "title": "Or add it to another client's config",
+     "code": "{\n  \"mcpServers\": {\n    \"openstatus\": {\n      \"type\": \"http\",\n      \"url\": \"https://api.openstatus.dev/mcp\"\n    }\n  }\n}"
+    },
+    {
+     "title": "For CI or headless agents",
+     "text": "Send an API key in the `x-openstatus-key` header in the same config. A key's scope is fixed when you create it."
+    },
+    {
+     "title": "Ask your agent",
+     "text": "Ask about a monitor's health, or to post an incident. Before any publishing call it should show you a draft and ask whether to notify subscribers."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to check a monitor's health, then to post an update on an open incident and resolve it."
+   },
+   "watch": [
+    "Read & write access lets your agent publish incidents and maintenance windows. Choose read-only on the consent screen if you only want to look.",
+    "Notifications go out inside the same call. An update posted with `notify: false` can never be re-sent later.",
+    "Every MCP change is written to the workspace audit log with the key or OAuth grant and the person behind it.",
+    "Connected apps can be revoked under Settings > Integrations > Connected apps.",
+    "Two audit-log tools need the `audit-log` plan feature."
+   ],
+   "sources": [
+    "https://github.com/openstatusHQ/openstatus/tree/main/apps/web/public/.well-known/agent-skills/openstatus-mcp",
+    "https://raw.githubusercontent.com/openstatusHQ/openstatus/main/apps/web/public/.well-known/agent-skills/openstatus-mcp/SKILL.md",
+    "https://raw.githubusercontent.com/openstatusHQ/openstatus/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "wigolo",
+   "repo": "github.com/KnockOutEZ/wigolo",
+   "stars": "5.5k",
+   "level": "Beginner",
+   "cost": "Free (AGPL-3.0) for the core tools. Companies are asked to buy a commercial licence or sponsor",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI, OpenCode, VS Code, Windsurf, Zed, Antigravity and any MCP client",
+   "short": "A local web search, fetch and crawl server for coding agents, with ten tools, no API keys and a local cache of everything it reads.",
+   "what": "wigolo is an MCP server that gives your agent ten web tools: search, fetch, crawl, cache, extract, find similar, research, agent-driven gathering, page diffs and change watching. Ranking, embeddings and the browser engine run on your machine, and results are kept in a local cache under `~/.wigolo/`. It has no built-in LLM. Your agent writes the final answer from the evidence it returns, or you can give it an LLM key for research answers.",
+   "who": "Anyone who wants web search and page reading in their coding agent without a paid search API. It needs about 1.5 GB of disk. It is in public beta.",
+   "needs": [
+    "Node 20 or later (the README recommends an LTS, Node 22 or 24)",
+    "About 1.5 GB of free disk on macOS, Linux or Windows",
+    "Optional: an LLM key (Gemini, Anthropic, OpenAI or Groq) or a local Ollama for written research answers"
+   ],
+   "steps": [
+    {
+     "title": "Set it up and wire your agents",
+     "text": "Downloads the browser engine and on-device models, runs a health check, and writes the MCP config for the agents you name.",
+     "code": "npx wigolo init --agents=claude-code,cursor"
+    },
+    {
+     "title": "Or add it by hand",
+     "text": "In Claude Code. Other clients register `npx wigolo` in their MCP config.",
+     "code": "claude mcp add wigolo -- npx wigolo"
+    },
+    {
+     "title": "Check it's healthy",
+     "code": "npx wigolo doctor"
+    },
+    {
+     "title": "Optional: written answers for research",
+     "text": "`research`, `agent` and `search format=answer` hand back a raw brief without an LLM. Set a provider to get a finished answer, or use `WIGOLO_LLM_PROVIDER=ollama` to stay local.",
+     "code": "export WIGOLO_LLM_PROVIDER=gemini\nexport GEMINI_API_KEY=<free-key>"
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Ask it to fetch only the Parameters section of https://react.dev/reference/react/useState, or to search react.dev for \"react server components patterns\" in docs."
+   },
+   "watch": [
+    "With `use_auth: true`, `fetch` and `crawl` reuse your browser session, so they can read pages behind your logins.",
+    "With an LLM provider key set, `research`, `agent` and `search format=answer` use that provider to write their answers.",
+    "`watch` can deliver changes to a webhook you give it.",
+    "To remove everything, run `npx wigolo config --uninstall --yes`.",
+    "Public beta. Some challenge-protected sites block datacenter IPs."
+   ],
+   "sources": [
+    "https://github.com/KnockOutEZ/wigolo",
+    "https://raw.githubusercontent.com/KnockOutEZ/wigolo/main/SKILL.md",
+    "https://raw.githubusercontent.com/KnockOutEZ/wigolo/HEAD/README.md"
+   ]
+  }
+ ]
+}
