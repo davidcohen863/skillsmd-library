@@ -1,0 +1,566 @@
+{
+ "issue": 42,
+ "date": "9 Nov 2026",
+ "checked": "9 Nov 2026",
+ "blurb": "Every repo and skill from the 9 November issue, with what each does and the setup steps from its own README.",
+ "intro": "Issue #42 had six repos and four AI skills, and this page covers all ten. Most of it is for developers: a React design system from Meta, a Rust UI framework, a GPU Kubernetes manager and skills for coding agents. Video makers should try rea-video first. If you already use a coding agent, deslop is the quickest win.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "rea-video",
+   "repo": "github.com/JuneYaooo/rea-video",
+   "stars": "5.0k",
+   "level": "Intermediate",
+   "cost": "Free in tools-only mode. If you add a video model such as Gemini or Doubao, you pay what that service charges",
+   "works_with": "Claude Code, Codex or any agent that can run commands",
+   "short": "Breaks a video down shot by shot, says whether each shot was filmed, AI-generated or coded, and gives you a plan to remake it.",
+   "what": "rea-video splits a video into shots and splits its audio into voice, music and effects. It measures things like frame cadence, sensor noise and AIGC tags in the metadata, then decides how each shot was made. You get a one-line summary, a remake plan split into what to film, generate and code, and a full report.html with frames, prompts, camera and lighting notes and an audio breakdown.",
+   "who": "Creators and marketers who want to learn how an ad or short video was made and remake it with their own material. You need to be fine letting an agent install a CLI. If you just want a quick lookalike video, the README itself points you to other tools.",
+   "needs": [
+    "A coding agent that can run commands",
+    "ffmpeg",
+    "Python 3.10 or later",
+    "Optional: the endpoint and key for a video-capable model such as Gemini or Doubao"
+   ],
+   "steps": [
+    {
+     "title": "Let your agent install it",
+     "text": "Paste this into your agent, with the path to your own video. The agent installs the CLI, learns the workflow and runs it.",
+     "code": "Install https://github.com/JuneYaooo/rea-video, then break down this video: /path/to/video.mp4"
+    },
+    {
+     "title": "Or install by hand",
+     "text": "The install script installs the CLI with pip (or pipx, or a local .venv if pip is blocked) and links the skill into your agent folders.",
+     "code": "brew install ffmpeg            # or: sudo apt install ffmpeg\ngit clone https://github.com/JuneYaooo/rea-video && cd rea-video\nbash scripts/install_skill.sh  # installs the CLI (pip, or pipx / a local .venv if pip is blocked) and links the skill into ~/.claude, ~/.codex, ~/.agents\nrea-video --help"
+    },
+    {
+     "title": "Add a video model if you want",
+     "text": "Give the agent the endpoint and key of a video-capable model. It makes the live, AI and 3D calls more accurate and adds a reverse-engineered prompt for every shot. It works without one, and an agent that can see images checks the uncertain shots itself."
+    },
+    {
+     "title": "Read the report",
+     "text": "Open `report.html` for frames, evidence and prompts per shot. Reports come out in the language you ask in, Chinese or English."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Install https://github.com/JuneYaooo/rea-video, then break down this video: /path/to/video.mp4\""
+   },
+   "watch": [
+    "The install script links the skill into `~/.claude`, `~/.codex` and `~/.agents`.",
+    "If you add a video model, your video goes to that service and you pay its prices.",
+    "Videos downloaded from platforms are recompressed, which hides some evidence. The README says you need a vision model or the agent's own visual check for those.",
+    "The project says it is for learning a video's structure. Don't reuse other people's footage, music, characters or likeness, and follow platform rules on labelling AI content.",
+    "The docs beyond the README are in Chinese for now."
+   ],
+   "sources": [
+    "https://github.com/JuneYaooo/rea-video"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Astryx",
+   "repo": "github.com/meta/astryx",
+   "stars": "18.0k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "React 19 or later, with Next.js, Vite, Tailwind or plain CSS; any coding agent through its CLI",
+   "short": "Meta's open source React design system: 150+ accessible components, themes, dark mode and a CLI your coding agent can read.",
+   "what": "Astryx grew inside Meta over eight years and now ships as an open source design system. You get 150+ accessible components, brand theming, dark mode, page templates and a CLI. You import pre-built CSS and typed React components, with no build plugin. The CLI gives you and your agent the same component docs.",
+   "who": "React developers who want a full component library and are happy on React 19. It suits teams that let an agent write UI, because the CLI tells the agent which components exist. Skip it if you are not on React.",
+   "needs": [
+    "A React 19 or later project",
+    "npm, pnpm or yarn"
+   ],
+   "steps": [
+    {
+     "title": "Install Astryx and a theme",
+     "code": "npm install @astryxdesign/core @astryxdesign/theme-neutral @stylexjs/stylex\nnpm install -D @astryxdesign/cli"
+    },
+    {
+     "title": "Tell your agent about it",
+     "text": "`init` writes the Astryx component index into your `AGENTS.md` or `CLAUDE.md`, so your agent finds components and design tokens.",
+     "code": "npx @astryxdesign/cli init"
+    },
+    {
+     "title": "Import the CSS",
+     "text": "For Next.js, put these three lines in `src/app/globals.css`. The order matters.",
+     "code": "@import '@astryxdesign/core/reset.css';\n@import '@astryxdesign/core/astryx.css';\n@import '@astryxdesign/theme-neutral/theme.css';"
+    },
+    {
+     "title": "Wrap your app in the theme",
+     "text": "Wrap your app in `<Theme theme={neutralTheme}>` from `@astryxdesign/core/theme`. The core package README has the full Next.js, Tailwind, Vite and CDN versions."
+    },
+    {
+     "title": "Look up components",
+     "code": "npx @astryxdesign/cli component --list"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `npx @astryxdesign/cli component Button` for the full docs on one component, or `astryx template dashboard` to get the source for a full dashboard page."
+   },
+   "watch": [
+    "Astryx is in beta.",
+    "Always use the scoped name `@astryxdesign/cli`. Until it is a dependency, the plain `astryx` name points to an unrelated npm package.",
+    "`init` edits your `AGENTS.md` or `CLAUDE.md`.",
+    "The chart packages are only on the `@canary` tag, with no stable release yet."
+   ],
+   "sources": [
+    "https://github.com/meta/astryx",
+    "https://github.com/meta/astryx/blob/main/packages/core/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "NVIDIA Kubernetes Engine (NVKE)",
+   "repo": "github.com/dsx-ai-factory/nvke",
+   "stars": "977",
+   "level": "Advanced",
+   "cost": "Free (Apache 2.0). A real install needs your own NVIDIA GPU machines",
+   "works_with": "Linux, with Docker, kind, kubectl, Helm and Tilt for the local trial; NVIDIA Infra Controller (NICo) for a real install",
+   "short": "A management plane for running your own managed Kubernetes service on NVIDIA GPU machines, with a local trial that needs no GPU.",
+   "what": "NVKE is what a platform team installs to create and run Kubernetes clusters for its customers. Each workload cluster gets its own control plane, etcd and node pools, and customers use it through `kubectl`. It creates, scales and upgrades clusters, and nodes prove who they are with their TPM before they join. A local quickstart runs it on simulated machines.",
+   "who": "Platform and infrastructure teams who run GPU hardware and want to offer Kubernetes clusters to others. You need solid Kubernetes skills. Anyone looking for a way to run one cluster on a laptop should skip it.",
+   "needs": [
+    "For the local trial: a Linux host or VM (amd64 or arm64) with at least 6 CPUs, 12 GiB of free memory and 100 GiB of free disk",
+    "Docker Engine with BuildKit, usable without `sudo`",
+    "git, GNU Make, Go 1.27.3 or later, a C compiler, kind v0.32.0, kubectl, Helm 4, tilt, jq, curl, nc, dpkg-deb and dpkg-scanpackages",
+    "The `tpm_vtpm_proxy` kernel module and `sudo` to load it",
+    "For a real install: your own machines, networking, node images, registries and access to NICo"
+   ],
+   "steps": [
+    {
+     "title": "Clone it",
+     "text": "Run every later command from the `nvke` folder.",
+     "code": "git clone https://github.com/dsx-ai-factory/nvke.git"
+    },
+    {
+     "title": "Prepare the machine",
+     "text": "Raise `fs.inotify.max_user_instances` to 1024 if it is lower, then load the virtual TPM module and build `nvkectl`.",
+     "code": "make -C controller host-up\nmake -C cli build\nexport PATH=\"$PWD/cli/bin:$PATH\""
+    },
+    {
+     "title": "Copy CAPNICo and write the Tilt config",
+     "text": "The quickstart has you download the pinned CAPNICo version with Go, copy it next to `nvke`, write `controller/tilt_config.json` and fill the five empty values in `controller/.env.tilt`. Follow its exact commands."
+    },
+    {
+     "title": "Create the management cluster",
+     "code": "make -C controller capd-up"
+    },
+    {
+     "title": "Start Tilt and leave it running",
+     "text": "Open its web UI and wait until every resource is green.",
+     "code": "cd controller && tilt up"
+    },
+    {
+     "title": "Point nvkectl at it",
+     "text": "In a second terminal, write the management kubeconfig to `local-mgmt.kubeconfig` as the quickstart shows, then:",
+     "code": "nvkectl config set-site --name local --url http://localhost:8080 --kubeconfig \"$PWD/local-mgmt.kubeconfig\""
+    },
+    {
+     "title": "Create a workload cluster",
+     "text": "Run `nvkectl get clusters` until the status is `Provisioned`.",
+     "code": "nvkectl create cluster -f cli/examples/nico-mock-cluster.yaml"
+    },
+    {
+     "title": "Use the cluster",
+     "code": "nvkectl get kubeconfig my-cluster --output-file my-cluster.kubeconfig\nkubectl --kubeconfig my-cluster.kubeconfig get nodes"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Follow the local quickstart through workload-cluster creation and check that `kubectl --kubeconfig my-cluster.kubeconfig get nodes` shows both nodes as `Ready`."
+   },
+   "watch": [
+    "NVKE is a preview. APIs and behaviour can change, and the project does not recommend it for production.",
+    "After a real install, API authentication is off and the API uses plain HTTP until you configure it.",
+    "There is no upgrade or backup and restore procedure for the management plane, and FDE node images give no data-at-rest protection.",
+    "The local trial uses `sudo` to load a kernel module and raise a system limit. Its example passwords are for local use only.",
+    "The kubeconfig files it writes are admin credentials. Keep them private.",
+    "On macOS, the README sends you to a separate guide that runs the trial in a Colima VM."
+   ],
+   "sources": [
+    "https://github.com/dsx-ai-factory/nvke",
+    "https://github.com/dsx-ai-factory/nvke/blob/main/docs/get-started/quickstart-local.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Rune",
+   "repo": "github.com/anomalyco/rune",
+   "stars": "5.6k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Rust apps on macOS, Windows, Linux and the web",
+   "short": "A GPU-rendered Rust UI framework for desktop and web that your coding agent can test headlessly by rendering PNGs.",
+   "what": "Rune is a native Rust UI framework with its own renderer, text, layout and spring animations. It runs on macOS, Windows, Linux and the web. Every app can also run headless, so an agent can render screens to PNG, dump the element tree and drive the app with scripted input.",
+   "who": "Rust developers building desktop or web apps, especially with a coding agent doing the work. It is pre-release, so skip it if you need a stable API.",
+   "needs": [
+    "A Rust project",
+    "A coding agent if you want to follow the README's workflow"
+   ],
+   "steps": [
+    {
+     "title": "Add it to Cargo.toml",
+     "text": "Replace `<dev rev>` with a commit from the `dev` branch. Pin a rev, because Rune is pre-release. The `dev` branch is never rewritten.",
+     "code": "rune = { git = \"https://github.com/anomalyco/rune\", rev = \"<dev rev>\" }"
+    },
+    {
+     "title": "Hand it to your agent",
+     "text": "Point your agent at `examples/hello` and `crates/rune/README.md`, and have it check its own work by rendering PNGs and inspecting the element tree."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Build me a <thing> with Rune (github.com/anomalyco/rune). Start from examples/hello and check your work headlessly.\""
+   },
+   "watch": [
+    "Rune is pre-release.",
+    "The project takes no pull requests. You report bugs and ideas as GitHub issues.",
+    "The README does not list system requirements."
+   ],
+   "sources": [
+    "https://github.com/anomalyco/rune",
+    "https://github.com/anomalyco/rune/blob/HEAD/crates/rune/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Awesome REA",
+   "repo": "github.com/reacher-z/Awesome-REA",
+   "stars": "2.2k",
+   "level": "Beginner",
+   "cost": "Free list (MIT). Each listed tool has its own licence",
+   "works_with": "Any browser; JSON, CSV and Hugging Face exports for scripts and agents",
+   "short": "A reviewed list of 5,000+ tools, case studies and papers for reverse engineering websites, games, apps, binaries, firmware and protocols.",
+   "what": "Awesome REA collects tools, case studies and research for reverse engineering across six areas: websites, games, apps, native binaries, firmware and hardware, and protocols. It also has sections on agents and MCP servers and a paper list. Each entry gives a one-line description and a link to a full entry with prerequisites and limits. It comes in English and Chinese.",
+   "who": "Security researchers, game preservationists and developers who need to understand software they did not write. Beginners can use the Find by task table to get started. If you don't do reverse engineering, skip it.",
+   "needs": [
+    "A browser"
+   ],
+   "steps": [
+    {
+     "title": "Search the website",
+     "text": "Go to awesomerea.org and search, or browse resources, cases and papers."
+    },
+    {
+     "title": "Start from your task",
+     "text": "The Find by task table in the README sends you to the right section, such as Native binaries for recovering symbols or Protocols for device traffic."
+    },
+    {
+     "title": "Read the full entry first",
+     "text": "Each line links to a Full entry with its prerequisites, limitations and review sources."
+    },
+    {
+     "title": "Use the data in your own tools",
+     "text": "There is an llms.txt site map for language models, a catalog.json, JSON and CSV exports, a JSON feed for new entries and a Hugging Face dataset."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your browser",
+    "text": "Open the Find by task table and pick \"Analyze compiled code or recover symbols\" to jump to Native binaries and Agents and MCP."
+   },
+   "watch": [
+    "The Full Repository Index of 3,309 repos comes from README scans and is unreviewed.",
+    "Many entries are malware-analysis tools and sandboxes. Read each tool's own README before you run anything from the list.",
+    "The list does not cover whether reverse engineering a given product is allowed. Check the product's terms and your local law yourself."
+   ],
+   "sources": [
+    "https://github.com/reacher-z/Awesome-REA"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Lichii",
+   "repo": "github.com/zortos293/Lichii",
+   "stars": "7.1k",
+   "level": "Intermediate",
+   "cost": "Free",
+   "works_with": "Windows builds on the releases page; the build guide covers other desktop platforms",
+   "short": "An experimental open source Nintendo Switch and Switch 2 emulator for PC, forked from Eden and yuzu.",
+   "what": "Lichii is an experimental Nintendo Switch and Switch 2 emulator written in C++. It is a fork that builds on Eglantine, Eden, yuzu and Sudachi and adds its own game compatibility and renderer fixes. A website lists games and community compatibility reports.",
+   "who": "PC gamers who own Switch games and want to try them on a computer, and who don't mind crashes. It is not affiliated with Nintendo. If you want something that just works, wait.",
+   "needs": [
+    "Games, keys and firmware you have legally obtained. None are included",
+    "A Windows PC for the release builds"
+   ],
+   "steps": [
+    {
+     "title": "Download from the releases page only",
+     "text": "Get it from github.com/zortos293/Lichii/releases. The project has no other download site."
+    },
+    {
+     "title": "Extract and run",
+     "text": "On Windows, extract the entire archive and run `lichii.exe`."
+    },
+    {
+     "title": "Back up your saves",
+     "text": "Lichii keeps the old Eden and Eglantine data folders and settings. It does not move or delete saves, but back them up before testing experimental builds."
+    },
+    {
+     "title": "Check a game before you start",
+     "text": "Look up your game in the community compatibility reports at lichii.zortos.me/reports."
+    },
+    {
+     "title": "Build it yourself",
+     "text": "The build guide is `docs/Build.md`. The GUI build target is still called `yuzu`, and its output is `lichii.exe` on Windows and `lichii` elsewhere."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Lichii",
+    "text": "In a build that includes PR #303, play and stop a Switch 2 game, then right-click it and choose Submit compatibility report."
+   },
+   "watch": [
+    "Archives offered elsewhere, such as lichii.org, are not from this project, and one has been reported to install malware.",
+    "It is very experimental. Rendering errors, stutters and crashes are possible, and there is no frame-rate guarantee.",
+    "Compatibility reports are only sent after you check a preview and agree. The reporter does not read or upload logs or files.",
+    "When you report an issue, don't upload game files, keys, firmware or account details, and check logs for personal information.",
+    "The README asks for crypto donations. They are voluntary and buy nothing."
+   ],
+   "sources": [
+    "https://github.com/zortos293/Lichii"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "headless",
+   "repo": "github.com/kunchenguid/headless",
+   "stars": "103",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Agents that load Agent Skills, installed with `npx skills`",
+   "short": "Walks your agent through setting up a headless Mac, Linux or Windows machine over SSH, without the agent ever seeing your admin password.",
+   "what": "An AI skill that takes a machine with an admin account and remote login on, and sets it up to run unattended over SSH. It turns on key-only SSH, automatic sign-in after a restart and never-sleep settings, and can join Tailscale. It goes one step at a time, shows each result, then restarts the machine and checks it comes back. Macs use Determinate Nix and nix-darwin, Linux uses NixOS or a script for Debian, Ubuntu and Fedora, and Windows uses PowerShell over OpenSSH.",
+   "who": "People with a Mac mini in a closet, a Linux box under the desk or a spare Windows PC they want to reach only over SSH. You should be comfortable with SSH keys and a password manager.",
+   "needs": [
+    "Your computer: macOS or Linux with bash, ssh and tar (and Nix only to install NixOS)",
+    "The machine: an Apple silicon Mac on current macOS, an x86_64 or aarch64 Linux machine with systemd, or Windows 11 or Windows Server 2025",
+    "An admin account with a password on that machine, and remote login on",
+    "A secret store for that password, such as Automic Vault, 1Password or Bitwarden",
+    "An SSH key on your computer",
+    "Node and npm for `npx skills add`"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "text": "The README recommends a global install.",
+     "code": "npx skills add kunchenguid/headless -g"
+    },
+    {
+     "title": "Prepare the machine",
+     "text": "At the machine itself, make sure it has an admin account with a password and that Remote Login (SSH) is on. Note its address. On Windows you paste a few lines into an admin PowerShell to turn on OpenSSH Server."
+    },
+    {
+     "title": "Save the password yourself",
+     "text": "Put the admin password in your secret store. The agent only ever gets the entry name, and the scripts read and pipe the password themselves."
+    },
+    {
+     "title": "Start it in your agent",
+     "code": "/headless set up my Mac mini at 192.168.1.20 as a headless machine"
+    },
+    {
+     "title": "Follow along",
+     "text": "Each step says what it does, runs, and shows its result. Every step is safe to run again. The last one reads every setting back, restarts the machine and checks it comes back."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"update my headless Linux server and check it comes back after a restart\""
+   },
+   "watch": [
+    "Automatic sign-in on a Mac needs FileVault off, and the skill turns it off. The Mac's disk is then no longer protected by FileVault.",
+    "On Linux, choosing to install NixOS erases the whole disk.",
+    "On Windows, the password for automatic sign-in is kept as an LSA secret on the machine.",
+    "The private env file option is plain text. Any program running as you could read it, so use a real secret store if you can.",
+    "Your agent runs admin commands on the machine over SSH."
+   ],
+   "sources": [
+    "https://github.com/kunchenguid/headless",
+    "https://github.com/kunchenguid/headless/blob/main/skills/headless/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "vibe-trading",
+   "repo": "github.com/HKUDS/Vibe-Trading",
+   "stars": "37.7k",
+   "level": "Intermediate",
+   "cost": "Free (MIT). Optional data providers and the multi-agent swarm need their own API keys",
+   "works_with": "Agents that take MCP servers (the README names Claude Desktop, OpenClaw and Cursor), plus its own CLI and web app",
+   "short": "A finance research kit for your agent: backtests, factor analysis, options pricing and a trade journal analyser, mostly with no API key.",
+   "what": "Vibe-Trading turns finance questions into research reports, backtests and paper portfolios. It has 12 backtest engines, 478 pre-built alphas, options pricing and 28 market-data sources. Its Shadow Account feature reads your broker's trade export, finds the rules behind your winning trades and backtests them. It runs as an MCP server, a terminal app or a web app.",
+   "who": "Retail traders and quant hobbyists who want to test ideas on US, Hong Kong, China A-share and crypto data. HK, US, Canada and crypto data works without a key. If you only want stock tips, this is not for you.",
+   "needs": [
+    "Python 3.11 or later",
+    "Optional: `TUSHARE_TOKEN` for premium China A-share data",
+    "Optional: an OpenAI-compatible API key and model name for the multi-agent swarm",
+    "Optional: Docker for the web app"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "code": "pip install vibe-trading-ai"
+    },
+    {
+     "title": "Run the setup wizard",
+     "text": "It asks you to choose a model provider.",
+     "code": "vibe-trading init"
+    },
+    {
+     "title": "Open the terminal app",
+     "text": "Type `/help` at the prompt to see the commands.",
+     "code": "vibe-trading"
+    },
+    {
+     "title": "Or add it to your agent",
+     "text": "Add this to your agent's MCP config.",
+     "code": "{\n  \"mcpServers\": {\n    \"vibe-trading\": {\n      \"command\": \"vibe-trading-mcp\"\n    }\n  }\n}"
+    },
+    {
+     "title": "Or run the web app",
+     "text": "Set your provider and API key in `agent/.env` first. It serves on http://localhost:8899.",
+     "code": "git clone https://github.com/HKUDS/Vibe-Trading.git\ncd Vibe-Trading\ncp agent/.env.example agent/.env\ndocker compose up --build"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "vibe-trading run -p \"Backtest a BTC-USDT 20/50 moving-average crossover for 2024. Compare it with buy-and-hold and report maximum drawdown.\""
+   },
+   "watch": [
+    "The project says it is not investment advice, and past performance does not guarantee future results.",
+    "It can place live trades through a broker you authorise, within limits you set and with a kill switch. The project says this is experimental and not verified against a real broker account.",
+    "The multi-agent swarm spawns LLM workers on your API key, so it costs whatever your provider charges.",
+    "IBKR tools need a local TWS or IB Gateway session.",
+    "Shadow Account reads your broker's trade export, so treat that file as private."
+   ],
+   "sources": [
+    "https://github.com/HKUDS/Vibe-Trading",
+    "https://github.com/HKUDS/Vibe-Trading/blob/main/agent/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "squadra",
+   "repo": "github.com/dagoSte/squadra",
+   "stars": "1.3k",
+   "level": "Advanced",
+   "cost": "Free (MIT), no account",
+   "works_with": "Claude Code, Codex and Cursor. A Claude window has to be the coordinator",
+   "short": "Turns several coding agent windows into one team with tasks, proofs, a reviewer who didn't write the code and a local dashboard.",
+   "what": "Squadra lets several agent windows work on one project as a team. One window coordinates, others build, and a window that did not write the code reviews it. Tasks, decisions, test runs and reviews go into one shared registry on your computer, and a proof stops counting if the code changes after it. A local dashboard shows who is doing what and when it needs your input.",
+   "who": "Developers already running several Claude Code, Codex or Cursor sessions on one project who want a record of who did what. It is a lot of process, so skip it for single-window work.",
+   "needs": [
+    "Python 3.12 or later",
+    "Git",
+    "A browser for the dashboard",
+    "Node.js, only for `selftest`",
+    "macOS or another POSIX system (the tested setup)",
+    "At least one Claude window to coordinate"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "text": "Then run `/reload-plugins`.",
+     "code": "/plugin marketplace add dagoSte/squadra\n/plugin install squadra@squadra"
+    },
+    {
+     "title": "Install for Codex",
+     "code": "codex plugin marketplace add dagoSte/squadra\ncodex plugin add squadra@squadra"
+    },
+    {
+     "title": "Or use the standalone installer",
+     "text": "This adds the `squadra` command and keeps a backup so you can undo it. Use either the plugin or this, not both.",
+     "code": "git clone https://github.com/dagoSte/squadra.git\ncd squadra\npython3 -B scripts/install.py \\\n  --backup \"$HOME/.local/state/squadra/install-backup-001\"\nexport PATH=\"$HOME/.local/bin:$PATH\"\nsquadra --version"
+    },
+    {
+     "title": "Start the coordinator",
+     "text": "In a Claude window, say: \"Use squadra for this project. Use the registry at `/path/to/registry`. Find the other windows and introduce yourself; describe the work in plain words.\""
+    },
+    {
+     "title": "Open the other windows",
+     "text": "Point them at the same registry. Each window confirms its assignment before it starts."
+    },
+    {
+     "title": "Open the dashboard",
+     "code": "squadra dash --root /path/to/registry --open"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A Claude window",
+    "text": "\"Use the squadra skill for this project. Shared registry: ~/.local/state/squadra/atlas. Read the project mandate first. Find the other Codex, Claude and Cursor windows working on it, introduce yourself to each one and wait for their confirmations. Then write a plain-words brief of the project and show me the progress table.\""
+   },
+   "watch": [
+    "The README also offers a one-sentence install where your agent follows `SETUP.md`. It shows the plan first, so read each command before you say yes.",
+    "Squadra is for trusted local windows only. It cannot prove identities against someone who shares your account.",
+    "The registry is local and is not a backup.",
+    "Before any paid call, the skill states the expected cost and a cap.",
+    "Network access only happens through plugins, MCP services and clients you set up. Squadra does not upload its registry to its author."
+   ],
+   "sources": [
+    "https://github.com/dagoSte/squadra",
+    "https://github.com/dagoSte/squadra/blob/main/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "deslop",
+   "repo": "github.com/michael-denyer/pstack-claude",
+   "stars": "4.0k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Pi, GitHub Copilot, Muse, OMP, Kimi Code CLI, Grok Build, MiniMax Code, OpenCode 2, Antigravity and other harnesses",
+   "short": "Checks your branch for AI-generated code slop, such as pointless comments and needless try/catch blocks, and removes it.",
+   "what": "deslop is one AI skill in pstack, a port of Lauren Tan's Cursor skill stack. It compares your branch with its base, including uncommitted changes, and removes slop: extra comments, abnormal defensive checks, casts to `any`, deep nesting and anything out of step with the codebase. It keeps behaviour the same, reruns your checks and reverts any edit whose check fails.",
+   "who": "Anyone whose coding agent writes code they then have to tidy up. It installs as part of the whole pstack plugin, so you get the other pstack skills too.",
+   "needs": [
+    "A supported agent harness. Claude Code needs version 2.1.292 or later",
+    "A Git branch with changes to clean"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "code": "/plugin marketplace add michael-denyer/pstack-claude\n/plugin install pstack@pstack-claude"
+    },
+    {
+     "title": "Or in Codex",
+     "text": "In Codex, type `$` and the skill name, then pick its entry.",
+     "code": "codex plugin marketplace add michael-denyer/pstack-claude\ncodex plugin add pstack@pstack-claude"
+    },
+    {
+     "title": "Or in other harnesses",
+     "text": "Gemini CLI, Prime Agent and skills-only Codex installs read skills from `~/.agents/skills/`. This links them there.",
+     "code": "git clone https://github.com/michael-denyer/pstack-claude\ncd pstack-claude\nmkdir -p ~/.agents/skills\nfor s in plugins/pstack/skills/*/; do\n  target=~/.agents/skills/\"$(basename \"$s\")\"\n  test -e \"$target\" || test -L \"$target\" || ln -s \"$(pwd)/$s\" \"$target\"\ndone"
+    },
+    {
+     "title": "Run it on your branch",
+     "text": "Ask your agent to use deslop. It checks the diff against the base branch and ends with a one to three sentence summary of what it changed and the checks it reran."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Use deslop on this branch before I open the pull request.\""
+   },
+   "watch": [
+    "deslop comes with the whole pstack plugin, which adds a SessionStart hook that routes tasks to `poteto-mode`. Run `setup-pstack` to turn the routing off.",
+    "deslop edits code in your branch. Review its changes before you commit.",
+    "pstack has no server or telemetry, but anything its skills ask your agent to read goes to your model provider.",
+    "Claude Code leaves auto-update off for this marketplace, so you stay on the version you installed until you update."
+   ],
+   "sources": [
+    "https://github.com/michael-denyer/pstack-claude",
+    "https://github.com/michael-denyer/pstack-claude/blob/main/plugins/pstack/skills/deslop/SKILL.md"
+   ]
+  }
+ ]
+}
