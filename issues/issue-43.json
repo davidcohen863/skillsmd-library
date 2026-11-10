@@ -1,0 +1,396 @@
+{
+ "issue": 43,
+ "date": "10 Nov 2026",
+ "checked": "10 Nov 2026",
+ "blurb": "Every repo and skill from the 10 November issue that I could source, with what each does and the setup steps from its own files.",
+ "intro": "Issue #43 had five repos and four AI skills. This page covers seven of them. Writers and editors should try STE80 Humanizer first. If you want to learn a topic properly, Jane Street's Socratic tutor is the other easy one.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Jane Street agent skills",
+   "repo": "github.com/janestreet/agent_skills",
+   "stars": "2.8k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Any coding agent that reads the SKILL.md format, or a plain chatbot",
+   "short": "Jane Street's skill collection. Its one skill, socratic-tutor, turns your AI into a strict tutor that teaches by asking questions.",
+   "what": "A small collection of AI skills from Jane Street. Right now it holds one: socratic-tutor. It breaks a topic into subskills, runs a short diagnostic, then asks you one question at a time and tracks each subskill on a 0 to 5 map. It adds spaced review and ends with a final test.",
+   "who": "Anyone who wants to really learn a topic and can take strict feedback. The skill itself says it is not for quick \"explain X\" questions, so skip it if you just want answers.",
+   "needs": [
+    "A coding agent that supports the SKILL.md format, or any chatbot you can paste text into"
+   ],
+   "steps": [
+    {
+     "title": "Get the skill folder",
+     "text": "Download or clone the repo. The skill is the `socratic-tutor` folder with its `SKILL.md` file."
+    },
+    {
+     "title": "Add it to your agent",
+     "text": "Copy the skill folder into your agent's skills folder, then ask the agent to use it."
+    },
+    {
+     "title": "Or use a plain chatbot",
+     "text": "Paste the body of `SKILL.md` into the chat, or into a custom or system prompt, then say what you want to learn."
+    },
+    {
+     "title": "Steer the session",
+     "text": "Say \"show progress\" for the skill map, \"harder\" or \"easier\" to change the level, and \"just tell me\" to get a straight answer to one question. \"save state\" gives you a block you can paste into a new session with \"resume from:\"."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent or chatbot",
+    "text": "\"teach me X\", with your own topic in place of X."
+   },
+   "watch": [
+    "The skill asks one question at a time and will not hand you answers until you have tried two or three times. It also avoids praise, by design.",
+    "Levels only go up after you pass two or more separate checks, so a course can take a while."
+   ],
+   "sources": [
+    "https://github.com/janestreet/agent_skills",
+    "https://raw.githubusercontent.com/janestreet/agent_skills/HEAD/socratic-tutor/SKILL.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "STE80 Humanizer",
+   "repo": "github.com/Dodaios/ste80-humanizer",
+   "stars": "202",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, OpenCode and other agents through the skills CLI; Claude.ai and Claude Desktop by upload",
+   "short": "An AI skill that strips the AI tells out of text, then rewrites it toward ASD-STE100, the plain English of aircraft manuals.",
+   "what": "The skill works in two passes. Pass 1 removes 26 AI tells from Wikipedia's Signs of AI writing list. Pass 2 rebuilds sentences \"80% of the way to ASD-STE100\", following a tip from Andrej Karpathy: short sentences, one idea each, active voice. It has light and strict modes, reports each edit by rule number, and ships a small Python checker.",
+   "who": "People who edit AI drafts, docs, READMEs or runbooks and want them easier to read. The README says getting past AI detectors is not a goal, so skip it if that is what you want.",
+   "needs": [
+    "Node.js to run `npx` for the skills CLI, or Claude Code for the plugin route",
+    "Python if you want the `ste_check.py` checker"
+   ],
+   "steps": [
+    {
+     "title": "Install with the skills CLI",
+     "text": "This puts the skill in the current project.",
+     "code": "npx skills add Dodaios/ste80-humanizer"
+    },
+    {
+     "title": "Or install it for one agent everywhere",
+     "text": "Add `--global` and name your agent. `'*'` installs it for all of them.",
+     "code": "npx skills add Dodaios/ste80-humanizer --global --agent claude-code\nnpx skills add Dodaios/ste80-humanizer --global --agent codex\nnpx skills add Dodaios/ste80-humanizer --global --agent cursor\nnpx skills add Dodaios/ste80-humanizer --global --agent '*'"
+    },
+    {
+     "title": "Or add it as a Claude Code plugin",
+     "code": "/plugin marketplace add Dodaios/ste80-humanizer\n/plugin install ste80-humanizer@ste80-humanizer"
+    },
+    {
+     "title": "Or upload it to Claude.ai or Claude Desktop",
+     "text": "Download the repo as a ZIP (Code, then Download ZIP) and upload it in Settings, Capabilities, Skills."
+    },
+    {
+     "title": "Run it",
+     "text": "Call `/ste80-humanizer` and paste your text. It also starts by itself when you ask to humanize, simplify or de-AI a text."
+    },
+    {
+     "title": "Check a file without AI",
+     "text": "The checker is a heuristic with no dependencies.",
+     "code": "python scripts/ste_check.py README.md"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "\"Rewrite this README 80% of the way to ASD-STE100.\""
+   },
+   "watch": [
+    "STE is meant for explanatory text. For fiction, speeches and brand copy the skill only does Pass 1.",
+    "For languages other than English it applies the tells and structure rules but not the English word lists.",
+    "\"STE style\" is not \"STE compliant\". The skill does not contain the official ASD-STE100 specification or dictionary.",
+    "The checker is a heuristic. The README says it is not an AI detector and not a compliance checker."
+   ],
+   "sources": [
+    "https://github.com/Dodaios/ste80-humanizer"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "HyperFlow H3 Flash",
+   "repo": "github.com/Video-Rebirth/hyperflow-h3-flash",
+   "stars": "170",
+   "level": "Advanced",
+   "cost": "Code is free (Apache 2.0). The model weights come under the MiniMax H3 Community License Agreement",
+   "works_with": "Its own Python CLI and diffusers, ComfyUI, Unsloth Studio, stable-diffusion.cpp",
+   "short": "An open video model that makes clips with synced stereo audio from a prompt, an image or references, in 4 to 8 steps.",
+   "what": "HyperFlow H3 Flash is Video Rebirth's compressed, few-step version of MiniMax-H3. It makes 5.2 to 15 seconds of 24 fps video with a 32 kHz stereo soundtrack. It does text to video, first and last keyframe to video, and up to 12 references. The transformer is about 14B parameters, less than half the original, and comes as GGUF or INT8.",
+   "who": "People with a strong NVIDIA GPU who run video models locally, in ComfyUI or Python. If you don't have at least a 24 GB card or a data-center GPU, skip it for now. The README says 16 GB GPUs are not measured yet.",
+   "needs": [
+    "An Ampere or newer NVIDIA GPU. The README measures 24 GB and 32 GB RTX cards and H100 to B300",
+    "For the Python package: Python 3.10+, PyTorch 2.6+ with CUDA and Triton, and `diffusers >= 0.40`",
+    "16 GB+ of system RAM, and much more (about 69 to 91 GiB) if the Python package offloads to RAM",
+    "Room for a first download of about 90 GB, or about 68 GB with the fp8 text encoder",
+    "Linux or WSL2 for more than one GPU"
+   ],
+   "steps": [
+    {
+     "title": "Pick a runtime",
+     "text": "The README's rule: in ComfyUI on 24 GB+ RTX GPUs use the INT8 safetensors. Use GGUF on smaller GPUs and in stable-diffusion.cpp or Unsloth Studio. Use the INT8 Python package on data-center GPUs, or on 24 GB+ RTX GPUs with at least 69 GiB of system RAM."
+    },
+    {
+     "title": "Install the Python package",
+     "code": "pip install git+https://github.com/Video-Rebirth/hyperflow-h3-flash"
+    },
+    {
+     "title": "Make a clip from text",
+     "text": "The first run downloads the weights, and the Triton kernels take about a minute to compile.",
+     "code": "hyperflow-h3-flash --prompt \"A chef slides a steaming bowl of ramen across a wooden counter; rain taps on the window.\" \\\n    --output ramen.mp4"
+    },
+    {
+     "title": "Start from a keyframe",
+     "code": "hyperflow-h3-flash --prompt \"...\" --image first.png --output clip.mp4"
+    },
+    {
+     "title": "Trade speed for quality",
+     "text": "`--steps` takes 4 for speed, 6 (the default) or 8 for quality.",
+     "code": "hyperflow-h3-flash --prompt \"...\" --steps 4"
+    },
+    {
+     "title": "Or use ComfyUI with GGUF",
+     "text": "Clone ComfyUI-GGUF and ComfyUI-HyperFlow-Flash into `ComfyUI/custom_nodes/`, download the 15.7 GB `qwen3vl_32b_minimax_h3_nvfp4_awq` text encoder, then pick a template under Workflow, Browse Templates, ComfyUI-HyperFlow-Flash. On 16 GB or 32 GB PCs start ComfyUI with `python main.py --fast-disk`. The full guide is `integrations/README.md`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "hyperflow-h3-flash --prompt \"A chef slides a steaming bowl of ramen across a wooden counter; rain taps on the window.\" --output ramen.mp4"
+   },
+   "watch": [
+    "Using the weights means accepting the MiniMax H3 Community License Agreement. The README says it does not cover use in the European Union, the United Kingdom, the Republic of Korea or the United States without MiniMax's authorization, and it includes an Acceptable Use Policy. Read the model card first.",
+    "The first run downloads about 90 GB.",
+    "Speeds in the README are for big GPUs: a 5.2 second clip takes 92 seconds on one RTX 5090 and 36 seconds on one H200.",
+    "The ComfyUI node folder is GPL-3.0 and the stable-diffusion.cpp patch is MIT. The rest of the code is Apache 2.0."
+   ],
+   "sources": [
+    "https://github.com/Video-Rebirth/hyperflow-h3-flash"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Daily Stock Analysis",
+   "repo": "github.com/ZhuLinsen/daily_stock_analysis",
+   "stars": "69.4k",
+   "level": "Intermediate",
+   "cost": "Free (MIT) to run on GitHub Actions. You pay for the AI model API and any paid news or data keys you add",
+   "works_with": "GitHub Actions, Docker or a local Python install; Gemini, Claude, OpenAI-compatible models, DeepSeek, Qwen, Ollama and others",
+   "short": "Analyses your stock watchlist with an AI model every trading day and sends a decision dashboard to Telegram, Slack, email and more.",
+   "what": "An AI stock analysis system for A-shares, Hong Kong, US, Japanese, Korean and Taiwanese stocks plus ETFs. It pulls quotes, charts, indicators, news and filings, then has an AI model write a report with a score, trend, buy and sell levels, risks and a checklist. It can run free on GitHub Actions on a schedule, and it has a web workspace with backtesting and a chat page for asking about stocks.",
+   "who": "Individual investors who want a daily AI summary of their watchlist and are fine setting up API keys. The README is in Chinese, with an English version in `docs/README_EN.md`. The project says it is for learning and research only and is not investment advice.",
+   "needs": [
+    "A GitHub account (for the Actions route) or Python 3.10+ (to run it yourself)",
+    "An API key for at least one AI model",
+    "At least one notification channel: WeChat Work, Feishu, Telegram, Discord, Slack or email",
+    "Your watchlist as stock codes",
+    "Recommended: a news search key such as SerpAPI, Tavily, Brave or a SearXNG instance"
+   ],
+   "steps": [
+    {
+     "title": "Fork the repo",
+     "text": "The README recommends the GitHub Actions route. It needs no server."
+    },
+    {
+     "title": "Add your secrets",
+     "text": "In your fork, go to Settings, Secrets and variables, Actions, New repository secret. Add one AI key (for example `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`), one channel (for example `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`) and `STOCK_LIST`, for example `600519,hk00700,AAPL,7203.T,005930.KS,2330.TW`."
+    },
+    {
+     "title": "Turn on Actions",
+     "text": "Open the Actions tab and click \"I understand my workflows, go ahead and enable them\"."
+    },
+    {
+     "title": "Test it by hand",
+     "text": "Under Actions, pick the daily stock analysis workflow (每日股票分析) and click Run workflow. After that it runs at 18:00 Beijing time every weekday and skips market holidays."
+    },
+    {
+     "title": "Or run it on your own machine",
+     "code": "git clone https://github.com/ZhuLinsen/daily_stock_analysis.git && cd daily_stock_analysis\npip install -r requirements.txt\ncp .env.example .env && vim .env\npython main.py"
+    },
+    {
+     "title": "Open the web workspace",
+     "text": "Then go to `http://127.0.0.1:8000`.",
+     "code": "python main.py --webui"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Terminal",
+    "text": "python main.py --stocks 600519,hk00700,AAPL,2330.TW"
+   },
+   "watch": [
+    "The project says it is for study and research only, is not investment advice, and the author is not responsible for losses.",
+    "Your API keys and webhook URLs go into GitHub secrets or a local `.env` file. Your watchlist and the market data go to the AI model you pick.",
+    "The free data sources are rate limited and can change, so the README says stability is not guaranteed. For long scheduled runs it suggests token-based sources such as Tushare.",
+    "Some of the recommended model and search services in the README are sponsors or use referral links."
+   ],
+   "sources": [
+    "https://github.com/ZhuLinsen/daily_stock_analysis"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "gtm-strategy",
+   "repo": "github.com/phuryn/pm-skills",
+   "stars": "27.8k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cowork, Codex; Gemini CLI, OpenCode, Cursor and Kiro by copying the skill folder",
+   "short": "Writes a go-to-market plan for a launch or a new market: channels, messaging, KPIs and a 90-day roadmap.",
+   "what": "This skill walks your AI through a go-to-market plan in five steps: gather research, pick channels, write messaging, set success metrics and build a phased launch plan. The output is a document with channels and the reasons for them, messaging per channel, a timeline, KPI targets, risks and a 90-day roadmap. It sits in the pm-go-to-market plugin of the PM Skills marketplace.",
+   "who": "Product managers and founders planning a launch. It works best when you have research to give it: product details, the target segment, competitors and any customer interviews.",
+   "needs": [
+    "An AI tool that reads skills, such as Claude Code, Cowork or Codex",
+    "Your product description, target market and any research data"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace in Claude Code",
+     "code": "claude plugin marketplace add phuryn/pm-skills"
+    },
+    {
+     "title": "Install the go-to-market plugin",
+     "code": "claude plugin install pm-go-to-market@pm-skills"
+    },
+    {
+     "title": "Or install it in Codex",
+     "text": "Codex installs the skills, but the slash commands do not run there.",
+     "code": "codex plugin marketplace add phuryn/pm-skills\ncodex plugin add pm-go-to-market@pm-skills"
+    },
+    {
+     "title": "Or add it in Cowork",
+     "text": "Open Customize, then Browse plugins, Personal, +. Pick Add marketplace from GitHub and enter `phuryn/pm-skills`. All 9 plugins install."
+    },
+    {
+     "title": "Other tools",
+     "text": "For Gemini CLI, OpenCode, Cursor or Kiro, copy the skill folders into `.gemini/skills/`, `.opencode/skills/`, `.cursor/skills/` or `.kiro/skills/`. Commands won't work there."
+    },
+    {
+     "title": "Use it",
+     "text": "Skills load on their own when relevant. Give the product, target segment, research, timeline and budget. The plugin's `/plan-launch` command runs a full GTM strategy from beachhead to launch plan."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code or Cowork",
+    "text": "/plan-launch AI code review tool targeting mid-size engineering teams"
+   },
+   "watch": [
+    "The plan is only as good as the research you give it. The skill asks for market data and interviews.",
+    "The launch step mentions AskOne, a tool made by the skill's author, as one option for live Q&A."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/phuryn/pm-skills/main/pm-go-to-market/skills/gtm-strategy/SKILL.md",
+    "https://github.com/phuryn/pm-skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "landing-page-generator",
+   "repo": "github.com/borghei/Claude-Skills",
+   "stars": "1.1k",
+   "level": "Intermediate",
+   "cost": "Free for personal, education and internal business use (MIT + Commons Clause)",
+   "works_with": "Claude desktop app, Claude Code; Cursor, Codex, Gemini CLI, Copilot, Windsurf, Cline, Goose and Aider through its npx installer",
+   "short": "Plans and builds a landing page with PAS, AIDA or BAB copy, a CTA plan and SEO meta, then checks it with three Python tools.",
+   "what": "The skill first settles a single goal for the page, the audience, the main pain point and the traffic source. It picks a copy framework, builds the sections in a set order from hero to final CTA, and runs a conversion checklist. Three bundled scripts check the HTML: a CTA analyzer, a 22-point conversion audit and a page speed estimate.",
+   "who": "Marketers and founders building a campaign or lead capture page. The skill does not write the full page copy and does not set up ads or analytics. Skip it if you need those.",
+   "needs": [
+    "An AI tool from the list, or Node 18+ for the npx installer",
+    "Python 3 to run the checking scripts",
+    "Your offer, audience, key pain point, key benefit and traffic source"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace in Claude Code",
+     "code": "/plugin marketplace add borghei/Claude-Skills"
+    },
+    {
+     "title": "Install the set you need",
+     "text": "The README lists `marketings` as the set for growing traffic and sign-ups.",
+     "code": "/plugin install <name>@claude-code-skills"
+    },
+    {
+     "title": "Or use the Claude desktop app",
+     "text": "Open Customize, then Browse plugins, and enter `borghei/Claude-Skills`. Every skill is then available."
+    },
+    {
+     "title": "Or use another coding agent",
+     "text": "Run `npx @borghei/claude-skills add` with the skill name to put one skill in the right folder for your assistant. Find skills with `npx @borghei/claude-skills search`. Needs Node 18+."
+    },
+    {
+     "title": "Check the finished page",
+     "text": "All three should exit 0 before launch.",
+     "code": "python3 marketing/landing-page-generator/scripts/cta_analyzer.py page.html\npython3 marketing/landing-page-generator/scripts/conversion_checklist.py page.html --format json\npython3 marketing/landing-page-generator/scripts/page_speed_estimator.py page.html"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "\"Build a landing page for my free trial offer. The audience is small agency owners, the traffic comes from an email, and the main pain is slow client reporting.\""
+   },
+   "watch": [
+    "The scripts cannot tell real proof from invented proof. Check by hand that every logo, quote and count comes from you.",
+    "The licence is MIT with the Commons Clause, so it can't be sold or repackaged as a paid product.",
+    "Its benchmark of a 6.6% conversion rate is a median across all industries. The skill itself says results vary a lot by industry and offer."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/borghei/Claude-Skills/main/marketing/landing-page-generator/SKILL.md",
+    "https://github.com/borghei/Claude-Skills"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "bento-slides",
+   "repo": "github.com/nyblnet/bento",
+   "stars": "5.7k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code as a plugin; Cursor, Aider or any agent that can edit files; any chatbot by copying the JSON",
+   "short": "Has your AI build or edit a slide deck as one HTML file that holds its own editor and presenter.",
+   "what": "Bento is a slide app that lives inside a single `.bento.html` file, about 560 KB, with the deck stored as plain JSON near the top. The bento-slides skill tells your agent to download the latest Bento app if you have no deck, then write the slides into that JSON block. It maps your material to charts, tables, morph transitions and motion, and asks the agent to open the file and look at every slide before it says it is done.",
+   "who": "Anyone who wants a deck they can open in a browser and send as one file, without PowerPoint or an account. The README says editing is desktop first. Phones view and present well.",
+   "needs": [
+    "Claude Code for the plugin, or any agent that can read and write files",
+    "A modern browser to open the deck"
+   ],
+   "steps": [
+    {
+     "title": "Add the plugin marketplace in Claude Code",
+     "text": "The README says the packaged bento-slides skill installs from this repo's marketplace.",
+     "code": "/plugin marketplace add nyblnet/bento"
+    },
+    {
+     "title": "Ask for a deck",
+     "text": "With no deck to start from, the skill downloads the latest signed Bento release and writes your deck into it.",
+     "code": "curl -fsSL https://bento.page/releases/slides/Bento_Slides.bento.html -o \"<Topic>.bento.html\""
+    },
+    {
+     "title": "Open and check it",
+     "text": "Open the file in a browser. It boots straight into the editor with your deck."
+    },
+    {
+     "title": "Or use a chatbot",
+     "text": "In Bento, use Save, Copy document JSON. Let the chatbot rewrite it, then paste it back with Save, Replace from JSON."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Claude Code",
+    "text": "\"Make a Bento slide deck from these notes, with a chart for the numbers.\""
+   },
+   "watch": [
+    "The skill downloads the Bento app from bento.page and fetches its agent guide at bento.page/agents.md.",
+    "A deck shared for live editing carries its access keys inside the file. Anyone with a copy can join. The skill tells the agent not to print those keys.",
+    "Undo during live collaboration can revert a collaborator's edit to the same property, a trade-off the README lists."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/nyblnet/bento/main/plugins/bento-slides/skills/bento-slides/SKILL.md",
+    "https://github.com/nyblnet/bento"
+   ]
+  }
+ ]
+}
