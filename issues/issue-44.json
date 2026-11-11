@@ -1,0 +1,419 @@
+{
+ "issue": 44,
+ "date": "11 Nov 2026",
+ "checked": "11 Nov 2026",
+ "blurb": "Every repo and skill from the 11 November issue that I could source, with what each does and the setup steps from its own files.",
+ "intro": "Issue #44 had five repos and four AI skills. This page covers seven of them. Most of it is for developers who work with a coding agent, and video makers should try cinecode first. If you write web front ends, Modern Web Guidance is the easiest win.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Exact",
+   "repo": "github.com/expo/exact",
+   "stars": "2.5k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Web, macOS, iOS and Linux apps. Built on a Mac with Xcode; Linux works for the web loop and the Linux host",
+   "short": "Write one app in a small UI language plus TypeScript or Rust, and it runs natively on the web, macOS, iOS and Linux.",
+   "what": "Exact is a cross-platform app runtime from Expo. You describe the interface in Contract, a small declarative language, and write the data logic in TypeScript or Rust. Each platform draws with its own tools, with no webview, and a coding agent can build, run, screenshot and test the app on every host through one script.",
+   "who": "Developers who want one codebase for native desktop, mobile and web apps and are happy to work from a fast-changing source checkout. Skip it if you need a stable API today: the project is pre-1.0 and says so.",
+   "needs": [
+    "Rust through rustup",
+    "Bun 1.4.2, the version the project pins. Node and npm are not needed",
+    "Google Chrome, which the agent uses to drive the web host",
+    "Xcode 27.1 or later for the macOS and iOS hosts",
+    "Hermes only for TypeScript apps on native hosts. The setup script installs the pinned bundle"
+   ],
+   "steps": [
+    {
+     "title": "Install the pinned Bun",
+     "text": "This puts Bun 1.4.2 beside any Bun you already have. Use `~/.bun-1.4.2/bin/bun` if it is not on your PATH.",
+     "code": "curl -fsSL https://bun.sh/install | BUN_INSTALL=~/.bun-1.4.2 bash -s bun-v1.4.2"
+    },
+    {
+     "title": "Clone it and run the Caltrain demo in the browser",
+     "text": "The first run compiles the toolchain and takes a few minutes. Then edit `apps/caltrain/app.contract` and the page reloads in about a tenth of a second.",
+     "code": "git clone https://github.com/expo/exact.git\ncd exact\nbun scripts/exact.mjs setup\nbun host/web/dev.mjs            # Caltrain, at http://127.0.0.1:8765/"
+    },
+    {
+     "title": "Run it natively",
+     "text": "A first native build takes ten to fifteen minutes on a laptop. Later builds take a minute or two.",
+     "code": "bun host/apple/build.mjs --run              # macOS\nbun host/apple/build.mjs --ios --run        # an iOS Simulator (--device --run for a connected iPhone)\ncargo build --profile host-dev -p caltrain-linux   # Linux: a DRM/KMS console, or headless anywhere (--release to ship)"
+    },
+    {
+     "title": "Drive it the way an agent does",
+     "text": "Swap `web` for `macos`, `ios` or `linux` once that host is built.",
+     "code": "bun host/web/build.mjs caltrain-web         # the build the agent's web host serves\nbun scripts/agent.mjs web tree \"tap change-station\" \"type station-search Palo\" state \"screenshot out.png\"\nbun scripts/agent.mjs web --test apps/caltrain/app.test.contract"
+    },
+    {
+     "title": "Make your own app",
+     "text": "`exact new` creates `app.contract` for the view, `app.ts` for the data and an `AGENTS.md` that points your agent at the one guide it must read.",
+     "code": "bun scripts/exact.mjs new ../hello          # or run `bun link` once, then `exact new ../hello`\ncd ../hello\nbun exact.mjs contract types app.contract -o app.contract.d.ts   # first run builds the compiler\nbun exact.mjs web                           # the dev loop, at http://127.0.0.1:8765/\nbun exact.mjs test web tests/*.test.contract # the app's *.test.contract, or the files named\nbun exact.mjs mac --run                     # this Mac\nbun exact.mjs ios --run                     # an iOS Simulator"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Clone https://github.com/expo/exact and follow its README to make a new Exact app with `exact new`. Run `bun scripts/exact.mjs setup` once first. Make a todo list where I can add items, check them off, delete them, and see how many are left. Put the view in Contract and keep the list in `app.ts`. Write an `app.test.contract`, pass it on web, macOS, and the iOS Simulator with `scripts/agent.mjs`, then open the app for me on all three."
+   },
+   "watch": [
+    "Exact is pre-1.0 and changes daily, with no API stability, no backwards compatibility and no migration guide.",
+    "There is no packaged CLI. You work from a source checkout, and new apps refer to it by path.",
+    "The Bun install command pipes a script from bun.sh straight into bash. Read the script first.",
+    "An app's `AGENTS.md` asks your agent to record friction notes. They go to Expo only if you allow it (the default asks first). `bun exact.mjs feedback never` turns it off for a project, and `EXACT_FEEDBACK=0` blocks every send on the machine.",
+    "The README's sample agent run took about 57 minutes, about 25 of them on the first macOS and iOS builds.",
+    "Windows and Android are early. Text editing works on the web and Apple hosts, and Linux only reads."
+   ],
+   "sources": [
+    "https://github.com/expo/exact",
+    "https://raw.githubusercontent.com/expo/exact/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "cinecode",
+   "repo": "github.com/sarpstar/cinecode",
+   "stars": "2.1k",
+   "level": "Beginner",
+   "cost": "Free (MIT). Narration can use your own Gemini key (it has a free quota) or ElevenLabs",
+   "works_with": "Claude Code (desktop app, VS Code extension or terminal) and Cursor",
+   "short": "A skill that has your coding agent write, animate in code, score and render a finished MP4 from a one-line idea.",
+   "what": "cinecode is a skill for coding agents that makes short films, long YouTube videos, ads, explainers and music videos. You give the idea and the taste. The agent writes the script, builds every frame in code with three.js in headless Chrome, designs the sound, mixes it to -14 LUFS and hands you an MP4. It has a Quick mode for a film today and a six-step Film mode for one piece that has to be as good as it can be.",
+   "who": "Anyone who wants to make video with a coding agent, including people who have never written code. The main README is in Turkish, with an English version beside it. Skip it if you only use a chat app in the browser, because it needs an agent that can run tools on your computer.",
+   "needs": [
+    "Claude Code or Cursor",
+    "Node.js 22+, Python 3.9+, ffmpeg and Google Chrome (or Chromium or Edge). The agent offers to install what is missing and asks first",
+    "A GPU that Chrome can use: any recent Mac, or a PC with a working graphics driver",
+    "A few hundred MB of disk for Quick mode, and a few GB per film for Film mode",
+    "Optional: a Gemini API key for narration"
+   ],
+   "steps": [
+    {
+     "title": "Install it by asking your agent",
+     "text": "In Claude Code, say: \"Install the cinecode skill from https://github.com/sarpstar/cinecode\". It clones the kit into `~/.claude/skills/cinecode`. Then open a new chat. Install it in one place only."
+    },
+    {
+     "title": "Or install it by hand",
+     "code": "git clone https://github.com/sarpstar/cinecode.git ~/.claude/skills/cinecode"
+    },
+    {
+     "title": "For Cursor",
+     "code": "git clone https://github.com/sarpstar/cinecode.git ~/.cursor/skills/cinecode"
+    },
+    {
+     "title": "Start a film in an empty folder",
+     "text": "From a terminal, then type \"I want to make a short film\". In the desktop app or VS Code, open an empty folder and type the same sentence.",
+     "code": "mkdir my-film && cd my-film && claude"
+    },
+    {
+     "title": "Answer the questions and approve each checkpoint",
+     "text": "Pick a mode and a purpose, answer one or two short rounds of questions, and approve or change things at each checkpoint. The finished film lands at the top of the film's folder as `<title>.mp4`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Let's make a film with cinecode: <what it is about, a sentence or two>. Add the length, where it will be shown, the sound and the look if you know them, or leave them out and the kit asks."
+   },
+   "watch": [
+    "The agent installs missing tools such as Node, Python, ffmpeg or git, after asking you.",
+    "API keys you enter are stored in `~/.cinecode/keys.env`, outside any film folder or repository.",
+    "A 30 to 60 second Quick film usually takes 100 to 250 agent steps. The kit offers a fresh chat to keep token use down, and `python3 tools/usage.py` shows each chat's tokens in Claude Code.",
+    "The guard hooks that catch mistakes run only in Claude Code, and need version 2.1.295 or newer.",
+    "The kit only takes public-domain, CC0 and CC BY material, plus CC BY-SA for images, and writes a credits file. You are still responsible for licences on anything you publish, and your own logos, footage and songs are your responsibility.",
+    "A whole film made on Windows has not been tried yet."
+   ],
+   "sources": [
+    "https://github.com/sarpstar/cinecode",
+    "https://raw.githubusercontent.com/sarpstar/cinecode/HEAD/README.md",
+    "https://raw.githubusercontent.com/sarpstar/cinecode/HEAD/README.en.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Modern Web Guidance",
+   "repo": "github.com/GoogleChrome/modern-web-guidance",
+   "stars": "3.7k",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0 code, CC BY 4.0 guides)",
+   "works_with": "Claude Code, Codex, GitHub Copilot CLI, Google Antigravity, Grok Build, Kimi Code and agents that use the skills or GitHub CLI",
+   "short": "Skills from the Chrome team that steer your coding agent toward modern browser features instead of old JavaScript patterns.",
+   "what": "Modern Web Guidance is a set of skills with web platform best practices and browser compatibility data. When your agent works on web code it searches a local index and pulls in a short guide with code patterns, gotchas and fallbacks. It covers CSS layout, HTML, JavaScript APIs, performance, accessibility and the browser's built-in AI APIs, and a second pack covers Chrome extensions.",
+   "who": "Web developers who use a coding agent and keep getting heavy JavaScript where a native browser feature would do. Skip it if you do not write web front ends.",
+   "needs": [
+    "Node.js, for `npx`",
+    "A coding agent that supports skills or plugins"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "This runs an interactive wizard. Add `--choose` to pick the skill packs.",
+     "code": "npx modern-web-guidance@latest install"
+    },
+    {
+     "title": "Or try it without installing",
+     "code": "# Search for relevant guides\nnpx modern-web-guidance@latest search \"animate a dialog modal backdrop\"\n\n# Retrieve a guide by ID\nnpx modern-web-guidance@latest retrieve \"animate-to-from-top-layer\"\n\n# Scan a codebase for legacy patterns to modernize\nnpx modern-web-guidance@latest legacy-scan ."
+    },
+    {
+     "title": "Or add it as a Claude Code plugin",
+     "code": "/plugin marketplace add GoogleChrome/modern-web-guidance\n/plugin install modern-web-guidance@googlechrome\n/plugin  # Select GoogleChrome marketplace, press enter, enable AutoUpdate\n/reload-plugins"
+    },
+    {
+     "title": "Or in Codex",
+     "code": "codex plugin marketplace add GoogleChrome/modern-web-guidance\ncodex plugin add modern-web-guidance@googlechrome"
+    },
+    {
+     "title": "Or with the skills CLI",
+     "code": "npx skills add GoogleChrome/modern-web-guidance"
+    },
+    {
+     "title": "Keep it current",
+     "text": "If you used the wizard, update with this. Otherwise use your agent's own plugin update.",
+     "code": "npx modern-web-guidance@latest update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `npx modern-web-guidance@latest legacy-scan .` in a web project to find legacy patterns worth modernizing."
+   },
+   "watch": [
+    "Google collects anonymous usage data: install counts, the calling agent's name, guide IDs and the search queries your agent sends to the CLI. Raw prompts are not collected. Set `DISABLE_TELEMETRY=1` in your shell profile to opt out.",
+    "Search runs offline with a local model and needs no API key.",
+    "Guides for Origin Trial and very new single-engine features stay locked until you opt in with a `.mwgrc` file or the matching CLI command."
+   ],
+   "sources": [
+    "https://github.com/GoogleChrome/modern-web-guidance",
+    "https://raw.githubusercontent.com/GoogleChrome/modern-web-guidance/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "HolyArrs",
+   "repo": "github.com/HolyArrs/HolyArrs",
+   "stars": "668",
+   "level": "Intermediate",
+   "cost": "Free (AGPL-3.0). A commercial licence is offered for closed products",
+   "works_with": "Docker on amd64, arm64 and armv7. Plex, Jellyfin and Emby; qBittorrent, Transmission, Deluge, rTorrent, SABnzbd and NZBGet",
+   "short": "One small self-hosted app that replaces Sonarr, Radarr, Lidarr, Bazarr, Prowlarr and Seerr for your shows, movies and music.",
+   "what": "HolyArrs is a single self-hosted app for a home media server. You browse like a streaming app, ask for a title, and it searches your sources, picks a release by your rules, sends it to your downloader and files it in your library. The image is about 15 MB and it can move your settings over from the six apps it replaces.",
+   "who": "People who already run a home media server with Plex, Jellyfin or Emby and a downloader, and want one login in place of six. Skip it if you want it to download by itself: it connects to your downloader and does not replace it yet.",
+   "needs": [
+    "Docker with Docker Compose",
+    "A local disk for the config folder. A network share will not work for it",
+    "Media and download folders, owned by the user whose PUID and PGID you set",
+    "A downloader such as qBittorrent or SABnzbd, and a source such as a Torznab or Newznab indexer"
+   ],
+   "steps": [
+    {
+     "title": "Save the compose file",
+     "text": "Save this as `docker-compose.yml` in a new folder on a local disk, and change the paths to your own.",
+     "code": "name: holyarrs\nservices:\n  holyarrs:\n    image: holyarrs/holyarrs:latest\n    container_name: holyarrs\n    environment:\n      - PUID=1000\n      - PGID=1000\n      - TZ=America/New_York\n    volumes:\n      - /your/local/path:/config\n      - /path/to/movies:/movies #optional\n      - /path/to/tv:/tv #optional\n      - /path/to/music:/music #optional\n      - /path/to/downloads:/downloads #optional\n    ports:\n      - 6262:6262\n    restart: unless-stopped"
+    },
+    {
+     "title": "Find the right user and group IDs",
+     "text": "`PUID` and `PGID` must match the user that owns your media folders.",
+     "code": "id youruser\n# uid=1000(youruser) gid=1000(youruser)"
+    },
+    {
+     "title": "Start it",
+     "code": "docker compose up -d"
+    },
+    {
+     "title": "Make the owner account straight away",
+     "text": "Open `http://your-server:6262`. A short setup asks for your folders, a downloader and a source."
+    },
+    {
+     "title": "Optional: bring your old setup",
+     "text": "Open Settings > Move from other apps, add each old app's address and API key or a backup zip, run Try it, then Move. It only reads the old apps, and you can undo a move later."
+    },
+    {
+     "title": "Check your setup",
+     "text": "Every line says OK, WARN or FAIL, and each problem says how to fix it.",
+     "code": "docker exec holyarrs /holyarrs doctor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your browser",
+    "text": "Open Explore, hover a title to play its trailer, and ask for a whole show or one season."
+   },
+   "watch": [
+    "There is no default password. Until you make the owner account, whoever opens HolyArrs first becomes the owner.",
+    "Do not forward port 6262 on your router. The README says to use a VPN such as Tailscale or a reverse proxy with HTTPS.",
+    "Stored passwords and keys are encrypted with `holyarrs.key` in your config folder. Backups do not include it, so keep a copy somewhere else (Settings > Backups > Download key kit).",
+    "Every install talks to a metadata server the author runs for titles, artwork and charts.",
+    "Moving from old apps leaves keys, passwords, custom formats, tags and history behind.",
+    "Not in 1.0 yet: a built-in downloader, AI or MCP features, phone and TV apps, and music in Explore."
+   ],
+   "sources": [
+    "https://github.com/HolyArrs/HolyArrs",
+    "https://raw.githubusercontent.com/HolyArrs/HolyArrs/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "human-writing",
+   "repo": "github.com/Dynokostya/just-works",
+   "stars": "14",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0)",
+   "works_with": "Claude Code and OpenAI Codex",
+   "short": "Reviews or rewrites guides, reports and proposals so a reader who never saw your notes can follow them.",
+   "what": "human-writing is a skill for documents people read to understand or to act: docs, guides, plans, proposals, reports, READMEs and stakeholder messages. It works in three modes. Review gives a findings report, Rewrite fixes an existing text while keeping its facts, and Write drafts a new one. It starts from the reader, cutting working material and terms they never saw, and then removes the habits that make text sound machine-written.",
+   "who": "Anyone whose agent writes documents for people outside the project, or who has been told a text sounds robotic. Skip it for fiction, marketing copy, social posts and tickets, which the skill says it does not cover.",
+   "needs": [
+    "Claude Code or Codex",
+    "`curl` and `tar` for the quick install, or Node.js 18+ for the npm route",
+    "`jq` for the skill-guard hook and status line"
+   ],
+   "steps": [
+    {
+     "title": "Preview the install",
+     "text": "The skill ships inside the just-works bundle. A dry run shows what it would change first.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/dynokostya/just-works/main/bootstrap.sh | bash -s -- --dry-run"
+    },
+    {
+     "title": "Install it",
+     "text": "This installs the bundle globally to `~/.claude/` and `~/.codex/`, with Codex skills in `~/.agents/skills/`.",
+     "code": "curl -fsSL https://raw.githubusercontent.com/dynokostya/just-works/main/bootstrap.sh | bash"
+    },
+    {
+     "title": "Or install with npm",
+     "code": "npx @dynokostya/just-works              # default settings"
+    },
+    {
+     "title": "Or for one project only",
+     "text": "Copy `.claude/` from the repo into your project. For Codex in one project, copy `.claude/skills/` to `<project>/.agents/skills/`."
+    },
+    {
+     "title": "Ask for a review or a rewrite",
+     "text": "The skill loads for writing tasks, or when you ask to humanize, simplify or review prose. It states who it thinks the reader is at the top of its reply, so you can correct it."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Review this guide for a reader who has never seen our project, and give me a findings report."
+   },
+   "watch": [
+    "The installer adds the whole just-works bundle: agents, coding skills, settings and output styles. It backs up anything it replaces to `~/just-works-backups/<timestamp>/`.",
+    "The quick install pipes a script from GitHub straight into bash. Read the script first.",
+    "The `--personal` option turns on `bypassPermissions` in Claude Code and `danger-full-access` with no approval prompts in Codex, and sets the author's models. Leave it off unless you want those settings.",
+    "The skill says it is not an AI detector and will not claim who wrote a text.",
+    "It keeps code, quotations, legal text, data tables and identifiers unedited and reports problems in them instead."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/dynokostya/just-works/claude-skills-human-writing",
+    "https://raw.githubusercontent.com/Dynokostya/just-works/main/.claude/skills/human-writing/SKILL.md",
+    "https://raw.githubusercontent.com/Dynokostya/just-works/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "debloat",
+   "repo": "github.com/LilMGenius/paperthin",
+   "stars": "1.4k",
+   "level": "Beginner",
+   "cost": "Not stated in the README",
+   "works_with": "Codex, Claude Code, OpenCode, Cursor, Grok Build, Pi and other agents through the skills CLI",
+   "short": "Trims padding, repetition and dead code from a file you name, keeping every rule, fact and behavior.",
+   "what": "debloat is part of Paperthin, a set of skills that each remove something. It cuts prose or code that is correct but bloated down to what carries weight. In prose it removes padding, over-qualification, fused sentences and repeated points. In code it removes restating comments, dead code, debug leftovers and needless wrappers, but only after the tests that cover that code pass, and it reruns them after each kind of cut.",
+   "who": "Anyone with a doc, prompt or file that has grown long and patched-over but is still right. Skip it if the content is wrong or stale: the skill hands that to a rewrite skill instead.",
+   "needs": [
+    "A coding agent",
+    "Node.js, for the `npx` route on other agents",
+    "For code, tests that cover the behavior in scope. Without a passing baseline it stops before cutting code"
+   ],
+   "steps": [
+    {
+     "title": "Install in Codex",
+     "text": "Pick one route per agent. Installing two loads every skill twice.",
+     "code": "codex plugin marketplace add LilMGenius/paperthin && codex plugin add paperthin@paperthin"
+    },
+    {
+     "title": "Or in Claude Code",
+     "text": "Then run `/plugin`, open Marketplaces, select `paperthin` and choose Enable auto-update, once.",
+     "code": "claude plugin marketplace add LilMGenius/paperthin && claude plugin install paperthin@paperthin"
+    },
+    {
+     "title": "Or in any other agent",
+     "text": "This installs the skills and schedules a daily update.",
+     "code": "npx skills@latest add LilMGenius/paperthin --global --agent '*' && node \"$HOME/.agents/skills/re0-upgrade/scripts/schedule/schedule.mjs\" install"
+    },
+    {
+     "title": "Point it at one thing",
+     "text": "Name the file, section, file list or diff you want tightened. It works only inside the scope you name."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Debloat the README's install section. Keep every fact and step."
+   },
+   "watch": [
+    "It installs the whole Paperthin set, 45 skills in its index, and the npx route also schedules a daily update.",
+    "It edits files in place. For code it adds a narrow test when the existing ones leave the behavior uncovered, and that test stays with the change.",
+    "If it finds duplicated or stale content it stops and names it for other Paperthin skills instead of fixing it.",
+    "A pass that finds nothing bloated changes nothing."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/lilmgenius/paperthin/skills-depth-debloat",
+    "https://raw.githubusercontent.com/LilMGenius/paperthin/main/skills/depth/debloat/SKILL.md",
+    "https://raw.githubusercontent.com/LilMGenius/paperthin/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "audit",
+   "repo": "github.com/darkroomengineering/cc-settings",
+   "stars": "52",
+   "level": "Advanced",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code and Codex CLI",
+   "short": "Runs a whole-repo audit in one mode or all eleven, from codebase and tests to SEO, threat model and a debt ledger.",
+   "what": "audit is one skill in cc-settings, the Darkroom engineering team's setup for Claude Code and Codex. It has eleven modes: codebase, docs, process, performance, tests, state, threat model, motion, SEO, debt and full. Each audit mode reads the whole surface and writes a ranked report to `docs/audits/`. A finding counts as confirmed only when it cites a file and line.",
+   "who": "Engineering teams and maintainers who want a periodic, adversarial review of a whole repo. Skip it for a review of one diff; the skill points to `/dr-review` for that.",
+   "needs": [
+    "Claude Code or Codex CLI, installed and signed in",
+    "Node 18+ for the npx installer, or bash on macOS and Linux",
+    "Context7 MCP, which the skill lists as a requirement. cc-settings sets it up in Claude; in Codex the skill uses it only if you configured it"
+   ],
+   "steps": [
+    {
+     "title": "Install cc-settings",
+     "text": "Any platform with Node 18+. `--light` installs a minimal beginner tier.",
+     "code": "npx darkroom-settings"
+    },
+    {
+     "title": "Or preview from a clone",
+     "code": "git clone https://github.com/darkroomengineering/cc-settings.git\ncd cc-settings\nbash setup.sh --target=both --dry-run\nbash setup.sh --target=both"
+    },
+    {
+     "title": "Restart and check what is installed",
+     "text": "Restart each product. In Codex full installs, open `/hooks` and review the hooks once. Claude users can run this.",
+     "code": "bun ~/.claude/src/scripts/whats-on.ts"
+    },
+    {
+     "title": "Run an audit",
+     "text": "Say \"seo audit\", \"audit the tests\", \"threat model\" or \"full audit\", or pin it with `/audit` in Claude Code and `$audit` in Codex."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Start with `/audit debt`, the cheap mechanical pass that collects `SHORTCUT:` markers into a ledger, then run `/audit codebase`."
+   },
+   "watch": [
+    "The installer adds the whole cc-settings setup: 26 skills, 9 agents, 22 hooks, model routing and three MCP servers in Claude. It keeps a backup and can roll back.",
+    "The README also offers a `curl | bash` install and a PowerShell one with `-ExecutionPolicy Bypass`. Read the script first if you use them.",
+    "Reports are written into your repo under `docs/audits/` and left uncommitted.",
+    "In Claude it can run a cross-model check through Codex when that bridge is installed."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/darkroomengineering/cc-settings/skills-audit",
+    "https://raw.githubusercontent.com/darkroomengineering/cc-settings/main/skills/audit/SKILL.md",
+    "https://raw.githubusercontent.com/darkroomengineering/cc-settings/HEAD/README.md"
+   ]
+  }
+ ]
+}
