@@ -1,0 +1,393 @@
+{
+ "issue": 45,
+ "date": "12 Nov 2026",
+ "checked": "12 Nov 2026",
+ "blurb": "Every repo and skill from the 12 November issue that I could source, with what each does and the setup steps from its own files.",
+ "intro": "Issue #45 had five repos and three AI skills. This page covers seven of them. Yogurt and Mister Download Manager are desktop apps anyone can install, and Yogurt is the one I would try first. Developers should start with improve, which only reads your code and writes plans.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Yogurt",
+   "repo": "github.com/FrigadeHQ/yogurt",
+   "stars": "644",
+   "level": "Beginner",
+   "cost": "Free (MIT), no account needed",
+   "works_with": "macOS 14.4+ on Apple Silicon, Windows 10 2004+ (x64), Ubuntu 22.04+ or similar (x64)",
+   "short": "A free desktop app that records your calls, transcribes them and writes meeting notes, with the AI running on your own computer.",
+   "what": "Yogurt is an open source meeting notes app. It records your microphone and call audio without adding a bot to the meeting, writes a live transcript and then a summary. Transcription uses whisper.cpp and the summaries come from a local open-weight model through llama.cpp. You can search past meetings, ask questions with links to the source, and export notes as Markdown.",
+   "who": "Anyone who wants AI meeting notes but would rather keep the audio and transcripts on their own machine. Skip it if your computer has less than 8 GB of memory, or if you need speaker names or calendar links on Windows or Linux, since those are Mac only for now.",
+   "needs": [
+    "A Mac with Apple silicon and macOS 14.4 or newer, a 64-bit PC with Windows 10 (version 2004) or newer, or 64-bit Linux with Ubuntu 22.04 or newer",
+    "At least 8 GB of memory",
+    "Room for the models: about 5 GB first, and the best model for your machine can be 14 GB or more"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "The README links a build for each system on the latest release: `Yogurt-mac-arm64.dmg`, `Yogurt-windows-x64.exe` or `Yogurt-linux-x86_64.AppImage`. Get it from https://github.com/FrigadeHQ/yogurt/releases/latest."
+    },
+    {
+     "title": "Get past the Windows warning",
+     "text": "If Windows says \"Windows protected your PC\", click More info, then Run anyway. The app is not signed with a Microsoft certificate yet."
+    },
+    {
+     "title": "Let setup download the models",
+     "text": "Yogurt downloads a smaller notes model first, then the best one your computer can run well. If your computer is too slow, setup tells you. Recording works once setup finishes."
+    },
+    {
+     "title": "Record a call",
+     "text": "Start recording your microphone and call audio and add your own notes if you like. Yogurt offers to record when a Zoom, Teams or Meet call starts, and stops when the call ends."
+    },
+    {
+     "title": "Optional: connect an assistant app",
+     "text": "In Settings, AI apps, turn on access, copy the helper command and add it as a local MCP server in your assistant app. Access is off by default."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Yogurt",
+    "text": "Record one call, then ask a question across your meetings and follow the link to the source in the transcript."
+   },
+   "watch": [
+    "No bot joins the call, so tell the other people on the call that you are recording.",
+    "Meeting data stays on your computer, but Yogurt goes online for model downloads and update checks.",
+    "With MCP access on, any app running under your user account can read your meetings, notes and transcripts, and an assistant app may send what it reads to its own online model.",
+    "Speaker names need Accessibility permission on Mac and are Mac only, as is calendar access.",
+    "The Windows build is not signed yet."
+   ],
+   "sources": [
+    "https://github.com/FrigadeHQ/yogurt",
+    "https://raw.githubusercontent.com/FrigadeHQ/yogurt/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "gputaskman",
+   "repo": "github.com/shanselman/gputaskman",
+   "stars": "2.2k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Windows with NVIDIA, AMD or Intel GPUs, Linux and WSL, and macOS on Apple Silicon",
+   "short": "A terminal task manager for your GPU that shows which process uses how much VRAM, and what an LLM's weights and KV cache take.",
+   "what": "gputaskman is a terminal UI that ties per-process GPU memory and activity to the runtimes and model files each process has loaded. For local LLMs it can break memory down into weights, KV cache and compute buffers, and it shows hints from Ollama, LM Studio and llama.cpp servers. It also prints one-shot text or JSON snapshots and can record a session.",
+   "who": "People running local AI models, games or GPU work who want to know what is filling their VRAM. Skip it if your workloads run in the cloud or only on the CPU or NPU, which it does not cover. The author calls it early, experimental software.",
+   "needs": [
+    "Python 3.11+ with uv or pipx, or the portable Windows or Linux build",
+    "A supported GPU and driver: a current WDDM driver on Windows, an NVIDIA driver (or AMD `amdgpu` or Intel `i915` on native Linux) on Linux",
+    "glibc 2.35 or newer for the portable Linux builds",
+    "A wide terminal, roughly 140 columns, for the full table"
+   ],
+   "steps": [
+    {
+     "title": "Install from PyPI",
+     "text": "No clone is needed. The shorter `gtm` command also works.",
+     "code": "uv tool install gputaskman\ngputaskman"
+    },
+    {
+     "title": "Or use pipx",
+     "code": "pipx install gputaskman\ngputaskman"
+    },
+    {
+     "title": "Or run the portable Windows build",
+     "text": "Download the ZIP for your PC from the Releases page and extract the entire ZIP, keeping `_internal` beside `gputaskman.exe`. No Python is needed.",
+     "code": ".\\gputaskman.exe\n.\\gputaskman.exe --once\n.\\gputaskman.exe --json"
+    },
+    {
+     "title": "Or run the portable Linux build",
+     "code": "tar -xzf gputaskman-VERSION-linux-x64.tar.gz\ncd gputaskman-VERSION-linux-x64\n./gputaskman"
+    },
+    {
+     "title": "Find your way around",
+     "text": "Use Up and Down to inspect a process, `s` to change the sort, `m` for slim or full mode, `?` to explain the counters and `q` to quit."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Load a local model, then run `gputaskman --json` before and after and compare the two files with `gputaskman diff before.json after.json`."
+   },
+   "watch": [
+    "The portable builds are unsigned.",
+    "The inspector and JSON output can contain paths, command lines, model names and local ports. Check and redact them before you post a capture.",
+    "Classifications and GGUF-based breakdowns are estimates. Only the device and process counters are measurements.",
+    "On Linux, other users' processes need `sudo`. On macOS, measuring every process's memory also needs `sudo`.",
+    "It says it sends no telemetry and does not dump model weights."
+   ],
+   "sources": [
+    "https://github.com/shanselman/gputaskman",
+    "https://raw.githubusercontent.com/shanselman/gputaskman/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Mister Download Manager",
+   "repo": "github.com/anefzaoui/misterdownloadmanager",
+   "stars": "7.2k",
+   "level": "Beginner",
+   "cost": "Free (GPL-3.0), no ads, no trial, no sign-up",
+   "works_with": "Windows 10 and 11, Linux, and macOS (experimental). Browser extension for Firefox and Chromium browsers",
+   "short": "A free open source download manager in Rust that splits files into parts, resumes broken downloads and catches them from your browser.",
+   "what": "Mister Download Manager (MDM) is a clean-room download manager written in Rust, laid out like IDM. It fetches parts of a file at once, resumes after a crash or dropped connection, and has queues, a scheduler and a link grabber. It also handles videos on web pages, image galleries through gallery-dl, and torrents and magnet links. A command-line tool, a local API and an MCP server let scripts and AI assistants manage downloads.",
+   "who": "Anyone who downloads big files often, and IDM users who want a free option with the same layout. Mac users should know the macOS builds have not been tried on a Mac by the team yet.",
+   "needs": [
+    "Windows 10 or 11, a recent Linux (tested on Ubuntu 24.04, Debian 12 and Fedora), or a Mac for the experimental builds",
+    "Firefox or a Chromium browser if you want the extension"
+   ],
+   "steps": [
+    {
+     "title": "Download the installer",
+     "text": "On the latest release page, pick `...-setup.exe` if you are not sure. It installs MDM, connects it to your browser and asks your language. There is also a portable ZIP for a USB stick."
+    },
+    {
+     "title": "Or install with WinGet",
+     "text": "The first line installs MDM and the second updates it.",
+     "code": "winget install AhmedNefzaoui.MisterDownloadManager\nwinget upgrade AhmedNefzaoui.MisterDownloadManager"
+    },
+    {
+     "title": "On Linux",
+     "text": "Use the `.deb` for Ubuntu, Debian, Mint and Pop!_OS, the `.rpm` for Fedora, openSUSE and RHEL, or the AppImage on any Linux.",
+     "code": "sudo apt install ./<file>.deb"
+    },
+    {
+     "title": "Add the browser extension",
+     "text": "Get it from Firefox Add-ons or the Chrome Web Store. The Chrome Web Store version also works in Edge, Brave, Opera, Vivaldi and Helium."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "MDM",
+    "text": "Follow the README's guide to your first download, then try catching a download from your browser with the extension."
+   },
+   "watch": [
+    "Windows may say \"Windows protected your PC\" the first time, because this early version is not code-signed yet.",
+    "On Linux, screen readers do not read its windows yet and Flatpak browsers cannot reach it.",
+    "The macOS builds are marked experimental.",
+    "The MCP server lets an AI assistant list, add, pause and remove your downloads."
+   ],
+   "sources": [
+    "https://github.com/anefzaoui/misterdownloadmanager",
+    "https://raw.githubusercontent.com/anefzaoui/misterdownloadmanager/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "improve",
+   "repo": "github.com/shadcn/improve",
+   "stars": "11.3k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Any agent that supports the Agent Skills format",
+   "short": "An AI skill that audits your codebase with your strongest model and writes plans that cheaper models can carry out.",
+   "what": "improve is an agent skill from shadcn. It maps your repo, audits it across nine categories with parallel subagents, checks every finding itself and shows you a ranked table. You pick which findings become plans, and it writes one self-contained Markdown plan per finding into `plans/`, with exact steps and verification commands. It never changes your source code itself.",
+   "who": "Developers who want a careful review of a codebase and are happy to hand the work to another agent or do it themselves. Skip it if you want a tool that just fixes things: it only advises and writes plans.",
+   "needs": [
+    "Node, for `npx`",
+    "A coding agent that supports Agent Skills"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "code": "npx skills add shadcn/improve"
+    },
+    {
+     "title": "Run an audit",
+     "text": "Open your agent in the repo and run `/improve`, or `/improve quick` to keep it cheap."
+    },
+    {
+     "title": "Choose what to plan",
+     "text": "It comes back with a findings table. Reply with the ones you want, for example \"plan 1, 3 and 5\". Plans land in `plans/` with an index and a suggested order."
+    },
+    {
+     "title": "Carry out a plan",
+     "text": "Hand a plan to any agent, or let the skill dispatch a cheaper model in an isolated worktree and review its diff. Merging stays with you.",
+     "code": "/improve execute 001"
+    },
+    {
+     "title": "Keep the backlog current",
+     "text": "Next session, `/improve reconcile` checks what landed and refreshes plans that drifted. Before a PR, `/improve branch` audits only what your branch changes."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/improve quick"
+   },
+   "watch": [
+    "`/improve execute` runs another model in a git worktree, which uses more model calls.",
+    "`--issues` publishes plans as GitHub issues, so only use it where that is fine.",
+    "It reports where secrets are and what kind, but says it never reproduces their values."
+   ],
+   "sources": [
+    "https://github.com/shadcn/improve",
+    "https://raw.githubusercontent.com/shadcn/improve/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Codex Security",
+   "repo": "github.com/openai/codex-security",
+   "stars": "12k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Codex, a terminal CLI, a TypeScript SDK and GitHub Actions. Scans can run on OpenAI, Amazon Bedrock, OpenRouter, Fireworks AI and Cheaper Inference",
+   "short": "OpenAI's CLI and SDK that scan your code for security holes, check the findings are real and write patches.",
+   "what": "Codex Security scans a repository, chosen paths or a Git diff for vulnerabilities, validates candidate findings, and can generate patches and verify fixes. It saves a report with source evidence, can draft a `SECURITY.md` and export threat models, SARIF, JSON and CSV. You can use it inside Codex, from the `cs` command, from the TypeScript SDK or in CI.",
+   "who": "Developers and security teams who want an AI pass over their code for vulnerabilities, locally or in CI. Skip it if you cannot send your code to one of the supported model providers.",
+   "needs": [
+    "Node.js 22.13.0+ within 22.x, or Node.js 24.x or 26.x",
+    "Python 3.10+ (Python 3.10 also needs `tomli`)",
+    "A sign-in through `cs login`, an `OPENAI_API_KEY` or `CODEX_API_KEY` for CI, or another provider's credentials"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI and sign in",
+     "text": "`cs` and `codex-security` run the same CLI. To skip the global install, use `npx @openai/codex-security` in place of `cs`.",
+     "code": "npm install --global @openai/codex-security\ncs login"
+    },
+    {
+     "title": "Run your first scan",
+     "text": "Run it from the repository folder, then open the Markdown file at the REPORT path it prints.",
+     "code": "cs scan ."
+    },
+    {
+     "title": "Narrow the scope or go deeper",
+     "code": "# Scan selected paths.\ncs scan . --path src --path tests\n\n# Scan committed changes from a base revision to HEAD.\ncs scan . --diff origin/main\n\n# Run a deep scan of the repository.\ncs scan . --mode deep"
+    },
+    {
+     "title": "Draft a SECURITY.md",
+     "text": "It saves the draft outside the repository and leaves your files alone.",
+     "code": "cs policy ."
+    },
+    {
+     "title": "Or use the SDK in a project",
+     "code": "npm install @openai/codex-security"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Codex with the Codex Security plugin",
+    "text": "Run a Codex Security scan on this repository, focusing on authentication and authorization. Return the saved report, source evidence, and coverage limits."
+   },
+   "watch": [
+    "Scans send your code to the model provider you sign in with.",
+    "The GitHub Actions example uses an estimated $5 limit per scan, and requests in progress can go over it. `cs scan --help` lists cost limits.",
+    "Some cybersecurity requests and protected findings need OpenAI's Trusted Access for Cyber.",
+    "The CI route needs an API key stored as a repository secret."
+   ],
+   "sources": [
+    "https://github.com/openai/codex-security",
+    "https://raw.githubusercontent.com/openai/codex-security/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "bedrock-migration-assessment",
+   "repo": "github.com/aws/agent-toolkit-for-aws",
+   "stars": "3.4k",
+   "level": "Advanced",
+   "cost": "Apache 2.0 licence. Cost not stated in the README",
+   "works_with": "Claude Code through the aws-startup-advisor plugin. Other agents through `npx skills add`",
+   "short": "Finds every OpenAI, Anthropic, Gemini or OpenRouter call in your code and starts the questions for moving them to Amazon Bedrock.",
+   "what": "bedrock-migration-assessment is a skill in AWS's aws-startup-advisor plugin. It scans your code for calls to OpenAI (direct or Azure), Anthropic, Google Gemini and OpenRouter, or validates an `ai-workload-profile.json` you already have, and writes a short preview. With your consent and an admin or management key it can also measure your OpenAI, Anthropic and OpenRouter usage, read only. Then it asks the migration questions and saves your answers to `preferences.json`.",
+   "who": "Teams thinking about moving their model calls to Amazon Bedrock who want a map of what they use first. This release stops after the questions: it does not design, estimate or rewrite code. The skill points to llm-to-bedrock for rewriting SDK calls.",
+   "needs": [
+    "A coding agent. Plugins exist for Claude Code, Codex, Cursor and Devin",
+    "An AWS account with credentials configured locally for API calls and script execution",
+    "uv, for the AWS MCP Server setup on agents without a plugin",
+    "An admin or management key from OpenAI, Anthropic or OpenRouter only if you want usage measured"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin in Claude Code",
+     "text": "aws-startup-advisor comes from this repository's own marketplace.",
+     "code": "/plugin marketplace add aws/agent-toolkit-for-aws\n/plugin install aws-startup-advisor@agent-toolkit-for-aws\n/reload-plugins"
+    },
+    {
+     "title": "Or install the skills for another agent",
+     "code": "npx skills add aws/agent-toolkit-for-aws/skills"
+    },
+    {
+     "title": "Ask for an assessment",
+     "text": "Open your agent in the project and ask which AI provider calls your code makes and what moving them to Bedrock involves. The skill writes its files to `.migration/bma-[MMDD-HHMM]/` in your project."
+    }
+   ],
+   "try": {
+    "label": "From the SKILL.md",
+    "where": "Your coding agent",
+    "text": "Find which OpenAI, Anthropic, Gemini or OpenRouter calls this code makes and assess a migration to Amazon Bedrock."
+   },
+   "watch": [
+    "Measuring usage needs an admin or management key from the provider. It is optional and only runs with your consent.",
+    "The skill says it never opens `.env` files, private keys or other secret files in your project.",
+    "It stops after the questions and does not produce a design, cost estimate or code changes yet.",
+    "The plugin also bundles the AWS MCP Server, which can call AWS APIs with your credentials."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/aws/agent-toolkit-for-aws/plugins-aws-startup-advisor-skills-bedrock-migration-assessment",
+    "https://raw.githubusercontent.com/aws/agent-toolkit-for-aws/main/plugins/aws-startup-advisor/skills/bedrock-migration-assessment/SKILL.md",
+    "https://raw.githubusercontent.com/aws/agent-toolkit-for-aws/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "gstack",
+   "repo": "github.com/garrytan/gstack",
+   "stars": "140.8k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code in full. Codex CLI, OpenCode, Cursor, Gemini CLI, Copilot CLI and others as experimental. This skill also covers Capy",
+   "short": "Sets up gstack, Garry Tan's set of slash commands for planning, review, QA, security and shipping, and checks the install works.",
+   "what": "gstack turns a coding agent into a set of specialist roles, from product review to code review, browser QA, security audits and release. This skill is the gstack entry for Capy and Claude Code: at session start it runs an install check, installs gstack only when a workflow needs it, and then loads the right workflow file. The README says it is all slash commands and Markdown.",
+   "who": "Founders, tech leads and first-time coding agent users who want structured roles instead of a blank prompt. Skip it if you want something small: it is a large toolkit with hooks, a bundled browser and an update check.",
+   "needs": [
+    "Claude Code, or another supported agent",
+    "Git",
+    "Bun v1.4.2+ (setup refuses Bun older than 1.3.3)",
+    "Node.js on Windows, where it works through Git Bash or WSL"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "text": "The README has you paste an install request into Claude Code, which runs this command and adds a short gstack section to CLAUDE.md.",
+     "code": "git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup"
+    },
+    {
+     "title": "Or install for other agents",
+     "text": "`--host auto` installs for every agent setup finds on the machine.",
+     "code": "git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/gstack\ncd ~/gstack && ./setup --host auto      # or: ./setup --host codex\n./setup --status                         # one row per install: host, tier, scope, version, path"
+    },
+    {
+     "title": "Start with office hours",
+     "text": "Run `/office-hours` and describe what you are building. It writes a design doc the other skills read."
+    },
+    {
+     "title": "Review and test",
+     "text": "Run `/review` on a branch with changes, then `/qa` on your staging URL. When you want the whole sprint, `/autoplan` and `/ship` take over."
+    },
+    {
+     "title": "Check the install",
+     "text": "The doctor prints one row per check with the fix for anything that fails.",
+     "code": "~/.claude/skills/gstack/bin/gstack-doctor"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "/office-hours, then describe what you are building."
+   },
+   "watch": [
+    "Setup registers hooks and builds a bundled browser, and the browser skills on macOS can use your real logged-in sessions in the Aside browser.",
+    "The update check is on by default and makes a few GitHub requests. Turn it off with `gstack-config set update_check false`.",
+    "Outside reviews are on by default and send code to Codex or Claude Code under your own login. Turn them off with `gstack-config set codex_reviews disabled`.",
+    "Telemetry is off by default and asked about once.",
+    "The skill's own installer targets Capy's Ubuntu cloud machines and says not to run it on a personal device without permission.",
+    "Team mode commits a gstack requirement into your repo, and its `required` hook needs Node.js for every teammate."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/garrytan/gstack/capy-skill-gstack",
+    "https://raw.githubusercontent.com/garrytan/gstack/main/capy/skill/gstack/SKILL.md",
+    "https://raw.githubusercontent.com/garrytan/gstack/HEAD/README.md"
+   ]
+  }
+ ]
+}
