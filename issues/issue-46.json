@@ -1,0 +1,525 @@
+{
+ "issue": 46,
+ "date": "13 Nov 2026",
+ "checked": "13 Nov 2026",
+ "blurb": "Every repo and skill from the 13 November issue, with what each does and the setup steps from its own files.",
+ "intro": "Issue #46 had six repos and four AI skills, and this page covers all ten. Web developers should try Modern Web Guidance first. It installs with one command and stops your agent writing old patterns. If you want something more fun, Pinky lets an agent use your phone while you approve each risky step.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Modern Web Guidance",
+   "repo": "github.com/GoogleChrome/modern-web-guidance-src",
+   "stars": "3.9k",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0 code, CC BY 4.0 guides)",
+   "works_with": "Claude Code, Codex, GitHub Copilot CLI, Google Antigravity, Grok Build CLI, Kimi Code, and agents that use `npx skills` or `gh skill`",
+   "short": "An AI skill from the Chrome team that hands your coding agent current web platform guides, so it stops writing old patterns.",
+   "what": "Modern Web Guidance is a set of AI skills with browser support data and best practices for about 250 modern web features, from container queries to the Popover API. When your agent works on a web task, it runs a small CLI that searches the guides offline and pulls the right one into its context. This repo is the source, with the evals; the installable skill lives in GoogleChrome/modern-web-guidance.",
+   "who": "Web developers who let a coding agent write front end code and keep getting heavy JavaScript where a native feature would do. If you don't build for the browser, you can skip it.",
+   "needs": [
+    "Node.js with `npx`",
+    "A coding agent that reads skills or plugins"
+   ],
+   "steps": [
+    {
+     "title": "Run the installer",
+     "text": "An interactive wizard sets it up for your agent.",
+     "code": "npx modern-web-guidance@latest install"
+    },
+    {
+     "title": "Or try it without installing",
+     "code": "# Search for relevant guides\nnpx modern-web-guidance@latest search \"animate a dialog modal backdrop\"\n\n# Retrieve a guide by ID\nnpx modern-web-guidance@latest retrieve \"animate-to-from-top-layer\"\n\n# Scan a codebase for legacy patterns to modernize\nnpx modern-web-guidance@latest legacy-scan ."
+    },
+    {
+     "title": "Or install it through your agent",
+     "text": "The README lists a command for each agent. For Codex:",
+     "code": "codex plugin marketplace add GoogleChrome/modern-web-guidance\ncodex plugin add modern-web-guidance@googlechrome"
+    },
+    {
+     "title": "Pick the skill packs",
+     "text": "Add `--choose` to pick between `modern-web-guidance` and `chrome-extensions`.",
+     "code": "npx modern-web-guidance@latest install --choose"
+    },
+    {
+     "title": "Keep it current",
+     "code": "npx modern-web-guidance@latest update"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `npx modern-web-guidance@latest legacy-scan .` in a web project to list old patterns worth modernizing."
+   },
+   "watch": [
+    "Google collects anonymous usage data, including the agent's name, guide IDs and the search queries your agent sends. Raw prompts are not collected. Set `DISABLE_TELEMETRY=1` in your shell profile to opt out.",
+    "Guides for Origin Trial and volatile features stay locked until you opt in with a `.mwgrc` file."
+   ],
+   "sources": [
+    "https://github.com/GoogleChrome/modern-web-guidance-src",
+    "https://raw.githubusercontent.com/GoogleChrome/modern-web-guidance-src/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "UI SDK",
+   "repo": "github.com/vercel-labs/ui",
+   "stars": "2.7k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README (beta, under Vercel beta terms)",
+   "works_with": "React, Vue, Svelte, Solid and Web Components, plus coding agents that take skills",
+   "short": "A beta library of interface behaviors like focus, popups and drag and drop, with a skill so your coding agent can build components from it.",
+   "what": "UI SDK puts keyboard navigation, focus, selection, dismissal, popups, drag and drop and the ARIA they need into `@ui-sdk/core`. You build a component from these behaviors once and render it with adapters for React, Vue, Svelte, Solid or Web Components. The README says you don't need to learn the primitive syntax yourself, because the agent skill teaches your agent to write it.",
+   "who": "Front end developers who want accessible components and let an agent write them. It is in beta and the APIs may change, so skip it for anything that needs a stable API today.",
+   "needs": [
+    "A JavaScript project with npm",
+    "One of React, Vue, Svelte, Solid or Web Components",
+    "A coding agent that can take skills"
+   ],
+   "steps": [
+    {
+     "title": "Install core and your adapter",
+     "text": "For other frameworks, swap `@ui-sdk/react` for `@ui-sdk/vue`, `@ui-sdk/svelte`, `@ui-sdk/solid` or `@ui-sdk/web`.",
+     "code": "npm install @ui-sdk/react @ui-sdk/core"
+    },
+    {
+     "title": "Give your agent the skill",
+     "code": "npx skills add vercel-labs/ui --skill ui-sdk"
+    },
+    {
+     "title": "Ask for a component",
+     "text": "The README's example is a search field with a clear button, built with `definePrimitive` and rendered with `createParts`. The docs are at https://ui-sdk.dev/docs."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask it to build a search field with a clear button using UI SDK, then render it in your framework."
+   },
+   "watch": [
+    "UI SDK is in beta under the Vercel beta terms, and the framework, APIs, docs and behavior may change before general availability."
+   ],
+   "sources": [
+    "https://github.com/vercel-labs/ui",
+    "https://raw.githubusercontent.com/vercel-labs/ui/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "klad",
+   "repo": "github.com/klad-app/klad",
+   "stars": "174",
+   "level": "Advanced",
+   "cost": "Free for personal use and for companies under 500,000 euros a year in revenue; larger companies need a bought licence",
+   "works_with": "macOS (with pen pressure), builds on Linux and Windows; any coding agent that can run commands",
+   "short": "A painting and animation app you share with your coding agent: it paints with the same brushes through a command line, and you see every stroke.",
+   "what": "klad is a 2D painting and animation app with brushes, layers, a timeline, pixel art and Godot export. Your agent paints through the `klad` command line on the same drawing you have open, and you see each other's strokes as they land. There is no image model inside. Every stroke and fill stays as data, so you can pick one later and recolour, bend or delete it.",
+   "who": "Game makers and artists who want an agent to draw props, sprites or scenes they can still edit by hand. You build it yourself with Rust, so skip it for now if you want an installer.",
+   "needs": [
+    "Rust, installed with rustup",
+    "`just` (`brew install just` or `cargo install just`)",
+    "On Linux: `pkg-config`, `libfreetype-dev`, `libfontconfig1-dev`, `libxkbcommon-dev` and `libwayland-dev`",
+    "About ten minutes for the first build"
+   ],
+   "steps": [
+    {
+     "title": "Build it and open the editor",
+     "code": "git clone https://github.com/klad-app/klad && cd klad\njust compile\ntarget/release/klad open      # on Linux: target/linux/release/klad open"
+    },
+    {
+     "title": "Put klad on your path",
+     "text": "This lets your agent run it. On a Mac it may ask for your password.",
+     "code": "target/release/klad install"
+    },
+    {
+     "title": "Start your agent and paste the prompt",
+     "text": "Start it in the folder where the drawing should go and paste the prompt from the README (below)."
+    },
+    {
+     "title": "Watch the strokes land",
+     "text": "Once the agent has made `scene.klad`, open it in another terminal and draw along.",
+     "code": "klad open scene.klad"
+    },
+    {
+     "title": "Steer it",
+     "text": "Press N to pin a note on the canvas and tell the agent to read your notes, or pick any stroke with S and change it yourself."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `klad skill` and `klad skill drawing` and read what they print. Then make scene.klad and paint a night scene: a hooded traveller holding a lantern out to a ruined arch, a small creature following, flat shaded and lit by the lantern."
+   },
+   "watch": [
+    "Source available, not open source. Only the file format, command reference, agent skills and client crate are MIT.",
+    "There are no installers yet. The editor is made on a Mac, Linux has no tablet pressure yet, and nobody has drawn with it on Windows.",
+    "It checks for a new version once a day, and you can turn that off. No account is needed.",
+    "Bones are a preview and the file format still changes, with migrations."
+   ],
+   "sources": [
+    "https://github.com/klad-app/klad",
+    "https://raw.githubusercontent.com/klad-app/klad/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "ZigZag",
+   "repo": "github.com/simpsoka/zigzag",
+   "stars": "406",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "macOS 11+, Windows 10 (1709+) and 11; Claude Code, Claude Desktop and other MCP clients",
+   "short": "An embroidery editor that turns SVG art into stitches, exports to common machine formats and lets an AI agent edit designs with you.",
+   "what": "ZigZag is a visual embroidery editor written in Rust. It turns SVG artwork into stitches and exports PES, DST, EXP, JEF or VP3 files, or sends designs straight to a Brother Skitch (PP1) over Bluetooth. It runs an MCP server so an agent can edit the design you have open, and it has a `zigzag` command line tool too.",
+   "who": "People with a home embroidery machine who want to digitize their own designs, especially Brother Skitch owners. If you don't embroider, there's nothing here for you.",
+   "needs": [
+    "A Mac on macOS 11 or later, or 64-bit Windows 10 (version 1709 or later) or Windows 11",
+    "Rust only if you build it yourself"
+   ],
+   "steps": [
+    {
+     "title": "Download the app",
+     "text": "On a Mac, get ZigZag.dmg from https://github.com/simpsoka/zigzag/releases/latest/download/ZigZag.dmg and drag it into Applications. On Windows, unzip the `ZigZag-<version>-x86_64-windows.zip` asset from the latest release and double-click ZigZag.exe."
+    },
+    {
+     "title": "Get past the Windows warning",
+     "text": "SmartScreen warns the first time. Click More info, then Run anyway."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "The studio runs an MCP server on localhost. For Claude Code:",
+     "code": "claude mcp add --transport http zigzag http://127.0.0.1:7878/mcp"
+    },
+    {
+     "title": "Or use the command line",
+     "code": "zigzag convert logo.svg -o logo.pes -o logo.jef -o preview.png -o sheet.html [--fabric thin-cap] [--hat]"
+    },
+    {
+     "title": "Or build from source",
+     "code": "cargo build --release                        # CLI + MCP bridge, no system deps\ncargo build --release --features gui,ble     # + the studio editor and Skitch upload"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Draw a 50 mm round badge with mountains and a sun for my thin cotton cap, check it, and show me the preview."
+   },
+   "watch": [
+    "The Windows build has no Microsoft-trusted signature, so SmartScreen warns. The Mac build is signed and notarized.",
+    "The MCP server only listens on localhost. Agent edits change the document you have open, and each call is one undo step.",
+    "Sending to a Skitch uses Bluetooth."
+   ],
+   "sources": [
+    "https://github.com/simpsoka/zigzag",
+    "https://raw.githubusercontent.com/simpsoka/zigzag/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "TensorFold",
+   "repo": "github.com/ashhart/TensorFold",
+   "stars": "2.0k",
+   "level": "Advanced",
+   "cost": "Not stated in the README (model weights have their own licenses)",
+   "works_with": "Macs with Apple Silicon, Linux with an NVIDIA GPU, Windows with an NVIDIA GPU (build guide)",
+   "short": "Runs open language models on your own Mac or NVIDIA machine from a single Zig binary, with an OpenAI-style API and no Python needed.",
+   "what": "TensorFold is an inference engine written in Zig. It reads model checkpoints and runs Metal or CUDA kernels directly, so serving needs no Python or MLX. It serves chat completions, completions, Responses and Anthropic Messages on a local port. There is also a small local web app and a beta Mac app.",
+   "who": "Developers who want to serve local models on Apple Silicon or NVIDIA hardware. Skip it if you have neither, and check each model's memory needs first: many models in its table need a big Mac or a GB10.",
+   "needs": [
+    "A Mac with Apple Silicon and Homebrew, or",
+    "Linux with an NVIDIA GPU, glibc 2.28 or newer and NVIDIA driver R580 or newer (CUDA 13.0)",
+    "Disk space for the model you pull"
+   ],
+   "steps": [
+    {
+     "title": "Install on a Mac and start a small model",
+     "code": "brew install ashhart/tensorfold/tensorfold\ntensorfold pull mlx-community/Qwen3.5-2B-MLX-4bit@93760be4f1f69842a46bc13dbdc0f19e291392a3\ntensorfold serve mlx-community/Qwen3.5-2B-MLX-4bit --name local-model --context 8192 --no-thinking"
+    },
+    {
+     "title": "Or install on Linux with NVIDIA",
+     "text": "This downloads the release archive, checks its checksum and serves the same model.",
+     "code": "V=1.2.7\ncase \"$(uname -m)\" in\n  aarch64|arm64) PLATFORM=linux-aarch64 ;;\n  x86_64) PLATFORM=linux-x86_64 ;;\n  *) echo 'No release archive for this CPU' >&2; exit 1 ;;\nesac\ncurl -fLO \"https://github.com/ashhart/TensorFold/releases/download/v$V/tensorfold-$V-$PLATFORM.tar.gz\"\ncurl -fLO \"https://github.com/ashhart/TensorFold/releases/download/v$V/tensorfold-$V-$PLATFORM.tar.gz.sha256\"\nsha256sum -c \"tensorfold-$V-$PLATFORM.tar.gz.sha256\"\ntar -xzf \"tensorfold-$V-$PLATFORM.tar.gz\"\nexport PATH=\"$PWD/tensorfold-$V-$PLATFORM/bin:$PATH\"\ntensorfold() { command tensorfold-native \"$@\"; }\ntensorfold pull mlx-community/Qwen3.5-2B-MLX-4bit@93760be4f1f69842a46bc13dbdc0f19e291392a3\ntensorfold serve mlx-community/Qwen3.5-2B-MLX-4bit --name local-model --context 8192 --no-thinking"
+    },
+    {
+     "title": "Send a request",
+     "text": "Leave the server running and use another terminal.",
+     "code": "curl -fsS http://127.0.0.1:8080/v1/chat/completions \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"model\":\"local-model\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello in one sentence.\"}],\"max_tokens\":128,\"temperature\":0}'"
+    },
+    {
+     "title": "Check a bigger model first",
+     "text": "`tensorfold info REPO` reports a checkpoint's memory floor before you serve it."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Serve Qwen3.5-2B as `local-model` and send it \"Say hello in one sentence.\" with the curl command above."
+   },
+   "watch": [
+    "Model weights have their own licenses.",
+    "The Linux build refuses NVIDIA drivers older than R580.",
+    "Context, parallel requests, prompt caches and drafters need memory beyond the weights, and many listed models have no published RAM minimum.",
+    "`tensorfold web` can offer to install the web app with `uv`, and asks first."
+   ],
+   "sources": [
+    "https://github.com/ashhart/TensorFold",
+    "https://raw.githubusercontent.com/ashhart/TensorFold/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "AssemblyForNeovim",
+   "repo": "github.com/0xdeadf1sh/AssemblyForNeovim",
+   "stars": "218",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Neovim with lazy.nvim; C, C++ and Rust",
+   "short": "A Neovim plugin that shows the assembly for your C, C++ or Rust code in a floating window.",
+   "what": "AssemblyForNeovim compiles the function under your cursor, or the lines you select, and shows the assembly in a floating window. In that window you can change the `-O` level and rerun. It uses `compile_commands.json` if it finds one.",
+   "who": "C, C++ and Rust programmers who use Neovim and want to check what the compiler produces without leaving the editor. Everyone else can skip it.",
+   "needs": [
+    "Neovim with the lazy.nvim plugin manager",
+    "`cc`/`c++` or `rustc`/`cargo` on your `PATH`"
+   ],
+   "steps": [
+    {
+     "title": "Add it to lazy.nvim",
+     "code": "{\n\t\"0xdeadf1sh/AssemblyForNeovim\",\n\tconfig = function()\n\t\trequire(\"asm\").setup()\n\tend,\n}"
+    },
+    {
+     "title": "Show a function's assembly",
+     "text": "Press `<leader>a` in normal mode for the function under the cursor, or in visual mode for the selected lines. `:'<,'>Asm` also works."
+    },
+    {
+     "title": "Work in the window",
+     "text": "`+` and `-` change the `-O` level, `R` reruns and `q` closes."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Neovim",
+    "text": "Put the cursor in a function and press `<leader>a`, then press `+` to see how a higher `-O` level changes the output."
+   },
+   "watch": [
+    "It runs your compiler on your code to produce the assembly."
+   ],
+   "sources": [
+    "https://github.com/0xdeadf1sh/AssemblyForNeovim",
+    "https://raw.githubusercontent.com/0xdeadf1sh/AssemblyForNeovim/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "pinky",
+   "repo": "github.com/DIYgod/pinky",
+   "stars": "1.9k",
+   "level": "Intermediate",
+   "cost": "Free (Apache 2.0), no account",
+   "works_with": "Claude Code, Claude Desktop, Codex, Cursor, VS Code, Copilot CLI, Windsurf, Gemini CLI and other MCP agents; macOS, Windows and Linux",
+   "short": "The agent guide for Pinky, an app that lets your AI agent use your real iPhone or Android phone while you watch and approve risky steps.",
+   "what": "Pinky is a desktop app that lets an agent operate a real phone over MCP while you watch it on your computer. This skill is Pinky's agent guide: how to start a task, read the screen, tap and type, ask for approval and hand back when done. Pinky installs and updates the guide itself when you connect an agent. Payments wait for your click, and banking, wallet and password manager apps are hidden from agents by default.",
+   "who": "People who want an agent to do tasks on their phone, or developers testing their own mobile app. It is pre-alpha, so skip it if you don't want early software touching your phone.",
+   "needs": [
+    "macOS 13+, 64-bit Windows 10 or 11, or 64-bit Linux (Ubuntu 20.04, Debian 11 or newer, with GTK 3)",
+    "An Android phone on Android 10 to 17, or an iPhone or iPad on iOS 17.4 or later, and a USB cable",
+    "For iPhones: Apple's developer disk image, which comes with Xcode on a Mac",
+    "An agent that can use MCP servers"
+   ],
+   "steps": [
+    {
+     "title": "Install Pinky",
+     "text": "Download it from https://github.com/DIYgod/pinky/releases/latest. On a Mac with Homebrew:",
+     "code": "brew install --cask diygod/tap/pinky"
+    },
+    {
+     "title": "Connect your phone",
+     "text": "Open Pinky and choose Add phone. For Android, turn on USB debugging, plug the phone in and tap Allow. For an iPhone, plug it in, tap Trust and turn on Developer Mode when Pinky asks."
+    },
+    {
+     "title": "Connect your agent",
+     "text": "In Settings › Agents, click Connect next to your agent. This adds Pinky to its MCP servers and installs this skill. For Claude Code in a terminal:",
+     "code": "claude mcp add --scope user pinky -- pinkyctl mcp"
+    },
+    {
+     "title": "Try a task",
+     "text": "Ask your agent to do something on the phone and watch it in Pinky's window. The first time, Pinky asks whether to allow the agent and what it may do."
+    },
+    {
+     "title": "No phone handy",
+     "text": "Start an iOS Simulator or Android emulator in Add phone › Virtual phone, or run Pinky with scripted demo phones (on Linux):",
+     "code": "pinkyctl --fake"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Open Messages on my phone and tell Sam I'm running late."
+   },
+   "watch": [
+    "The agent works on your real phone. Payments, trades and transfers wait for your click by default; in Settings › Safety you can make sends, deletions, installs and more wait too.",
+    "Connecting an agent changes its MCP settings. Pinky copies the settings file first and only edits its own entry.",
+    "Android needs USB debugging on and installs Pinky's phone app. iPhones need Developer Mode on.",
+    "Pinky sends anonymous usage counts and crash reports. Turn them off in Settings › Privacy or with `DO_NOT_TRACK=1`.",
+    "The Windows installer is not signed yet. Pinky is pre-alpha."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/DIYgod/pinky/main/docs/SKILL.md",
+    "https://raw.githubusercontent.com/DIYgod/pinky/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "geo-optimizer",
+   "repo": "github.com/nowork-studio/notfair-plugin",
+   "stars": "4.1k",
+   "level": "Intermediate",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Gemini CLI, Cursor, Hermes and other agents that read skills",
+   "short": "Audits a page for AI search, rewrites it to be easier to cite, plans a strategy, or measures how AI answers mention your brand.",
+   "what": "geo-optimizer is one of 45 marketing skills in the NotFair plugin. It does four jobs: audit a page against a scored rubric, rewrite content so answers come first and claims have evidence, write a 30/60/90 day plan, or measure how ChatGPT, Perplexity, Claude, Gemini and Google AI Overviews mention your brand. It refuses to invent statistics, quotes or sources.",
+   "who": "Marketers and site owners who care whether AI answers cite them. If you don't run a public site, skip it.",
+   "needs": [
+    "An agent that supports plugins or skills",
+    "A NotFair account through browser OAuth only if you want live Search Console or analytics data"
+   ],
+   "steps": [
+    {
+     "title": "Install in Claude Code",
+     "code": "/plugin marketplace add nowork-studio/notfair-plugin\n/plugin install notfair@nowork-studio"
+    },
+    {
+     "title": "Or install in Codex",
+     "text": "This also opens the NotFair login.",
+     "code": "codex plugin marketplace add nowork-studio/notfair-plugin --json && codex plugin add notfair@nowork-studio --json && codex mcp login NotFair"
+    },
+    {
+     "title": "Or install in Gemini CLI",
+     "code": "gemini extensions install https://github.com/nowork-studio/notfair-plugin"
+    },
+    {
+     "title": "Run the skill",
+     "text": "Use `/notfair:geo-optimizer` and say whether you want an audit, a rewrite, a strategy or a measurement."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Find pages that could earn citations in AI answers."
+   },
+   "watch": [
+    "The plugin registers a remote NotFair MCP connection. Tool arguments go to NotFair, and results from your connected accounts come back to your agent.",
+    "The skill says it never publishes changes to a site without your yes to the exact change."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/nowork-studio/notfair-plugin/main/skills/geo-optimizer/SKILL.md",
+    "https://raw.githubusercontent.com/nowork-studio/notfair-plugin/main/seo/geo-optimizer/WORKFLOW.md",
+    "https://raw.githubusercontent.com/nowork-studio/notfair-plugin/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "schema",
+   "repo": "github.com/coreyhaines31/marketingskills",
+   "stars": "59.8k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, Windsurf and any agent that supports the Agent Skills spec",
+   "short": "Adds, fixes or checks JSON-LD schema markup on your pages and tells you which Google rich results still exist.",
+   "what": "schema is one of Corey Haines's marketing skills. It asks what kind of page you have and what you want from search, then writes JSON-LD for types like Organization, Article, Product or BreadcrumbList. It checks Google's current feature support first, noting for example that FAQ and HowTo rich results are retired. It ends with a testing checklist using the Rich Results Test and the Schema.org Validator.",
+   "who": "Founders and marketers who manage their own site and want structured data done right. Skip it if your CMS plugin already handles schema and you're happy with it.",
+   "needs": [
+    "Node.js for `npx skills`, or a Claude Code or Codex plugin setup",
+    "A coding agent that reads skills"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs the whole set, schema included. To install only some, list them after `--skill`, as in the README's example `npx skills add coreyhaines31/marketingskills --skill cro copywriting`.",
+     "code": "npx skills add coreyhaines31/marketingskills"
+    },
+    {
+     "title": "Or use the Claude Code plugin",
+     "code": "# Add the marketplace\n/plugin marketplace add coreyhaines31/marketingskills\n\n# Install all marketing skills\n/plugin install marketing-skills"
+    },
+    {
+     "title": "Add your context (optional)",
+     "text": "If `.agents/product-marketing.md` exists, the skill reads it first and asks fewer questions."
+    },
+    {
+     "title": "Ask for markup",
+     "text": "Tell your agent what the page is and which rich result you want. It returns JSON-LD and a checklist."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Add schema markup to my product page and tell me how to test it."
+   },
+   "watch": [
+    "If you run `npx skills` from inside an agent session, it may install only to `.agents/skills/`, which Claude Code does not read. The README says to add `-a claude-code`.",
+    "The `/plugin` command only works in an interactive Claude Code CLI session."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/main/skills/schema/SKILL.md",
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "gpt-anime-denoise",
+   "repo": "github.com/CXP-2024/gpt-anime-denoise",
+   "stars": "209",
+   "level": "Intermediate",
+   "cost": "Free (MIT code); models download under their own licenses",
+   "works_with": "Claude Code, Codex; NVIDIA, AMD, Apple Silicon or CPU",
+   "short": "Removes the fish-scale noise that GPT image models leave in anime and illustration images, without redrawing the picture.",
+   "what": "gpt-anime-denoise cleans the fine fish-scale texture and broken shading that GPT image models leave in anime style images. The default method shrinks the image to 60%, scales it back up with ESRGAN and smooths it with an L0 filter. It has a command line tool and a local web app with brushes to protect parts of the image. As a skill, it tells your agent to run the clean-up on every GPT anime image before handing it over.",
+   "who": "People who make anime or illustration images with GPT image models. The README is mostly in Chinese, with a short English summary, so expect to use a translator.",
+   "needs": [
+    "Python",
+    "PyTorch, spandrel, numpy, pillow and psutil (or the one-step installer)",
+    "About 100 MB for models, downloaded on first run"
+   ],
+   "steps": [
+    {
+     "title": "Get the code and install dependencies",
+     "text": "Clone or download the repo. The one-step installer detects your graphics card, shows what it will download, asks first and installs into a `.venv` in the folder.",
+     "code": "python setup_env.py"
+    },
+    {
+     "title": "Add it as a skill",
+     "text": "Put the whole folder in `.claude/skills/gpt-anime-denoise/`, or your Codex skills folder."
+    },
+    {
+     "title": "Clean an image",
+     "text": "Output goes to an `image_denoise/` folder next to it.",
+     "code": "python denoise.py image.png"
+    },
+    {
+     "title": "Compare methods",
+     "text": "This runs seven methods and makes a 4×2 comparison sheet.",
+     "code": "python denoise.py image.png --all"
+    },
+    {
+     "title": "Fine tune in the browser",
+     "text": "The local web app opens at http://127.0.0.1:7865/.",
+     "code": "python denoise_app.py"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `python denoise.py image.png --all` on a GPT anime image and compare the results at full size."
+   },
+   "watch": [
+    "Models download from their authors' sites on first run, with SHA-256 checks. They are not MIT: APISR is GPL-3.0 and Real-ESRGAN is BSD-3-Clause.",
+    "Images are processed only on your computer.",
+    "The example images are not covered by the MIT licence and are not for commercial use.",
+    "Without a GPU it works but is much slower: about 28 seconds per image in the README's CPU test."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/CXP-2024/gpt-anime-denoise/main/SKILL.md",
+    "https://raw.githubusercontent.com/CXP-2024/gpt-anime-denoise/HEAD/README.md"
+   ]
+  }
+ ]
+}
