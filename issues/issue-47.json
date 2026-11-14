@@ -1,0 +1,450 @@
+{
+ "issue": 47,
+ "date": "14 Nov 2026",
+ "checked": "14 Nov 2026",
+ "blurb": "Every repo and skill from the 14 November issue that we could write up, with what each does and the setup steps from its own files.",
+ "intro": "Issue #47 had five repos and four AI skills, and this page covers eight of them. If you use a coding agent every day, start with Plannotator: one installer adds a browser review screen for your agent's plans and diffs. If your agent loses track on long jobs, try planning-with-files next.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "Plannotator",
+   "repo": "github.com/backnotprop/plannotator",
+   "stars": "10.6k",
+   "level": "Beginner",
+   "cost": "Free (Apache 2.0 or MIT). Workspaces is a separate hosted product",
+   "works_with": "Claude Code, Codex, Copilot CLI, Gemini CLI, OpenCode, Kiro, Droid, Amp, DeepSeek Harness, Pi and T3 Code",
+   "short": "A local browser screen where you mark up your coding agent's plans, files and diffs, then send the notes back to it.",
+   "what": "Plannotator plugs into your coding agent through plugins, hooks and commands. When the agent proposes a plan, the plan opens in your browser, where you annotate it and approve or deny it. Denied plans go back as structured feedback. It also reviews local changes and GitHub or GitLab pull requests, annotates any file, folder or URL, and has an Inbox where agents leave you questions while they keep working.",
+   "who": "Anyone who wants to read and correct an agent's plan before it writes code, or review its diff the way you would a pull request. If you rarely use plan mode or review agent work by eye in the terminal, you can skip it.",
+   "needs": [
+    "A supported coding agent",
+    "macOS, Linux, WSL or Windows PowerShell for the installer",
+    "Optional: the `gh` CLI, to verify the release on install"
+   ],
+   "steps": [
+    {
+     "title": "Run the installer (macOS, Linux, WSL)",
+     "text": "It installs the `plannotator` binary, finds the agents you have and sets up hooks, skills and slash commands for each.",
+     "code": "curl -fsSL https://plannotator.ai/install.sh | bash"
+    },
+    {
+     "title": "Or on Windows PowerShell",
+     "code": "irm https://plannotator.ai/install.ps1 | iex"
+    },
+    {
+     "title": "Finish the step for your agent",
+     "text": "Claude Code needs the plugin, then a restart. Codex, Gemini CLI and Kiro need nothing more. The README has a table with the step for each other agent.",
+     "code": "/plugin marketplace add backnotprop/plannotator\n/plugin install plannotator@plannotator"
+    },
+    {
+     "title": "Try it from your agent",
+     "text": "Plan review needs no command. The next time your agent proposes a plan, it opens in your browser. On Codex, use the `$plannotator-*` skills instead of slash commands.",
+     "code": "/plannotator-last\n/plannotator-review\n/plannotator-annotate report.html"
+    },
+    {
+     "title": "Uninstall",
+     "text": "This keeps your local plans, history and settings. Add `--purge` to delete those too.",
+     "code": "plannotator uninstall"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `/plannotator-review` to review your uncommitted changes PR-style, or `/plannotator-review <github-pr-url>` for a pull request."
+   },
+   "watch": [
+    "The installer pipes a script from plannotator.ai straight into your shell. Read the script before you run it. `--verify-attestation` checks the release with the `gh` CLI.",
+    "It installs hooks into your agent, so it runs whenever the agent leaves plan mode.",
+    "Each review screen checks GitHub for a newer release when it loads, and there is no setting to turn that off. The README says it collects no telemetry or analytics.",
+    "Ask AI and review agents send the plan, document or diff to the AI provider you set up. URL annotation goes through Jina Reader by default.",
+    "Small share links carry the plan in the URL without encryption, so anyone with the link can read it. Turn sharing off with `PLANNOTATOR_SHARE=disabled`.",
+    "In remote mode (SSH, devcontainer, Docker) the server listens on every interface with no login. Keep that port closed to networks you don't trust."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/backnotprop/plannotator/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Veyra",
+   "repo": "github.com/Likely7/Veyra-NRVideo",
+   "stars": "1.8k",
+   "level": "Intermediate",
+   "cost": "Free (GPL-3.0). Optional donations",
+   "works_with": "Windows 11 x64 with DirectX 12, on NVIDIA or AMD graphics cards",
+   "short": "A Windows video player and capture tool that sharpens video, capture card feeds and game streams on your graphics card in real time.",
+   "what": "Veyra runs local video, images, capture cards, PS5 Remote Play, PC streaming through Sunshine, experimental Xbox streaming and screen capture through one GPU pipeline. It can add super resolution, denoising, HDR, anti-aliasing and frame generation, either from a simple list or a node editor. You can also record, take screenshots and export enhanced video to MP4 or MKV.",
+   "who": "Windows gamers and video fans with a recent NVIDIA or AMD card who want to upscale or smooth what they watch or capture. Skip it on Mac, Linux or older Windows, or without a capable GPU.",
+   "needs": [
+    "Windows 11 x64 with DirectX 12",
+    "An NVIDIA or AMD graphics card, with its drivers installed",
+    "Capture card drivers, if you use a capture card",
+    "For PC streaming: Sunshine, installed and set up yourself"
+   ],
+   "steps": [
+    {
+     "title": "Download the right package",
+     "text": "From the latest release on GitHub, get `Veyra-2.1.6-NVIDIA-win64-portable.zip` or `Veyra-2.1.6-AMD-win64-portable.zip`, to match your graphics card. You need only one."
+    },
+    {
+     "title": "Extract and run",
+     "text": "Extract it with Windows or 7-Zip into a new folder you can write to, then run `veyra_qml_ui.exe`."
+    },
+    {
+     "title": "Start with effects off",
+     "text": "Check that picture and sound work, then turn effects on one at a time. High resolution, layered denoising and frame generation all need more GPU memory."
+    },
+    {
+     "title": "Pick a source",
+     "text": "Home offers files, capture card, PS5, PC, Xbox and screen capture. You can also drop files into the window."
+    },
+    {
+     "title": "Turn on effects",
+     "text": "In Professional, choose List and switch on super resolution, denoising or RTX Video HDR. Export only works from List mode."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Veyra on Windows",
+    "text": "Drop a video file into the window, open Professional, choose List and switch on super resolution."
+   },
+   "watch": [
+    "Upgrading: extract into a new folder. Don't overwrite a new install with an old `veyra.ini`, a whole `runtime_local` folder or mixed DLLs.",
+    "PS5 pairing has you open a third-party site, PSNTools, to look up your Account ID.",
+    "Xbox streaming is unofficial and experimental, and account, service and console limits apply.",
+    "The README lists unverified cases: other overlay tools, long Xbox sessions, and some RTX 30/40 and AMD setups.",
+    "When you report a problem you share logs and crash dumps. The README asks you to check them for private data first.",
+    "The ANR runtime is not included, because its upstream does not allow redistribution during its beta."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/Likely7/Veyra-NRVideo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Clean Your TV app",
+   "repo": "github.com/udhaykumarbala/cleanyourtv-app",
+   "stars": "2.1k",
+   "level": "Beginner",
+   "cost": "Free (MIT). No accounts or ads",
+   "works_with": "An Android phone (Android 9 or newer) and Android TV, Google TV or Fire OS sets",
+   "short": "A phone app that switches off the adverts, tracking and bloat on your Android TV, with an undo for every change.",
+   "what": "This is a community phone app for Clean Your TV. It finds your TV on the Wi-Fi, reads what is installed and shows you a plan before it changes anything. Then it makes a restore point, switches apps off without uninstalling them and, on TVs where testers confirmed it holds, puts in a calmer home screen. Some TVs, including Fire TV and most Google TV sets, get the clean-up only.",
+   "who": "Anyone with a cluttered Android TV, including people who would never open a terminal. If you want to run the scripts yourself or add a new TV list, use the original Clean Your TV repo instead.",
+   "needs": [
+    "An Android phone on Android 9 or newer, with a screen lock",
+    "The phone and TV on the same Wi-Fi",
+    "Network debugging (ADB on port 5555) switched on on the TV. The app shows you how"
+   ],
+   "steps": [
+    {
+     "title": "Install the app",
+     "text": "Download the APK from the latest GitHub release and open it to install. You can also add it through Obtainium, which then keeps it updated from GitHub."
+    },
+    {
+     "title": "Connect to the TV",
+     "text": "The app finds the TV and shows you how to let the phone in with the remote. This takes about a minute."
+    },
+    {
+     "title": "Check the plan",
+     "text": "It lists what goes off and what stays. Nothing changes yet. Customise shows every command it would send, in order."
+    },
+    {
+     "title": "Clean it",
+     "text": "Tap \"Make it clean\". It saves a restore point first. The whole job takes about five minutes."
+    },
+    {
+     "title": "Check the download (optional)",
+     "text": "Compare the hash with the release notes and the signing certificate with the one in the README.",
+     "code": "sha256sum cleanyourtv-0.2.0.apk                 # compare with the release notes\napksigner verify --print-certs cleanyourtv-0.2.0.apk"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The app on your phone",
+    "text": "Tap Start, read the \"What we found\" screen to see what your TV gets, then tap \"Make it clean\"."
+   },
+   "watch": [
+    "You install an APK from outside the Play Store. The README gives the signing certificate so you can check it.",
+    "It needs network debugging on the TV. The app switches it off again at the end unless you keep it on.",
+    "Accessibility, casting, voice and updates go off only if you choose. Wi-Fi, the Play Store, the remote and TV inputs are never touched.",
+    "If the phone does not confirm the new home screen within 150 seconds, the TV puts its own home screen back.",
+    "On TVs with only pairing-code wireless debugging, you need a computer once to pair.",
+    "No accounts, analytics or ads. It only contacts GitHub when you check for updates or download an add-on."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/udhaykumarbala/cleanyourtv-app/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Sure",
+   "repo": "github.com/we-promise/sure",
+   "stars": "15.0k",
+   "level": "Intermediate",
+   "cost": "Free to self-host (AGPLv3). Hosting costs whatever your server costs",
+   "works_with": "Docker Compose; a browser, the macOS desktop app, the mobile app, API clients and AI agents",
+   "short": "A personal finance app you host yourself with Docker, a community fork of the abandoned Maybe Finance project.",
+   "what": "Sure is a full personal finance app that tracks cashflow, net worth and spending, with an optional AI assistant. It is a community-run fork of Maybe Finance, which stopped development and open-sourced its code. You run it on your own computer or server with Docker Compose, and there are one-click deploys for Render, PikaPods and Hostim.",
+   "who": "People who want a finance dashboard where they keep the data, and who are fine running Docker. If you want a hosted app with nothing to maintain, this is not it.",
+   "needs": [
+    "Docker Engine, installed and running",
+    "A secret key and a database password you generate",
+    "Optional: an SMTP server for password reset and other emails",
+    "Optional: an SSL certificate if you open it to the internet"
+   ],
+   "steps": [
+    {
+     "title": "Make a folder",
+     "code": "mkdir -p ~/docker-apps/sure\ncd ~/docker-apps/sure"
+    },
+    {
+     "title": "Get the compose file",
+     "code": "curl --fail --location --silent --show-error --output compose.yml https://raw.githubusercontent.com/we-promise/sure/main/compose.example.yml"
+    },
+    {
+     "title": "Get the environment file",
+     "code": "curl --fail --location --silent --show-error --output .env https://raw.githubusercontent.com/we-promise/sure/main/.env.example"
+    },
+    {
+     "title": "Generate a secret key",
+     "text": "Put it in `.env` as `SECRET_KEY_BASE`, and set `POSTGRES_PASSWORD` too.",
+     "code": "openssl rand -hex 64"
+    },
+    {
+     "title": "Start it",
+     "text": "Open http://localhost:3000 and click \"create your account\".",
+     "code": "docker compose up"
+    },
+    {
+     "title": "Run it in the background",
+     "text": "Press Ctrl+C first, then start it detached.",
+     "code": "docker compose up -d"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your browser",
+    "text": "After your first account, go to Settings > Self-Hosting > Onboarding and switch signups to Closed if you don't want anyone else to register."
+   },
+   "watch": [
+    "Keep your `SECRET_KEY_BASE`. It also seeds the keys that encrypt provider tokens and other sensitive data, and a new one makes that data unreadable.",
+    "Anyone can register until you set signups to Invite-only or Closed.",
+    "The Simple AI deploy uses OpenAI and asks for an OpenAI token.",
+    "Without SMTP it sends no emails. Self-hosted invitations are never emailed, so you copy the link from Settings yourself.",
+    "If you put it on the internet behind HTTPS, set `RAILS_ASSUME_SSL` to `true` in `compose.yml`."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/we-promise/sure/HEAD/README.md",
+    "https://raw.githubusercontent.com/we-promise/sure/HEAD/docs/hosting/docker.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "seo-audit",
+   "repo": "github.com/every-app/open-seo",
+   "stars": "27.4k",
+   "level": "Intermediate",
+   "cost": "Hosted OpenSEO is free to try, or $10 a month to support it. Self-hosting needs a pay-as-you-go DataForSEO API key",
+   "works_with": "AI agents connected to the OpenSEO MCP server, such as Claude Code, Codex, ChatGPT, OpenClaw and Hermes",
+   "short": "An AI skill that audits a website with OpenSEO's data and writes a short report on the few changes most likely to grow useful traffic.",
+   "what": "This skill runs an SEO audit through OpenSEO's tools: a site crawl, ranking and backlink data, live search checks and, if connected, Search Console. It reads real pages, shortlists five to ten options and picks one to three recommendations, each with evidence. The report is written for a non-expert and saved through OpenSEO's `seo-report` skill.",
+   "who": "Site owners and marketers who want a plain, evidence-backed answer to what to fix first. It needs an OpenSEO account and its MCP connection, so skip it if you won't set those up.",
+   "needs": [
+    "An OpenSEO account, hosted at openseo.so or self-hosted",
+    "The OpenSEO MCP server connected to your agent",
+    "OpenSEO's `seo-report` skill, which this skill uses to write the report",
+    "For self-hosting: a DataForSEO API key"
+   ],
+   "steps": [
+    {
+     "title": "Get OpenSEO",
+     "text": "Use the hosted version at openseo.so, or self-host it with Docker or on Cloudflare using the guides in the repo's `docs` folder."
+    },
+    {
+     "title": "Connect it to your agent",
+     "text": "The README links setup guides on openseo.so for ChatGPT, Codex, the OpenSEO MCP and the OpenSEO Agent Skills."
+    },
+    {
+     "title": "Add the skills",
+     "text": "The skill lives in the repo's `.agents/skills/seo-audit` folder. The README installs its skills with `npx skills add every-app/open-seo --skill` and the skill's name. Add `seo-report` too."
+    },
+    {
+     "title": "Ask for an audit",
+     "text": "Give it a domain. If the project has no business overview, it asks you one question to confirm what the business does."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your AI agent",
+    "text": "\"Run an SEO audit of mysite.com and tell me the one to three changes worth making first.\""
+   },
+   "watch": [
+    "Data lookups cost money. The skill checks your credits with `whoami` before spending. The hosted service adds 28% to each DataForSEO request.",
+    "It saves notes and a research log back to your OpenSEO project.",
+    "It fetches your site's pages and competitor pages from the web.",
+    "If OpenSEO is not connected, it stops and asks you to connect it."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/every-app/open-seo/main/.agents/skills/seo-audit/SKILL.md",
+    "https://raw.githubusercontent.com/every-app/open-seo/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "turn-into-app",
+   "repo": "github.com/BuilderIO/skills",
+   "stars": "4.7k",
+   "level": "Intermediate",
+   "cost": "Free to run on your machine. Builder hosting needs a free Builder account",
+   "works_with": "Claude Code, Codex, Cursor and other local coding agents; Claude and ChatGPT on the web through the Dispatch connector",
+   "short": "An AI skill that turns a thread, skill, spreadsheet or AI project into a working visual app with an agent behind its buttons.",
+   "what": "Point it at a workflow you have already proven, such as a finished thread, a skill, a spreadsheet or a project export. It writes a short brief, picks a shape for the app (a board, a schedule grid, a workbench with sliders), fills it with labelled sample data and builds a real Agent-Native app. It then runs the app, reviews screenshots at desktop and phone sizes, fixes what it finds, and typechecks and builds it.",
+   "who": "People with a repeatable job they keep asking an agent to do, who want a proper screen for it. If the job needs only guidance, the skill itself says a skill fits better than an app.",
+   "needs": [
+    "Node.js 22.22.0 or newer, with npm and npx, and pnpm, for building locally",
+    "A coding agent that can edit files, or Claude or ChatGPT on the web with the Dispatch connector",
+    "Optional: a free Builder account to host the app"
+   ],
+   "steps": [
+    {
+     "title": "Install the skill",
+     "code": "npx @agent-native/skills@latest add --skill turn-into-app"
+    },
+    {
+     "title": "Or install all Builder skills in Claude Code",
+     "text": "The repo is also a plugin marketplace.",
+     "code": "/plugin marketplace add BuilderIO/skills"
+    },
+    {
+     "title": "Run it on your workflow",
+     "text": "At the end of a thread that proved a repeatable job, or with a skill, spreadsheet or project export as the source.",
+     "code": "/turn-into-app ./forecast.xlsx"
+    },
+    {
+     "title": "Choose where it runs",
+     "text": "On a local agent it asks once: on your machine or hosted with Builder. For a local preview without an account, set `AUTH_DISABLED=1` in the ignored `.env`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "`/turn-into-app /some-skill` packages a skill as an app, even at the start of a thread."
+   },
+   "watch": [
+    "It scaffolds and runs a full app and installs packages. A run aims for about 45 minutes.",
+    "Never commit or deploy `AUTH_DISABLED=1`. The README says it is for local previews only.",
+    "It deploys only when you ask, or when a hosting provider is already set up.",
+    "On Claude or ChatGPT on the web, it hands a brief to Builder through Dispatch and cannot run the app there.",
+    "It does not read hidden project chats, private URLs or logged-in pages, so attach an export when context is not visible."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/BuilderIO/skills/main/skills/turn-into-app/SKILL.md",
+    "https://raw.githubusercontent.com/BuilderIO/skills/main/skills/turn-into-app/README.md",
+    "https://raw.githubusercontent.com/BuilderIO/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "planning-with-files",
+   "repo": "github.com/OthmanAdi/planning-with-files",
+   "stars": "28.0k",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Cursor, GitHub Copilot, Kiro, OpenCode, Pi, Hermes Agent, DeepSeek Harness and other agents that read skills",
+   "short": "An AI skill that keeps your agent's plan, findings and progress in three files on disk, so a long job survives a reset or crash.",
+   "what": "Your agent writes `task_plan.md`, `findings.md` and `progress.md` in your project and updates them as it works. Hooks put the current plan back into context each turn, so after a context reset, compaction or crash the agent picks up at the right phase. Optional modes can lock the plan with a hash and stop the agent from finishing while a phase is still open.",
+   "who": "People who give their coding agent long, multi-step jobs and lose the thread when the context resets. For short tasks it is more than you need.",
+   "needs": [
+    "A coding agent that reads skills",
+    "Python, for the session catch-up script"
+   ],
+   "steps": [
+    {
+     "title": "Install it (most agents)",
+     "code": "npx skills add OthmanAdi/planning-with-files --skill planning-with-files -g"
+    },
+    {
+     "title": "Or the Claude Code plugin",
+     "text": "This route ships the skill, the hooks and the slash commands.",
+     "code": "/plugin marketplace add OthmanAdi/planning-with-files\n/plugin install planning-with-files@planning-with-files"
+    },
+    {
+     "title": "Or Pi",
+     "code": "pi install npm:planning-with-files"
+    },
+    {
+     "title": "Start a plan",
+     "text": "On the Claude Code plugin, `/plan` creates the three files and starts the session."
+    },
+    {
+     "title": "Check the hooks",
+     "text": "Skill-route installs can end up without hooks. `/plan-doctor` reports PASS, WARN or FAIL for each part."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Run `/plan`, give it a multi-step job, then clear the context and watch it resume at the current phase."
+   },
+   "watch": [
+    "It adds hooks that run on every prompt and tool call. The README measures one hook run at about 289 ms.",
+    "The planning files are plain markdown in your project, and gitignored by default.",
+    "Session catch-up reads your agent's local session records only when you ask. If that output goes into the agent's context, it is sent to your model provider.",
+    "Gated mode can stop the agent from ending while a phase is in progress. It has a block cap so it can't trap a session."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/OthmanAdi/planning-with-files/master/.pi/skills/planning-with-files/SKILL.md",
+    "https://raw.githubusercontent.com/OthmanAdi/planning-with-files/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "free-llm-apis",
+   "repo": "github.com/mnfst/awesome-free-llm-apis",
+   "stars": "12.9k",
+   "level": "Beginner",
+   "cost": "Free. Every provider listed has a permanent free tier with no credit card",
+   "works_with": "Any AI agent that reads skills; the endpoints work with the OpenAI SDK unless noted",
+   "short": "An AI skill that helps you pick a free LLM API provider, get a key and test it with a short script.",
+   "what": "The skill asks what matters to you, such as speed, model choice, EU hosting or no signup, and suggests one or two providers from its list. It then walks you through that provider's key setup, code example and environment variable, and gives you a Python test using the OpenAI SDK. Providers include Google Gemini, Groq, OpenRouter, NVIDIA NIM, Cloudflare Workers AI, Cohere and OVHcloud.",
+   "who": "Anyone who wants to try an LLM API without paying, or needs a free endpoint for a side project. If you already have a paid API key you are happy with, you can skip it.",
+   "needs": [
+    "An account with the provider you pick, except the few that need no key",
+    "Python and the OpenAI SDK, for the test script"
+   ],
+   "steps": [
+    {
+     "title": "Add the skill",
+     "text": "The skill lives in the repo's `free-llm-apis` folder. The README gives no install command, so add that folder to your agent's skills the usual way."
+    },
+    {
+     "title": "Ask for a free provider",
+     "text": "Say what you care about, such as speed, model choice or privacy, and it suggests one or two."
+    },
+    {
+     "title": "Test the key",
+     "text": "Replace KEY, BASE_URL and MODEL_NAME with the values from the provider's setup guide.",
+     "code": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"KEY\", base_url=\"BASE_URL\")\n\nresponse = client.chat.completions.create(\n    model=\"MODEL_NAME\",\n    messages=[{\"role\": \"user\", \"content\": \"Say hello in one sentence.\"}],\n    max_tokens=50\n)\nprint(response.choices[0].message.content)"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI agent",
+    "text": "\"Which free provider should I use for fast inference?\" or \"set up Groq for free\"."
+   },
+   "watch": [
+    "The project gives no install command for the skill.",
+    "For privacy-sensitive prompts, the skill says to avoid the Gemini free tier outside the EEA, Switzerland and the UK, the OpenRouter and Kilo free routes, and NVIDIA trial endpoints.",
+    "Cohere's free key is for non-commercial use only.",
+    "Gemini's terms require paid services if you ship an app to users in the EEA, UK or Switzerland.",
+    "Free tiers and limits change often. Check the provider's own docs before relying on a limit.",
+    "Keep API keys in environment variables, not in your code."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/mnfst/awesome-free-llm-apis/main/free-llm-apis/SKILL.md",
+    "https://raw.githubusercontent.com/mnfst/awesome-free-llm-apis/HEAD/README.md"
+   ]
+  }
+ ]
+}
