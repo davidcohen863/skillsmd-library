@@ -1,0 +1,446 @@
+{
+ "issue": 48,
+ "date": "15 Nov 2026",
+ "checked": "15 Nov 2026",
+ "blurb": "Every repo and skill from the 15 November issue that we could write up, with what each does and the setup steps from its own files.",
+ "intro": "Issue #48 had five repos and four AI skills, and this page covers eight of them. If you run coding agents on a Mac, start with agweb: it gives them a browser that never grabs your keyboard. If you look up domains or check email setup often, quien is a quick install and works on its own as well as through your agent.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "agweb",
+   "repo": "github.com/paul-nameless/agweb",
+   "stars": "202",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code and Codex (agent skill), any agent that can run shell commands",
+   "short": "A macOS browser your coding agents drive from the shell. It never takes focus, and you can watch every agent's tabs live.",
+   "what": "agweb is a WebKit browser for coding agents on macOS. Agents control it with an `agweb` command that copies playwright-cli's commands where it can, and each reply says what changed on the page, so the agent rarely needs a second snapshot. A dashboard shows every agent's tabs at once. Idle tabs are suspended, and ads and trackers are blocked with uBlock Origin's lists.",
+   "who": "People who run several coding agents at once on a Mac and are tired of Chrome windows stealing focus. If you need Chrome DevTools, Chrome extensions or Playwright attaching to the browser, or you are not on macOS 26, skip it.",
+   "needs": [
+    "macOS 26 or later",
+    "Xcode 26 or later, only if you build from source",
+    "A coding agent that can run shell commands"
+   ],
+   "steps": [
+    {
+     "title": "Install the app",
+     "text": "Download `Agweb.dmg` from the repo's Releases page, drag Agweb to Applications and open it."
+    },
+    {
+     "title": "Add the command and the agent skill",
+     "text": "In the app, choose Help ▸ Install Command Line Tool, then Help ▸ Install Agent Skill (for Claude Code and Codex). Both link into the app, so they update with it."
+    },
+    {
+     "title": "Or build from source",
+     "code": "./scripts/build.sh\nbuild/Agweb.app/Contents/Helpers/agweb install-cli\nagweb install-skill"
+    },
+    {
+     "title": "Open a page in a workspace",
+     "text": "Each task gets its own workspace. This starts the app if it is not running, takes a snapshot with `[ref=eN]` handles and clicks a button.",
+     "code": "agweb -w task open en.wikipedia.org/wiki/WebKit\nagweb -w task snapshot\nagweb -w task click 'role=button[name=\"Main menu\"]'"
+    },
+    {
+     "title": "See every command",
+     "code": "agweb help"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal or coding agent",
+    "text": "Run `agweb -w task open en.wikipedia.org/wiki/WebKit`, then press ⌘D in the app to see the dashboard with every agent's tabs."
+   },
+   "watch": [
+    "It is WebKit only. Playwright and Chrome extensions cannot attach, and Chrome-only sites may misbehave.",
+    "A named profile (`-p work`) keeps its logins and is shared by every agent using it at the same time.",
+    "It downloads uBlock Origin's filter lists every 4 days. YouTube ads and some ad blocker walls still get through.",
+    "`fill --secret-cmd` types a password from a command such as `pass show site` so the agent never sees it in replies."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/paul-nameless/agweb/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "MotionSites Web Builder",
+   "repo": "github.com/Motionsites-AI/claude-skill",
+   "stars": "2.1k",
+   "level": "Beginner",
+   "cost": "Free skill (MIT code). MotionSites Unlimited is a paid upgrade with more prompts and media",
+   "works_with": "Claude.ai, Claude desktop, Claude Code",
+   "short": "An AI skill that plans, builds, screenshots and fixes cinematic landing pages using MotionSites' prompts and media.",
+   "what": "The skill gives the AI 40 example prompts from MotionSites, a shelf of 50+ hero videos, 30 3D cut-outs and 29 images, and 55+ technique recipes with code, such as video loops, liquid glass and Three.js models. It writes a build spec first, builds the page, then takes screenshots and fixes what it finds. It can also write a prompt for Lovable, Bolt, v0, Cursor and other builders instead of code.",
+   "who": "Anyone who wants a landing page or portfolio homepage with motion and real media. If your site needs a plain, text-first layout, skip it.",
+   "needs": [
+    "Claude.ai, Claude desktop or Claude Code",
+    "For Claude.ai and desktop: code execution turned on in Settings → Capabilities",
+    "Optional: Python and Playwright, so the skill can screenshot its own work"
+   ],
+   "steps": [
+    {
+     "title": "Claude.ai or Claude desktop",
+     "text": "Download `motionsites-web-builder.zip` from the latest release. In Claude, open Customize → Skills → + → Create skill → Upload a skill, choose the zip and switch the skill on."
+    },
+    {
+     "title": "Claude Code (plugin)",
+     "text": "If you have no GitHub SSH key, use `/plugin marketplace add https://github.com/Motionsites-AI/claude-skill.git` as the first line.",
+     "code": "/plugin marketplace add Motionsites-AI/claude-skill\n/plugin install motionsites-web-builder@motionsites"
+    },
+    {
+     "title": "Claude Code (manual)",
+     "text": "Copy `plugins/motionsites-web-builder/skills/motionsites-web-builder` into `~/.claude/skills/`."
+    },
+    {
+     "title": "Optional: let it see its work",
+     "text": "The look-and-fix loop works best with Playwright.",
+     "code": "pip install playwright && python -m playwright install chromium"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your AI chat or coding agent",
+    "text": "Build a landing page hero for a luxury sleep-tracking ring."
+   },
+   "watch": [
+    "The example prompts and media are a free sample from MotionSites, and the README links to its paid Unlimited plan.",
+    "The skill's instructions and code are MIT. The example prompts and media stay © MotionSites, though you may use them in sites you build with the skill."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/Motionsites-AI/claude-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "DeepSeek V3 in pure JAX",
+   "repo": "github.com/Vaibhaav-Tiwari/deepseek-v3-jax",
+   "stars": "157",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Apple Silicon Macs, CPU, AMD GPUs on Linux (ROCm)",
+   "short": "The DeepSeek-V3 architecture in 190 readable lines of pure JAX, trained from scratch on a MacBook Air on detective fiction.",
+   "what": "One file, `deepseek_v3.py`, holds the model: latent attention, decoupled RoPE, a mixture of experts with one shared and 16 routed experts, loss-free load balancing and multi-token prediction. The author trained a 36.2M parameter version on 207 public-domain crime books in about 2.6 hours on a MacBook Air M5. The README says it is an architecture demo and not a strong language model.",
+   "who": "People who want to learn how DeepSeek-V3 works by reading and running the code. If you want a useful chat model, skip it.",
+   "needs": [
+    "An Apple Silicon Mac (the published run used 24 GB of memory), or a CPU with the smaller config",
+    "Python 3.12",
+    "uv"
+   ],
+   "steps": [
+    {
+     "title": "Install",
+     "text": "Every version in `requirements.txt` is pinned. Don't upgrade JAX, because `jax-metal 0.1.1` only works with `jax==0.4.34`.",
+     "code": "git clone https://github.com/Vaibhaav-Tiwari/deepseek-v3-jax.git && cd deepseek-v3-jax\nuv venv -p 3.12 .venv\nuv pip install --python .venv/bin/python -r requirements.txt"
+    },
+    {
+     "title": "Check your setup",
+     "text": "The README expects 39 tests to pass.",
+     "code": "JAX_PLATFORMS=cpu .venv/bin/pytest tests.py -q"
+    },
+    {
+     "title": "Build the dataset",
+     "text": "This downloads the 207 books in `sources.txt` (about 120 MB, about 7 minutes), cleans them and trains a tokenizer.",
+     "code": ".venv/bin/python prepare_data.py"
+    },
+    {
+     "title": "Train",
+     "text": "The main run is 12k steps and took about 2.6 hours. Without a Mac GPU, use `JAX_PLATFORMS=cpu .venv/bin/python train.py --config small`.",
+     "code": ".venv/bin/python train.py"
+    },
+    {
+     "title": "Generate text",
+     "code": ".venv/bin/python sample.py --prompt \"The fog came in off the\" --num 3"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Skip training: download `ckpt.pkl` and `tokenizer.json` from the v1.0 release into `runs/main/` and `data/`, then run `.venv/bin/python sample.py --prompt \"The fog came in off the\" --num 3`."
+   },
+   "watch": [
+    "The checkpoint is a Python pickle, which can run code when loaded. Only load checkpoints from sources you trust.",
+    "GPU math on Metal is not bit-for-bit deterministic, so your numbers will land close to the README's but not match.",
+    "The small CPU config has only been checked for a couple of steps, not trained to the end.",
+    "The training text is public domain in the US. Its status in other countries may differ."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/Vaibhaav-Tiwari/deepseek-v3-jax/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "sapper-v2",
+   "repo": "github.com/N1nEmAn/sapper-v2",
+   "stars": "2.1k",
+   "level": "Advanced",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Codex, Code Buddy, DeepSeek or any interactive agent CLI",
+   "short": "A team of AI agents for authorized penetration testing and CTF events, with a commander, soldiers and a watchdog in tmux.",
+   "what": "sapper-v2 runs several agent CLIs as a team. A commander reads the board and hands out work, generals and soldiers attack targets in parallel tmux panes, and a script watchdog keeps them alive. What they learn goes into a shared fact graph. The authors say it won a Tencent Cloud attack-defense CTF qualifier against 634 teams after 8 hours unattended.",
+   "who": "Security researchers and CTF teams testing systems they own or have written permission to test. Anyone without that permission should skip it. If you only want the multi-agent mechanism for other work, the README points to its base project, nvwabase.",
+   "needs": [
+    "Written permission to test the target systems",
+    "An agent CLI and a model key (the env vars are listed in `docker/ENV.md`)",
+    "Docker, for the full team image",
+    "For competition use: the platform address in `BENCHMARK_BASE_URL`"
+   ],
+   "steps": [
+    {
+     "title": "Install the CLI",
+     "text": "This links the `sapper` command. It uses only the Python standard library.",
+     "code": "bash install.sh"
+    },
+    {
+     "title": "Set a goal and check the board",
+     "code": "sapper setup --goal \"assess http://target\" --agents\nsapper status"
+    },
+    {
+     "title": "Build the full Docker image",
+     "code": "docker build -f docker/Dockerfile.commander -t sapper:latest ."
+    },
+    {
+     "title": "Or load the pre-built image",
+     "text": "Download it from the Release v18-champion page first. It is about 1.2 GB, with a full Kali toolchain and an offline knowledge base.",
+     "code": "docker load < sapper-v18-mixed.tar.gz"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `sapper setup --goal \"assess http://target\" --agents` against a target you are allowed to test, then `sapper status` to see the board."
+   },
+   "watch": [
+    "It is an offensive security tool. The disclaimer says to use it only on systems you own or have explicit written permission to test, and that unauthorized use is illegal almost everywhere.",
+    "The disclaimer says future versions, including silent updates, may carry traceable markings.",
+    "Agents attack on their own for hours. The competition run went 8 hours unattended and used about 1B model tokens.",
+    "The watchdog rotates through a pool of model keys when one runs out of quota.",
+    "Off the competition platform, startup fails with `BENCHMARK_BASE_URL is not set` until you provide or stub that platform interface yourself."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/N1nEmAn/sapper-v2/HEAD/README.md",
+    "https://raw.githubusercontent.com/N1nEmAn/sapper-v2/HEAD/DISCLAIMER.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "LoopForge",
+   "repo": "github.com/Tencent/LoopForge",
+   "stars": "1.1k",
+   "level": "Advanced",
+   "cost": "Free (MIT). You bring your own model keys",
+   "works_with": "CodeBuddy, Codex, Claude Code, OpenCode, Cursor CLI, Antigravity, Kimi Code, Pi, DeepSeek Harness and ZCode",
+   "short": "A self-hosted workspace where coding agents work in Docker sandboxes and follow fixed workflows with human approval steps.",
+   "what": "LoopForge runs coding-agent CLIs for a team on your own servers. You can chat with Main Bot, which opens a Docker sandbox with your repos and opens a PR, or run an SOP: a saved workflow of agent, script and human approval steps. It keeps logs, artifacts and token cost reports for each run. LoopForge Local brings the built-in workflows into a single coding assistant with no server.",
+   "who": "Teams that want agent work to follow the same plan, review, test and sign-off steps every time. A solo developer who just wants the workflows can use LoopForge Local. If you don't want to run Docker and MySQL, the platform is not for you.",
+   "needs": [
+    "Git",
+    "Docker with Compose, Python 3 and curl (the installer offers to install missing ones)",
+    "On macOS: Docker Desktop",
+    "An API key for the coding agent you pick (not needed for the demo)",
+    "For LoopForge Local: Node.js 20+, Python 3.8+ and a coding assistant"
+   ],
+   "steps": [
+    {
+     "title": "Install and start",
+     "text": "This pulls the release image, sets up MySQL and the platform, and installs starter SOPs and a demo project. Set `LOOPFORGE_YES=1` to accept installation prompts.",
+     "code": "git clone https://github.com/Tencent/LoopForge.git\ncd LoopForge\n./start.sh"
+    },
+    {
+     "title": "Create the admin account",
+     "text": "Open the address the installer prints and sign up. The first account becomes the administrator. Restrict access to your own IP until it exists."
+    },
+    {
+     "title": "Run the demo without a key",
+     "text": "Switch to the demo project, open Templates, open Platform check · script & approval and click Run SOP. Approve it from Needs review."
+    },
+    {
+     "title": "Add a model key and a repository",
+     "text": "The home page guide walks you through adding a key, connecting GitHub in personal settings and choosing an SOP."
+    },
+    {
+     "title": "Manage the service",
+     "code": "./start.sh logs"
+    },
+    {
+     "title": "Or use LoopForge Local",
+     "text": "Run this inside your project, then run `/start-devflow \"<your request>\"` in Claude Code. Other hosts are listed in the local guide.",
+     "code": "npx -y loopforge-cli@latest install claude"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "The LoopForge web app",
+    "text": "Run the Platform check · script & approval SOP in the demo project. A script writes a report, then the run waits for your approval."
+   },
+   "watch": [
+    "The service listens on `0.0.0.0:8090` by default. On a cloud host, allow the port in your security group or put an HTTPS proxy in front, and read the account and access model before exposing it.",
+    "Sandboxes start through the host Docker socket, which gives control of the host's Docker daemon. The README says this setup is for trusted teams.",
+    "Signed-in users can read project data across the instance, and teammates can sign up from the login page. Set `AGENTFLOW_ALLOW_SIGNUP=false` in `.env` to stop that.",
+    "Model usage is not included. You bring your own credentials.",
+    "Setting `MIRROR` trusts that registry host, because the download is tagged with the official image name.",
+    "The chat workbench is in Chinese for now. Management pages are in English and Chinese."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/Tencent/LoopForge/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "wix-manage",
+   "repo": "github.com/wix/skills",
+   "stars": "39",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Codex, VS Code, Cursor, Gemini CLI, Antigravity and other agents that support Agent Skills",
+   "short": "Lets your agent set up and manage a Wix site's stores, bookings, payments, CMS and more through Wix's REST APIs.",
+   "what": "wix-manage is an index of REST recipes for Wix business features: stores, bookings, donations, payments, CMS, blog, events, SEO, analytics and more. The agent opens the matching recipe for the exact endpoint and payload before it calls the API. It can also publish HTML, CSS and JavaScript as a live Wix site, with or without a Wix account.",
+   "who": "Wix site owners and builders who want their agent to do dashboard work such as adding products, booking services or SEO tags. If you don't use Wix, skip it.",
+   "needs": [
+    "A supported coding agent",
+    "Wix REST API access (an API key or OAuth)",
+    "A Wix account, except for the publish-without-an-account recipe"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code",
+     "code": "/plugin marketplace add wix/skills\n/plugin install wix@wix"
+    },
+    {
+     "title": "Gemini CLI",
+     "code": "gemini extensions install https://github.com/wix/skills"
+    },
+    {
+     "title": "Any agent, with the skills CLI",
+     "text": "This installs all the Wix skills. Add `-g` to install them globally.",
+     "code": "npx skills add wix/skills"
+    },
+    {
+     "title": "Codex, VS Code, Cursor or Antigravity",
+     "text": "Codex CLI: run `/plugins`, select Wix and choose Install Plugin. VS Code: Chat: Install Plugin From Source with `https://github.com/wix/skills`. Cursor: Settings > Rules > New Rule > Add from Github with `https://github.com/wix/skills.git`."
+    },
+    {
+     "title": "Sign in",
+     "text": "The Wix MCP server signs you in to your Wix account the first time a Wix tool is used."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask it to add \"a 60-minute consultation for $75\" to your bookings. The skill's booking recipe is written for plain requests like that."
+   },
+   "watch": [
+    "The project is marked experimental. APIs, skill definitions and behavior may change without notice.",
+    "The skill makes real API calls that create, change and delete things on your site, such as products, blog posts and redirects.",
+    "These skills are built for the new Wix CLI.",
+    "Calls to Wix APIs and the Wix MCP fall under the Wix Privacy Policy. wix-manage sends no telemetry of its own. Only wix-replatform does."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/wix/skills/main/skills/wix-manage/SKILL.md",
+    "https://raw.githubusercontent.com/wix/skills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "quien",
+   "repo": "github.com/retlehs/quien",
+   "stars": "1.3k",
+   "level": "Beginner",
+   "cost": "Not stated in the README. The optional CrUX API is free",
+   "works_with": "Any agent that supports Agent Skills, plus your own terminal",
+   "short": "Teaches your agent to use quien for domain and IP lookups: WHOIS, DNS, email setup, SSL, headers, SEO and tech stack.",
+   "what": "quien is a whois and domain lookup tool with a terminal UI and JSON subcommands. The skill tells your agent to use it instead of `whois`, `dig` or `curl` when you ask about a domain's owner, expiry, DNS, SPF, DMARC, DKIM, certificate, SEO or tech stack. `quien all` returns everything at once.",
+   "who": "Developers, site owners and anyone who checks domains or email deliverability. If you never look up domains, skip it.",
+   "needs": [
+    "Homebrew, apt, the AUR, Nix or Go to install the tool",
+    "Node.js for `npx`, to add the skill",
+    "Optional: a free CrUX API key from Google Cloud for Core Web Vitals"
+   ],
+   "steps": [
+    {
+     "title": "Try it without installing",
+     "code": "ssh quien.sh"
+    },
+    {
+     "title": "Install the tool (Homebrew)",
+     "code": "brew install quien"
+    },
+    {
+     "title": "Or with Go",
+     "code": "go install github.com/retlehs/quien@latest"
+    },
+    {
+     "title": "Add the agent skill",
+     "code": "npx skills add retlehs/quien"
+    },
+    {
+     "title": "Optional: Core Web Vitals",
+     "text": "Set a CrUX API key to add real-user speed data to the SEO check.",
+     "code": "export QUIEN_CRUX_API_KEY=your-api-key"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal or coding agent",
+    "text": "Run `quien mail example.com` to check MX, SPF, DMARC and DKIM, or ask your agent who owns a domain and when it expires."
+   },
+   "watch": [
+    "The Ubuntu and Debian install pipes a script into `sudo sh`: `curl -fsSL https://apt.quien.dev/install.sh | sudo sh`. Read the script before you run it.",
+    "The CrUX key is a Google Cloud API key. The README says to restrict it to the Chrome UX Report API.",
+    "Lookups go out to RDAP, WHOIS, DNS and the sites you check."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/retlehs/quien/main/SKILL.md",
+    "https://raw.githubusercontent.com/retlehs/quien/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "quote-build",
+   "repo": "github.com/anthropics/claude-plugins-official",
+   "stars": "47k",
+   "level": "Intermediate",
+   "cost": "Not stated in the README",
+   "works_with": "Claude Code, Claude plugin directory",
+   "short": "Builds a make-to-order quote from the intake form, past jobs and cost history, and shows where every number came from.",
+   "what": "quote-build is part of the Claude for Manufacturing plugin. It loads the intake form, finds comparable past jobs, works out machine hours per operation, builds up material, labor, setup and outside processing costs, and puts margin on its own line. It checks the promised date against shop load and produces a customer quote plus an internal cost-basis sheet. When a customer counters, it revises the quote in place with a change record.",
+   "who": "Estimators and owners at job shops and make-to-order plants. If you don't quote manufactured parts, skip it.",
+   "needs": [
+    "Claude Code or the Claude plugin directory",
+    "An intake form and cost figures (it can run on pasted figures with no connector)",
+    "Optional: NetSuite or Infor M3, Microsoft 365 and Autodesk Fusion connected",
+    "Your labor, burden and margin rates set once through onboarding or `MFG_*` variables"
+   ],
+   "steps": [
+    {
+     "title": "Install the plugin",
+     "text": "The repo README gives this command. The plugin's name is `claude-for-manufacturing`. You can also find it in the Claude plugin directory or under `/plugin > Discover`.",
+     "code": "/plugin install {plugin-name}@claude-plugins-official"
+    },
+    {
+     "title": "Set up your plant",
+     "text": "Say \"set us up\". The onboarding skill asks which ERP, CAD, maintenance and document systems you use and learns your exports and rates."
+    },
+    {
+     "title": "Ask for a quote",
+     "text": "The skill picks up phrases such as \"build the quote\", \"price this job\" or \"quote this RFQ\"."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Quote this RFQ."
+   },
+   "watch": [
+    "The plugin is a reference implementation. It is not actively maintained and is provided as is.",
+    "Nothing reaches a customer until the estimator releases it. The quote is a document a person files and sends, and nothing is written back to the ERP.",
+    "A rate typed into a run is not used. Rates come from `MFG_*` variables or the plant profile, and lines are blocked if none is set.",
+    "With a text spec and no drawing, it produces a rough estimate, not a firm quote.",
+    "The repo README says to make sure you trust a plugin before installing, updating or using it."
+   ],
+   "sources": [
+    "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-for-manufacturing/skills/quote-build/SKILL.md",
+    "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-for-manufacturing/README.md",
+    "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/plugins/claude-for-manufacturing/.claude-plugin/plugin.json",
+    "https://raw.githubusercontent.com/anthropics/claude-plugins-official/HEAD/README.md"
+   ]
+  }
+ ]
+}
