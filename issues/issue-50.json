@@ -1,0 +1,346 @@
+{
+ "issue": 50,
+ "date": "17 Nov 2026",
+ "checked": "17 Nov 2026",
+ "blurb": "Every repo and skill from the 17 November issue that I could source, with what each does and the setup steps from its own README.",
+ "intro": "Issue #50 had six repos and one AI skill, and this page covers five repos and the skill. If you edit video with a coding agent, start with ffmpeg-skill: one `npx` command and it works offline. If you are worried about spyware on your phone, Zero Breach Toolkit has a browser check that needs no install.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "ffmpeg-skill",
+   "repo": "github.com/kajisho5/ffmpeg-skill",
+   "stars": "7.4k",
+   "level": "Intermediate",
+   "cost": "Free and open source (MIT), no API keys or account",
+   "works_with": "Claude Code, Cursor, Codex, Gemini CLI and any MCP client",
+   "short": "Gives your coding agent 42 local FFmpeg tools to cut, caption, reframe and export video, then check the result.",
+   "what": "ffmpeg-skill is an agent skill that teaches your agent a fixed routine: probe the file, edit it, then check and verify the output. It ships 42 tools that run `ffmpeg` and `ffprobe` on your machine for cuts, joins, silence removal, captions, overlays, loudness, platform exports and more. Every tool can also be called as an MCP tool.",
+   "who": "People who edit video with a coding agent and want the work to stay on their own machine. If you only need a one-off trim, plain FFmpeg will do.",
+   "needs": [
+    "FFmpeg 6.1 or newer with the components it needs (on a Mac the README says to use `ffmpeg-full`)",
+    "Python 3.10 or newer",
+    "Node 16 or newer, only for the `npx` installer",
+    "Optional: a local speech engine such as faster-whisper, only for captions from speech"
+   ],
+   "steps": [
+    {
+     "title": "Install FFmpeg",
+     "text": "This is the Ubuntu and Debian command. On a Mac the README uses `brew install ffmpeg-full`, and on Windows `winget install Gyan.FFmpeg`.",
+     "code": "sudo apt install ffmpeg"
+    },
+    {
+     "title": "Install the skill",
+     "text": "This installs it for Claude Code. Add `--cursor`, `--codex` or `--all` for other agents.",
+     "code": "npx ffmpeg-skill"
+    },
+    {
+     "title": "Check your machine",
+     "text": "It lists which FFmpeg components are present and which tools can run.",
+     "code": "npx ffmpeg-skill doctor"
+    },
+    {
+     "title": "Or install it as a Claude Code plugin",
+     "text": "This works in Claude Code 2.1.275 or later and needs no Node.",
+     "code": "/plugin install ffmpeg-skill --marketplace kajisho5/ffmpeg-skill"
+    },
+    {
+     "title": "Or run it as an MCP server",
+     "text": "For clients that have no shell.",
+     "code": "npx -y ffmpeg-skill mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Take `interview.mp4`, keep 0:45-3:10 and 5:00-6:30, and make it exactly 60 seconds for Reels."
+   },
+   "watch": [
+    "The tools write files. With the `overwrite` option they replace an existing file, so keep a copy of your original footage.",
+    "A plain Homebrew `ffmpeg` on a Mac lacks some filters, so a few tools will not run until you install `ffmpeg-full`.",
+    "The optional speech engines download their model weights the first time they run. The audio itself stays on your machine.",
+    "Installed copies do not update by themselves. Run `npx ffmpeg-skill` again to refresh."
+   ],
+   "sources": [
+    "https://github.com/kajisho5/ffmpeg-skill",
+    "https://raw.githubusercontent.com/kajisho5/ffmpeg-skill/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Claude-BugHunter",
+   "repo": "github.com/elementalsouls/Claude-BugHunter",
+   "stars": "7.9k",
+   "level": "Advanced",
+   "cost": "Free and open source (MIT for code, CC BY 4.0 for content)",
+   "works_with": "Claude Code, OpenCode, Codex CLI, Hermes Agent and Google AntiGravity",
+   "short": "A bundle of 83 skills and 15 slash commands for authorized bug bounty and external red-team work.",
+   "what": "Claude-BugHunter is a skill bundle for bug hunting and external red-team engagements. It holds 83 skills drawn from 681 disclosed reports, covering web bug classes, recon, enterprise platform attack chains, and report writing. The skills load by topic when you describe what you are testing, and a 7-question gate checks scope before anything is submitted.",
+   "who": "Security researchers on bug bounty programs and pentesters with a signed engagement. It covers the internet-facing attack surface only, so internal Active Directory, C2 and post-exploitation work are out of scope. If you do not have permission to test a target, this is not for you.",
+   "needs": [
+    "Claude Code for the plugin route, or another supported agent for the copy install",
+    "Written permission to test the target: an in-scope bug bounty asset, a pentest engagement letter, a CTF or your own systems",
+    "Optional: Burp Suite with its MCP server extension"
+   ],
+   "steps": [
+    {
+     "title": "Add the marketplace",
+     "text": "Run this inside Claude Code.",
+     "code": "/plugin marketplace add elementalsouls/Claude-BugHunter"
+    },
+    {
+     "title": "Install the plugin",
+     "text": "All skills and commands load under the `claude-bughunter:` name.",
+     "code": "/plugin install claude-bughunter@elementalsouls"
+    },
+    {
+     "title": "Or copy the skills in from a clone",
+     "text": "Clone the repo, go into its folder, then run the install script. On Windows use `pwsh ./scripts/install.ps1`. This route also gives you the `hunt` engagement scaffolder.",
+     "code": "git clone https://github.com/elementalsouls/Claude-BugHunter.git"
+    },
+    {
+     "title": "Run the installer",
+     "text": "On macOS or Linux, from inside the cloned folder.",
+     "code": "bash scripts/install.sh"
+    },
+    {
+     "title": "Install for other agents too",
+     "text": "`--all` copies the skills to every agent it finds, and `--burp-mcp` wires in the Burp MCP server.",
+     "code": "bash scripts/install.sh --all --burp-mcp"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Claude Code",
+    "text": "Testing acme.com, an in-scope HackerOne target. Run recon and rank the surface."
+   },
+   "watch": [
+    "The README limits it to assets you own or have written permission to test.",
+    "The skills run real recon and attack tools against the target you name, so check the scope of your program before each session.",
+    "The README says AI providers may refuse or switch models on offensive security requests, even authorized ones. It points to the provider's verification program for this.",
+    "The copy install writes into `~/.claude/` and the skill folders of any other agents it detects."
+   ],
+   "sources": [
+    "https://github.com/elementalsouls/Claude-BugHunter",
+    "https://raw.githubusercontent.com/elementalsouls/Claude-BugHunter/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "PaperOrchestra",
+   "repo": "github.com/google-research/paper-orchestra",
+   "stars": "2k",
+   "level": "Advanced",
+   "cost": "Not stated in the README. You pay for the AI model and API calls you use.",
+   "works_with": "Gemini and OpenAI models",
+   "short": "A Google Research pipeline of AI agents that turns your ideas and experiment logs into a LaTeX research paper draft.",
+   "what": "PaperOrchestra is a multi-agent framework from Google Cloud AI Research for writing AI research papers. Separate agents handle the outline, literature review, section writing, refinement and plots. It takes your ideas and experiment logs and produces a LaTeX manuscript in a conference template.",
+   "who": "Researchers who are comfortable with Python and Conda and want to test automated paper drafting. The README says it is not an officially supported Google product, so treat it as research code.",
+   "needs": [
+    "Conda and Python 3.11",
+    "An API key for the model you use: Gemini (or a Vertex AI project) or OpenAI",
+    "A Semantic Scholar API key, for the literature search",
+    "A folder with your raw materials and a LaTeX template folder"
+   ],
+   "steps": [
+    {
+     "title": "Create the environment",
+     "code": "conda create -n paper_orchestra python=3.11"
+    },
+    {
+     "title": "Activate it",
+     "code": "conda activate paper_orchestra"
+    },
+    {
+     "title": "Install the dependencies",
+     "text": "Run this in the cloned repo.",
+     "code": "pip install -r requirements.txt"
+    },
+    {
+     "title": "Add your keys",
+     "text": "Create a `.env` file in the project root with the keys for the models you use, such as `GEMINI_API_KEY`, `OPENAI_API_KEY` and `SEMANTIC_SCHOLAR_API_KEY`."
+    },
+    {
+     "title": "Run the pipeline",
+     "text": "Point it at your raw materials, a LaTeX template such as `templates/cvpr2025` and an output folder. Add `--use_plotting true` to have it make figures.",
+     "code": "./paper_writing_cli.sh"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `python paper_writing_cli.py` with `--raw_materials_dir`, `--latex_template_dir`, `--output_dir` and `--use_plotting true` set to your own folders."
+   },
+   "watch": [
+    "Your keys live in a plain `.env` file. Keep it out of version control.",
+    "The optional demo can email results to you, which needs your email address and password in `.env`. Skip it if you would rather not store those.",
+    "The dataset used in the paper is not in the repo yet. The README says it will be released later.",
+    "Every run calls paid model APIs, so watch your usage."
+   ],
+   "sources": [
+    "https://github.com/google-research/paper-orchestra",
+    "https://raw.githubusercontent.com/google-research/paper-orchestra/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Zero Breach Toolkit",
+   "repo": "github.com/interplains/Zero-Breach-Toolkit",
+   "stars": "5.2k",
+   "level": "Beginner",
+   "cost": "Free and open source",
+   "works_with": "Windows, macOS, Linux, Android collections and iPhone backups",
+   "short": "A free offline check for traces of known mercenary spyware such as Pegasus and Predator on computers and phones.",
+   "what": "Zero Breach Toolkit looks for published traces of known mercenary spyware on Windows, Mac and Linux computers, Android collections and iPhone backups. It also checks links, emails, files and QR codes, and points out settings left open on your devices. It reads only, makes no network requests during a scan, and says in every report what it could not check.",
+   "who": "Anyone worried about spyware, especially journalists, activists and people who help them. If you think you are being targeted right now, the README says to contact the Access Now Digital Security Helpline or Amnesty's Security Lab first.",
+   "needs": [
+    "For the Python version: Python 3.8 or newer, no extra packages and no admin rights",
+    "For an iPhone: a local backup on your computer",
+    "On a Mac: Full Disk Access for Terminal or the app, so it can read Safari"
+   ],
+   "steps": [
+    {
+     "title": "Phone backup? Use the browser check",
+     "text": "Open archivegenocide.com/scan/phone on the computer that holds the backup and choose the backup folder. Nothing is installed and nothing is uploaded."
+    },
+    {
+     "title": "Get the toolkit for a computer",
+     "text": "There is also a double-click app on the latest release page. The README notes the Python version avoids antivirus warnings because you run the source directly.",
+     "code": "git clone https://github.com/interplains/Zero-Breach-Toolkit.git"
+    },
+    {
+     "title": "Download the latest indicator lists",
+     "text": "Run this from the toolkit folder. It is the only step that uses the internet. Use `python3` on Mac and Linux.",
+     "code": "python -X utf8 scan/zero-breach-toolkit.py --update"
+    },
+    {
+     "title": "Close your browsers and chat apps, then scan",
+     "text": "A menu opens. Press Enter for the standard check.",
+     "code": "python -X utf8 scan/zero-breach-toolkit.py"
+    },
+    {
+     "title": "Check a phone collection or backup",
+     "text": "Put the folder path in quotes.",
+     "code": "python -X utf8 scan/zero-breach-toolkit.py --phone \"FOLDER\""
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `python -X utf8 scan/zero-breach-toolkit.py --quick` for a faster first pass, then read the \"What could not be checked\" part of the report."
+   },
+   "watch": [
+    "A clean result is not proof you are safe. It only finds spyware someone has already published traces of.",
+    "The project is anonymous and the downloadable programs are not code-signed yet, so Windows and macOS will warn you. Running the Python version from source avoids that, and the README shows how to verify a download.",
+    "Reports can hold usernames, file paths, browsing details and message excerpts. Keep them out of shared or synced folders.",
+    "`--update` contacts the internet to fetch indicator lists and check for a newer version. Scans themselves stay offline."
+   ],
+   "sources": [
+    "https://github.com/interplains/Zero-Breach-Toolkit",
+    "https://raw.githubusercontent.com/interplains/Zero-Breach-Toolkit/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Git for Global Law",
+   "repo": "github.com/lexifina/global-law",
+   "stars": "2.1k",
+   "level": "Intermediate",
+   "cost": "Free (CC0). The law text in each country's repo is under that repo's own terms.",
+   "works_with": "Claude Code, Cursor, VS Code, Codex and any MCP client",
+   "short": "The world's law as git history, so you can see any provision as it stood on any date and which law wrote each line.",
+   "what": "Global Law puts each country's, state's or court's law in its own git repository, where every commit is one law taking effect. This repo gathers them as submodules and ships Python tools to show a provision on a date, list its changes, diff two dates and blame each line. It also has an MCP server and a free hosted connector.",
+   "who": "Lawyers, researchers and developers who need to know what a law said on a given day. If you just want to look something up, the hosted search on the project's site needs no install.",
+   "needs": [
+    "git and Python 3"
+   ],
+   "steps": [
+    {
+     "title": "Clone the repo",
+     "text": "A shallow clone keeps it small.",
+     "code": "git clone --depth 1 https://github.com/lexifina/global-law && cd global-law"
+    },
+    {
+     "title": "Add a body of law",
+     "text": "This adds the US Code. Swap in any other path from `manifest.json`.",
+     "code": "python3 tools/countries.py add united-states/federal/usc"
+    },
+    {
+     "title": "Read a provision on a date",
+     "code": "python3 tools/law.py show 2022-05-01 united-states/federal/usc/title-11/1182.md"
+    },
+    {
+     "title": "Use it from your coding agent",
+     "text": "Opening the clone in Claude Code, Cursor, VS Code or Codex starts a local MCP server with the same tools. Hosted chat apps can use the free connector at `https://global-law.lexifina.com/mcp`."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your terminal",
+    "text": "Run `python3 tools/law.py log united-states/federal/usc/title-11/1182.md` to see every change to that section and the law that made it."
+   },
+   "watch": [
+    "Opening the clone in a coding agent starts a local MCP server on its own.",
+    "Coverage differs by country. Some publishers keep only today's text, and `manifest.json` says which.",
+    "Court decisions are added separately and the tools leave them out unless you name them."
+   ],
+   "sources": [
+    "https://github.com/lexifina/global-law",
+    "https://raw.githubusercontent.com/lexifina/global-law/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "audit-channel-risk",
+   "repo": "github.com/TubeLabHQ/youtube-research-skills",
+   "stars": "107",
+   "level": "Beginner",
+   "cost": "Needs a TubeLab plan (the MCP is included from Starter). Searches cost credits; reads are free.",
+   "works_with": "Claude Code, Cursor, Codex, GitHub Copilot, Gemini CLI and other agents that read SKILL.md",
+   "short": "Scores how likely a YouTube channel is to be demonetized or terminated, with the proof and what to fix first.",
+   "what": "This skill checks one or more YouTube channels against YouTube's channel monetization policies, which it reads fresh on every run. It compares the channel's videos with similar channels that were terminated or lost AdSense. You get one HTML page with a demonetization score, a termination score, the evidence behind each and up to four actions to reduce the risk.",
+   "who": "YouTube creators and studios who want an early warning on monetization risk. You need a TubeLab account, so if you do not plan to pay for one, skip it.",
+   "needs": [
+    "A TubeLab account on the Starter plan or above",
+    "The TubeLab MCP connected in your agent",
+    "For Cursor and other IDE agents: a TubeLab API key, which needs the Pro plan"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs the whole YouTube research set, including this skill.",
+     "code": "npx skills add TubeLabHQ/youtube-research-skills"
+    },
+    {
+     "title": "Or install the Claude Code plugin",
+     "text": "This also connects the TubeLab MCP.",
+     "code": "claude plugin marketplace add TubeLabHQ/youtube-research-skills"
+    },
+    {
+     "title": "Finish the plugin install",
+     "code": "claude plugin install youtube-research@tubelab"
+    },
+    {
+     "title": "Connect the TubeLab MCP",
+     "text": "Skip this if you used the plugin. The first call opens a TubeLab login.",
+     "code": "claude mcp add --transport http tubelab https://public-api.tubelab.net/mcp"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "Your coding agent",
+    "text": "Audit youtube.com/@handle for demonetization and termination risk."
+   },
+   "watch": [
+    "Searches spend TubeLab credits. Channel, video, transcript and comment reads are free.",
+    "The skill gives TubeLab access through your account login (OAuth) or an API key.",
+    "A low score means no warning signs were found. The skill itself says it does not mean the channel is safe.",
+    "It writes an HTML report file to your machine."
+   ],
+   "sources": [
+    "https://skillsmp.com/creators/tubelabhq/youtube-research-skills/skills-audit-channel-risk",
+    "https://raw.githubusercontent.com/TubeLabHQ/youtube-research-skills/main/skills/audit-channel-risk/SKILL.md",
+    "https://raw.githubusercontent.com/TubeLabHQ/youtube-research-skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
