@@ -1,0 +1,171 @@
+{
+ "issue": 52,
+ "date": "19 Nov 2026",
+ "checked": "19 Nov 2026",
+ "blurb": "Every repo from the 19 November issue that I could source, with what each does and the setup steps from its own README.",
+ "intro": "Issue #52 had five repos, and this page covers three of them. If you want to automate work across your apps, start with n8n: one Docker command gets the editor running on your own machine. If you have an NVIDIA GPU and live camera feeds, tamserve installs with `pip` and tracks objects on every camera with one copy of the model.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "DSH Go",
+   "repo": "github.com/ccch1mneyyy/dsh-Go",
+   "stars": "27.7k",
+   "level": "Intermediate",
+   "cost": "Free and open source (AGPL-3.0). Model requests are billed by the model provider you set up.",
+   "works_with": "DeepSeek Harness, on Android 8 or newer",
+   "short": "An Android app that runs the DeepSeek Harness coding agent on your phone, or connects to the one on your computer or server.",
+   "what": "DSH Go is a community phone app for DeepSeek Harness (DSH). It can install a Linux environment with Ubuntu, Node.js and DSH inside the app, with no root or Termux, or connect to DSH on a computer over SSH or DSHarness Remote. It also offers voice and image input, tool approvals, plugins, shareable conversation links and an optional mode where the agent reads your screen and taps for you.",
+   "who": "People who already use DeepSeek Harness and want to keep working from an Android phone. The README is mainly in Chinese, with an English version linked at the top. There is no public iOS build yet, so iPhone users should wait.",
+   "needs": [
+    "An Android phone on Android 8.0 or newer (the arm64 build suits most phones)",
+    "A model provider and the credentials it needs",
+    "About 1 GB free if you run DSH on the phone itself",
+    "Optional: Android 14 plus Shizuku or self-connected ADB, only for the do-not-disturb phone control mode"
+   ],
+   "steps": [
+    {
+     "title": "Download the APK",
+     "text": "Get the build for your phone from GitHub Releases at github.com/ccch1mneyyy/dsh-go/releases/latest or from go.dshtui.com/download, and allow that install source when Android asks."
+    },
+    {
+     "title": "Pick where DSH runs",
+     "text": "On first launch, choose to install the runtime on the phone or connect to a remote host. If you only connect to a computer, you can skip the on-phone runtime."
+    },
+    {
+     "title": "Set up a model",
+     "text": "Configure the model and credentials for the host you chose, then start a chat. Some remote setups are configured on the host side."
+    },
+    {
+     "title": "Or build it from source",
+     "text": "The README's build steps target Linux x86_64. Start by cloning the repo, then follow its toolchain and build scripts.",
+     "code": "git clone https://github.com/ccch1mneyyy/dsh-go.git"
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "DSH Go on your phone",
+    "text": "Ask it to look at a small project and explain what each file does."
+   },
+   "watch": [
+    "It is an unofficial community project with no link to DeepSeek.",
+    "It is installed by sideloading an APK, not from Google Play. Installing over an early test build with a different signature means uninstalling first, which wipes your chats, Linux environment and settings.",
+    "Anonymous usage statistics are on by default. You can turn them off during onboarding or in Settings, under Privacy and sharing.",
+    "With phone control on, screen text and sometimes screenshots can be sent to the model. Commands, file changes and phone control can cause real data, account or money loss, so the README advises keeping the default protections and not lifting restrictions on a phone with payment or banking details.",
+    "Running on the phone does not make the model offline. Requests still go to your provider and are billed to your account.",
+    "Anyone with a full share link can read and save that conversation."
+   ],
+   "sources": [
+    "https://github.com/ccch1mneyyy/dsh-Go",
+    "https://raw.githubusercontent.com/ccch1mneyyy/dsh-Go/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "tamserve",
+   "repo": "github.com/aryamandarda/tamserve",
+   "stars": "178",
+   "level": "Advanced",
+   "cost": "Free and open source (Apache-2.0). SAM 3, needed for tracking by name, has its own licence.",
+   "works_with": "Python 3.10+, NVIDIA GPUs, EdgeTAM, SAM 2.1 and SAM 3",
+   "short": "Tracks objects on many live camera feeds at once with SAM 2 or EdgeTAM, sharing one copy of the model on one GPU or many.",
+   "what": "tamserve is a serving engine for Meta's SAM 2.1 and EdgeTAM tracking models. Every camera shares one copy of the model, so on the README's RTX 4090 tests it uses far less GPU memory and runs faster than one copy per camera, with the same accuracy. You point at what to track with a box, clicks or a mask. A `Tracker` can also find things by name, such as \"dog\", using SAM 3.",
+   "who": "Developers who need to know where things are in live video: sports graphics, warehouse analytics, robotics, lab or wildlife monitoring, annotation tools. It is a Python library with no app or camera handling of its own, so skip it if you do not write code.",
+   "needs": [
+    "Python 3.10 or newer",
+    "An NVIDIA GPU (it runs on a CPU, but far too slowly for live video)",
+    "An internet connection the first time a model loads",
+    "Your own code to read camera frames, for example with OpenCV",
+    "Optional: a Hugging Face account that has accepted Meta's SAM 3 licence, only for tracking by name"
+   ],
+   "steps": [
+    {
+     "title": "Install it",
+     "code": "pip install tamserve"
+    },
+    {
+     "title": "Load the engine",
+     "text": "This loads EdgeTAM onto the GPU. The first time, it downloads the 54 MB model into `~/.cache/tamserve`.",
+     "code": "engine = Engine(build_video_predictor(\"cuda\"))"
+    },
+    {
+     "title": "Track things in your loop",
+     "text": "Call `engine.step()` once per round with the newest frame from each camera. Pass a `Box` around each object only on the first call; the engine tracks it from there."
+    },
+    {
+     "title": "Optional: add tracking by name",
+     "text": "Installs SAM 3 support for `Tracker` and `PeopleTracker`.",
+     "code": "pip install \"tamserve[sam3]\""
+    },
+    {
+     "title": "Log in to Hugging Face",
+     "text": "Run this once, and accept Meta's licence on the facebook/sam3 page first. The 3.5 GB of weights download the first time a tracker starts.",
+     "code": "hf auth login"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Google Colab",
+    "text": "Open the quickstart notebook from the README's Colab badge, or the tracking-by-name notebook, and run it before wiring up your own cameras."
+   },
+   "watch": [
+    "It downloads model weights the first time you load a model. SAM 3's weights are 3.5 GB, need a Hugging Face login and come under Meta's own licence, which is not Apache-2.0.",
+    "The first compiled start takes about 20 minutes. After that it takes about 95 seconds while PyTorch's cache is still there.",
+    "Every speed in the README comes from one RTX 4090. Older GPUs without bf16 support are much slower; on a free Colab T4 one SAM 3 look takes 3 seconds.",
+    "It only tracks forward in time, and each extra object adds about 2.4 ms to a round.",
+    "The DAVIS 2017 dataset used for accuracy scores is for research use, so check its licence before using it for anything else."
+   ],
+   "sources": [
+    "https://github.com/aryamandarda/tamserve",
+    "https://raw.githubusercontent.com/aryamandarda/tamserve/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "n8n",
+   "repo": "github.com/n8n-io/n8n",
+   "stars": "211.3k",
+   "level": "Beginner",
+   "cost": "Not stated in the README. You can self-host it under its Sustainable Use License, and there is also a cloud version.",
+   "works_with": "OpenAI, Anthropic, Google or open-source models, plus 1500+ integrations",
+   "short": "A visual workflow builder for AI agents and automations that you can self-host, with 1500+ integrations and code when you need it.",
+   "what": "n8n is a platform for building AI agents and automated workflows on a visual canvas. You can drop into JavaScript, Python or npm packages for the hard parts. It connects to 1500+ integrations and has 9,000+ workflow templates, and you can run it yourself or in n8n's cloud.",
+   "who": "People who want to wire AI models into their existing apps and data without writing a whole backend. If you only need a single script, plain code is simpler.",
+   "needs": [
+    "Docker, for both the install script and the manual install"
+   ],
+   "steps": [
+    {
+     "title": "Install with the script",
+     "text": "The quickest route in the README. Read the script before you run it.",
+     "code": "curl -fsSL https://get.n8n.io | sh"
+    },
+    {
+     "title": "Or create a data volume for a manual install",
+     "text": "Your workflows are stored in this volume.",
+     "code": "docker volume create n8n_data"
+    },
+    {
+     "title": "Start n8n with Docker",
+     "code": "docker run -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n"
+    },
+    {
+     "title": "Open the editor",
+     "text": "Go to http://localhost:5678 in your browser."
+    }
+   ],
+   "try": {
+    "label": "A first prompt",
+    "where": "The n8n editor at http://localhost:5678",
+    "text": "Open one of the workflow templates from n8n.io/workflows and run it once to see how the nodes connect."
+   },
+   "watch": [
+    "The quick-start command pipes a script from the internet straight into your shell. Read https://get.n8n.io first.",
+    "n8n is fair-code, distributed under the Sustainable Use License and the n8n Enterprise License. Read them before you build a product on it."
+   ],
+   "sources": [
+    "https://github.com/n8n-io/n8n",
+    "https://raw.githubusercontent.com/n8n-io/n8n/HEAD/README.md"
+   ]
+  }
+ ]
+}
