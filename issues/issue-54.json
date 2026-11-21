@@ -1,0 +1,451 @@
+{
+ "issue": 54,
+ "date": "21 Nov 2026",
+ "checked": "21 Nov 2026",
+ "blurb": "Every repo and skill from the 21 November issue that I could source, with what each does and the setup steps from its own README.",
+ "intro": "Issue #54 had five repos and four skills, and this page covers eight of them. With Black Friday close, the Stripe dashboard skill and the OpenMotion sale video skill are the ones to try first if you sell online. If you build agents, Firecrawl Local installs with one `cargo` command and gives your agent clean web pages as markdown.",
+ "items": [
+  {
+   "kind": "Repo",
+   "name": "OpenComputer",
+   "repo": "github.com/diggerhq/opencomputer",
+   "stars": "816",
+   "level": "Intermediate",
+   "cost": "Open source (Apache 2.0) if you self-host. OpenComputer Cloud has a 3-day free trial with 600 work minutes; paid pricing is not stated in the README.",
+   "works_with": "Slack, with Claude Code, Codex or OpenCode doing the work",
+   "short": "A coding agent your team talks to in Slack. Mention @Computer with a task and the result comes back as a pull request.",
+   "what": "OpenComputer is an open-source alternative to Devin. You mention `@Computer` in a Slack thread, it works on its own computer while your team watches and steers, and it opens a pull request. You can run the whole stack in your own cloud account or use the hosted OpenComputer Cloud.",
+   "who": "Teams that already live in Slack and want to hand small coding tasks to an agent where everyone can see it. If you code alone in your editor, a local coding agent is simpler.",
+   "needs": [
+    "A Slack workspace where you can install apps",
+    "Code repos to connect",
+    "To self-host: a VM and a Cloudflare account, since the rest of the stack runs on Cloudflare Workers and Durable Objects"
+   ],
+   "steps": [
+    {
+     "title": "Sign up for the cloud version",
+     "text": "The README calls this the fastest way in. Sign up at app.opencomputer.dev."
+    },
+    {
+     "title": "Connect your repos",
+     "text": "Link the repositories you want the agent to work on."
+    },
+    {
+     "title": "Install the Slack app",
+     "text": "Add the OpenComputer app to your Slack workspace, then mention `@Computer` in a thread with a task."
+    },
+    {
+     "title": "Or self-host it",
+     "text": "The README links self-hosting guides for AWS, GCP and Azure at docs.opencomputer.dev/self-hosting/overview. The whole stack runs on one VM."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A Slack thread",
+    "text": "Mention `@Computer` with a task. It replies in the thread and the result lands as a pull request."
+   },
+   "watch": [
+    "It needs access to the repos you connect, and it opens pull requests on them.",
+    "If you self-host, the README recommends locking the VM down to outbound-only network access.",
+    "You can bring your own ChatGPT or Codex subscription, which bills to your account.",
+    "Self-hosting currently runs on Cloudflare; Fly and other platforms are listed as coming soon."
+   ],
+   "sources": [
+    "https://github.com/diggerhq/opencomputer",
+    "https://raw.githubusercontent.com/diggerhq/opencomputer/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "BatteryHub",
+   "repo": "github.com/krisgfx9/Wireless-Device-Battery-Monitor",
+   "stars": "5.5k",
+   "level": "Beginner",
+   "cost": "Free and open source (GPL-3.0 or later)",
+   "works_with": "Windows; an experimental Linux build",
+   "short": "Shows the battery level of your wireless mouse, headset, keyboard and controller on the Windows taskbar, without vendor apps.",
+   "what": "BatteryHub (formerly Wireless Battery) is a small C++ app of about 350 KB that puts battery percentages next to the Windows clock. It reads Logitech, Razer, SteelSeries, Corsair, HyperX, PlayStation, Xbox and many other devices, plus any Bluetooth device Windows knows a level for. It can also alert you when a device runs low and keep a local battery history.",
+   "who": "Anyone on Windows tired of opening vendor software to check a mouse or headset battery. Check the supported devices table first: some receivers and models are not supported yet.",
+   "needs": [
+    "Windows",
+    "To build from source: MinGW-w64, for example from MSYS2"
+   ],
+   "steps": [
+    {
+     "title": "Download the installer",
+     "text": "Get `BatteryHub-Setup-<version>.exe` from the latest release at github.com/krisgfx9/Wireless-Device-Battery-Monitor/releases/latest."
+    },
+    {
+     "title": "Run it",
+     "text": "The default per-user install needs no administrator rights. Installing for all users does. Prefer no installer? Download the portable zip, unzip it anywhere and run `BatteryHub.exe`."
+    },
+    {
+     "title": "Check what it sees",
+     "text": "From a terminal, list every device and its battery level.",
+     "code": "BatteryHub.exe --list"
+    },
+    {
+     "title": "Device missing?",
+     "text": "Right-click the widget or tray icon and choose Request support for a device. `--dump` gives the full device report.",
+     "code": "BatteryHub.exe --dump"
+    },
+    {
+     "title": "Or build it yourself",
+     "text": "With MinGW-w64 on your PATH.",
+     "code": "make"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A terminal",
+    "text": "Run `BatteryHub.exe --json` to print your devices and levels as JSON that scripts and bar widgets can read."
+   },
+   "watch": [
+    "The exe is not code-signed, so Windows SmartScreen may warn you. The README says to click More info, then Run anyway, or build it yourself.",
+    "Official builds check GitHub for updates every 24 hours. No device or battery data is sent, and you can turn the check off in the menu.",
+    "A device support request is sent only when you click Send, and it goes on a public list and a GitHub issue.",
+    "Some devices need setup or firmware patches, and some can conflict with vendor apps. The Limitations section lists them."
+   ],
+   "sources": [
+    "https://github.com/krisgfx9/Wireless-Device-Battery-Monitor",
+    "https://raw.githubusercontent.com/krisgfx9/Wireless-Device-Battery-Monitor/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "HGhub",
+   "repo": "github.com/Minireel/HGhub",
+   "stars": "10.6k",
+   "level": "Advanced",
+   "cost": "Free for non-commercial use (PolyForm Noncommercial 1.0.0)",
+   "works_with": "Windows and Android first; other platforms still being adapted",
+   "short": "A video player that gets its content from JavaScript plugins you import. It ships with no content sources of its own.",
+   "what": "HGhub puts browsing, search, playback and a personal library in one app. You import JavaScript plugins to connect content sources, and it plays HLS and regular video, keeps watch history and resume points, and can show live streams or feeds when a plugin supports them. It is built with Rust, Tauri 2, React and TypeScript.",
+   "who": "Developers comfortable building a Tauri app from source who want a player they can extend with their own plugins. The README and docs are in Chinese. The plugin version is in early development, so wait if you want a ready-made download.",
+   "needs": [
+    "Node.js 22",
+    "pnpm 10",
+    "Rust 1.90 or newer",
+    "The Tauri development setup for your platform",
+    "For Android: JDK 17, Android SDK and NDK, and libclang"
+   ],
+   "steps": [
+    {
+     "title": "Get the source",
+     "text": "Clone github.com/Minireel/HGhub. The plugin version currently runs only from source."
+    },
+    {
+     "title": "Install dependencies",
+     "code": "pnpm install --frozen-lockfile"
+    },
+    {
+     "title": "Run the desktop app",
+     "code": "pnpm app:dev"
+    },
+    {
+     "title": "Or build and package it",
+     "code": "pnpm app:build"
+    },
+    {
+     "title": "Import a plugin",
+     "text": "Open Plugin Center, then Import and Subscribe (on mobile, start from the My tab). Pick a plugin file, paste its code or enter a plugin or list URL, then confirm and enable it."
+    },
+    {
+     "title": "Start watching",
+     "text": "Find something from the home page, search or categories and press play."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "HGhub's Plugin Center",
+    "text": "Import a plugin, enable it, then search for something and play it."
+   },
+   "watch": [
+    "The app has no built-in content, does not distribute third-party plugins and has no official source list. What you can watch, and whether you have the rights to it, depends on the plugins you import.",
+    "Plugins are JavaScript from whoever wrote them. Only import ones you trust.",
+    "Commercial use is banned by the licence, including selling it, ad revenue or paid unlocks.",
+    "It is maintained by one person, who does not promise that third-party plugins or sites keep working."
+   ],
+   "sources": [
+    "https://github.com/Minireel/HGhub",
+    "https://raw.githubusercontent.com/Minireel/HGhub/HEAD/README.md",
+    "https://raw.githubusercontent.com/Minireel/HGhub/HEAD/docs/DEVELOPMENT.md",
+    "https://raw.githubusercontent.com/Minireel/HGhub/HEAD/docs/PROJECT_POLICY.md"
+   ]
+  },
+  {
+   "kind": "Repo",
+   "name": "Firecrawl",
+   "repo": "github.com/firecrawl/firecrawl",
+   "stars": "205.6k",
+   "level": "Intermediate",
+   "cost": "Open source (mostly AGPL-3.0, SDKs MIT). Firecrawl Cloud gives 1,000 free credits a month with no API key or signup; paid pricing is not stated in the README.",
+   "works_with": "Claude Code, Claude Desktop, Cursor, Windsurf, Gemini CLI, Codex and any MCP client",
+   "short": "Lets your AI agent search, scrape and crawl the web as clean markdown, locally or through Firecrawl's cloud.",
+   "what": "Firecrawl turns websites into markdown your AI can use. Firecrawl Local is one binary that scrapes, crawls and maps sites on your machine, serves the Firecrawl API on localhost and plugs into your agent as an MCP server. Firecrawl Cloud adds search, structured JSON, page interaction, an agent and 550+ data providers through Alexandria.",
+   "who": "Developers building agents or apps that need web content. If you only want to read one page now and then, your agent's built-in browsing may be enough.",
+   "needs": [
+    "For Firecrawl Local: Rust and a C compiler (`xcode-select --install` on macOS, `build-essential` on Debian or Ubuntu)",
+    "Node.js 22 or newer for the MCP server",
+    "Optional: Chrome or Chromium for pages that need JavaScript",
+    "Optional: a Firecrawl API key for the cloud features"
+   ],
+   "steps": [
+    {
+     "title": "Install Firecrawl Local",
+     "code": "cargo install firecrawl-local"
+    },
+    {
+     "title": "Scrape a page",
+     "text": "Prints the page as markdown.",
+     "code": "firecrawl-local scrape https://firecrawl.dev --markdown"
+    },
+    {
+     "title": "Add it to your AI agent",
+     "text": "Finds supported agents on your machine and adds Firecrawl Local as an MCP server. Restart the agent afterwards.",
+     "code": "firecrawl-local init"
+    },
+    {
+     "title": "No Rust? Try the cloud CLI",
+     "text": "Runs the same scrape with nothing to build and no signup.",
+     "code": "npx -y firecrawl-cli@latest scrape https://firecrawl.dev"
+    },
+    {
+     "title": "Or use the Python SDK",
+     "code": "pip install firecrawl"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "A terminal",
+    "text": "Crawl a docs site into one markdown file per page: `firecrawl-local crawl https://docs.firecrawl.dev --limit 50 --out ./pages`."
+   },
+   "watch": [
+    "By default, a single-page scrape that won't load locally is sent to Firecrawl Cloud instead. Set `FIRECRAWL_CLOUD=off` to keep everything on your machine.",
+    "`init` edits your AI tools' config files. It backs each one up first.",
+    "The README says you are responsible for respecting each website's policies when scraping. Firecrawl respects robots.txt by default.",
+    "Self-hosting the full server needs Docker Compose, Redis, PostgreSQL and a browser service."
+   ],
+   "sources": [
+    "https://github.com/firecrawl/firecrawl",
+    "https://raw.githubusercontent.com/firecrawl/firecrawl/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "stripe-bfcm-dashboard",
+   "repo": "github.com/stripe/ai",
+   "stars": "2.1k",
+   "level": "Beginner",
+   "cost": "Free skill (MIT). It needs a Stripe account.",
+   "works_with": "Claude Code, Codex, Cursor, Grok Build and other agents with the Stripe MCP server",
+   "short": "Builds a Black Friday and Cyber Monday dashboard of your payments, customers and recurring revenue from your Stripe account.",
+   "what": "This AI skill builds a fixed BFCM season dashboard from your connected Stripe account: recurring revenue, growth and payments for a time window, with an optional comparison. It runs a set list of read-only queries through the Stripe MCP server and makes a hosted dashboard where your agent supports one, or else a single HTML file. It is for the 2026 BFCM season only.",
+   "who": "Stripe merchants who want their holiday numbers in one place without building reports. If you don't take payments through Stripe, skip it.",
+   "needs": [
+    "A Stripe account",
+    "The Stripe MCP server or connector, signed in to that account with access to the Analytics API and the Query Runs API (OAuth sign-in works best)"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code",
+     "text": "Stripe recommends its official plugin, which includes the skills. Run this in your project.",
+     "code": "claude plugin install stripe@claude-plugins-official"
+    },
+    {
+     "title": "Codex",
+     "code": "codex plugin add stripe@openai-curated"
+    },
+    {
+     "title": "Cursor",
+     "code": "/add-plugin stripe"
+    },
+    {
+     "title": "Any other agent",
+     "text": "Manually installed skills don't auto-update. Run `npx skills update -y` to get the latest.",
+     "code": "npx skills add https://docs.stripe.com"
+    },
+    {
+     "title": "Connect Stripe",
+     "text": "Connect the Stripe MCP server at https://mcp.stripe.com and sign in. Without it, the skill stops and tells you what to fix."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask: \"build me a holiday dashboard\" or \"build me a Cyber Monday dashboard.\""
+   },
+   "watch": [
+    "It reads your live Stripe data through MCP. It is read-only, queries only counts and amounts, and never selects customer names or emails.",
+    "The build can take up to 10 minutes while the queries run.",
+    "A session signed in with an API key only sees that key's account and mode, and can't make a dashboard that refreshes itself.",
+    "It doesn't share the dashboard automatically. Check who can see it before you share it."
+   ],
+   "sources": [
+    "https://github.com/stripe/ai/tree/main/providers/agent-plugins/plugin/skills/stripe-bfcm-dashboard",
+    "https://raw.githubusercontent.com/stripe/ai/main/providers/agent-plugins/plugin/skills/stripe-bfcm-dashboard/SKILL.md",
+    "https://raw.githubusercontent.com/stripe/ai/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "openmotion-sale-promo",
+   "repo": "github.com/nexu-io/openmotion",
+   "stars": "12.9k",
+   "level": "Intermediate",
+   "cost": "Free and open source (Apache-2.0). Any media generation is billed to your own provider accounts.",
+   "works_with": "Claude Code, Codex, WorkBuddy and other agents with OpenMotion connected",
+   "short": "Turns one sale offer into a 10 or 15 second promo video with the discount, struck-through old price, promo code and deadline.",
+   "what": "This OpenMotion skill takes one offer, written as `offer.json`, and makes an editable HyperFrames video project plus an MP4. It works out the sale price, percentage and saving from the regular price so the numbers always agree. It renders in 9:16, 4:5, 1:1 or 16:9 with themes for Black Friday, Cyber Monday, holidays and more.",
+   "who": "Shop owners and marketers who need a quick sale video and have a good product photo. It makes no soundtrack, so plan to add your own licensed music.",
+   "needs": [
+    "Git, npm and Node.js 26.11.1",
+    "Chrome or Chromium and FFmpeg/FFprobe for preview and export",
+    "A well-lit product photo of your own",
+    "The offer facts: price, discount, promo code and the real deadline with its time zone"
+   ],
+   "steps": [
+    {
+     "title": "Set up OpenMotion from source",
+     "code": "git -c filter.lfs.process= -c filter.lfs.smudge= -c filter.lfs.required=false clone --depth 1 --single-branch --branch main https://github.com/nexu-io/openmotion.git\ncd openmotion\nnpm ci\nnpm run build:studio\nnpm start"
+    },
+    {
+     "title": "Find the skill",
+     "text": "List the skills in the repo, then add `openmotion-sale-promo` from the list. If you install the skill on its own, set `OPENMOTION_HOME` to your OpenMotion checkout or run `npm install gsap`.",
+     "code": "npx skills add nexu-io/openmotion --list"
+    },
+    {
+     "title": "Check your offer",
+     "text": "Your agent writes `offer.json` from your offer. The check refuses wrong prices, bad codes and past deadlines, and prints the computed prices to read back.",
+     "code": "node scripts/build.mjs --check offer.json"
+    },
+    {
+     "title": "Generate and render",
+     "code": "node scripts/build.mjs offer.json out/ [--aspect 9:16] [--duration 10] [--no-credit]\ncd out && npx hyperframes check && npx hyperframes render -o promo.mp4"
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask for a Black Friday promo video for one product, with its regular price, discount, promo code and end date."
+   },
+   "watch": [
+    "The end card carries a small \"Made with OpenMotion\" sign-off unless you pass `--no-credit`.",
+    "If you have no product photo, the skill asks before generating one, and asks for consent before any paid generation.",
+    "The video has no soundtrack. Add music you have the rights to.",
+    "Installing the skill alone copies instructions. It does not install Studio or connect MCP."
+   ],
+   "sources": [
+    "https://github.com/nexu-io/openmotion/tree/main/library/skills/openmotion-sale-promo",
+    "https://raw.githubusercontent.com/nexu-io/openmotion/main/library/skills/openmotion-sale-promo/SKILL.md",
+    "https://raw.githubusercontent.com/nexu-io/openmotion/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "directory-submissions",
+   "repo": "github.com/coreyhaines31/marketingskills",
+   "stars": "61.5k",
+   "level": "Beginner",
+   "cost": "Free (the skill). It sticks to free directory tiers unless you approve a paid one.",
+   "works_with": "Claude Code, Codex and other agents that read skills",
+   "short": "Plans and runs your listings on Product Hunt, G2, Capterra, AlternativeTo, MCP registries and more, with a submission tracker.",
+   "what": "This AI skill helps you list a product in startup, SaaS, AI, MCP and review directories. It checks whether you are ready, picks directory tiers, writes different positioning for each type of directory and keeps a tracker of every submission. If your agent has a browser tool, it can fill the forms and verify the backlink afterwards.",
+   "who": "Founders and marketers launching a software product. If your site has no pricing page, privacy policy or screenshots yet, the skill will tell you to build those first.",
+   "needs": [
+    "A live product page to link to",
+    "Logo files, screenshots and ideally a short demo video",
+    "Accounts on the directories you choose (you sign in yourself)"
+   ],
+   "steps": [
+    {
+     "title": "Install the skills",
+     "text": "This installs the whole set, directory-submissions included. To install only some, list them after `--skill`, as in the README's example `npx skills add coreyhaines31/marketingskills --skill cro copywriting`.",
+     "code": "npx skills add coreyhaines31/marketingskills"
+    },
+    {
+     "title": "Running it from inside Claude Code?",
+     "text": "Name the agent, or the skills may land in a folder Claude Code doesn't read.",
+     "code": "npx skills add coreyhaines31/marketingskills -a claude-code"
+    },
+    {
+     "title": "Or use the Claude Code plugin",
+     "code": "claude plugin marketplace add coreyhaines31/marketingskills\nclaude plugin install marketing-skills@marketingskills"
+    },
+    {
+     "title": "Add your context (optional)",
+     "text": "If `.agents/product-marketing.md` exists, the skill reads it first and asks fewer questions."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask for a directory plan for your product. It returns a readiness check, tiers, a week-by-week order, positioning copy and a tracker."
+   },
+   "watch": [
+    "With a browser tool it fills forms in your own browser profile. It shows you each completed form and waits for your approval before pressing Submit.",
+    "It stops at CAPTCHAs, logins, payments and terms, and hands those to you. It never creates accounts or types passwords.",
+    "It uses a role email on your product domain and leaves your phone and address blank, because directories get scraped and resold.",
+    "Opening awesome-list pull requests needs your approval, one per list."
+   ],
+   "sources": [
+    "https://github.com/coreyhaines31/marketingskills/tree/main/skills/directory-submissions",
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/main/skills/directory-submissions/SKILL.md",
+    "https://raw.githubusercontent.com/coreyhaines31/marketingskills/HEAD/README.md"
+   ]
+  },
+  {
+   "kind": "Skill",
+   "name": "landing-page-generator",
+   "repo": "github.com/luongnv89/skills",
+   "stars": "147",
+   "level": "Beginner",
+   "cost": "Free (MIT)",
+   "works_with": "Claude Code, Cursor, Windsurf, GitHub Copilot, Codex, OpenCode, Antigravity",
+   "short": "Writes a landing page from a brief or your README using PAS, AIDA or StoryBrand, then builds it as HTML with privacy, terms and changelog pages.",
+   "what": "This AI skill writes conversion copy for a landing page from your product description, or from a project README read as the brief. It adds the companion pages the footer needs, such as Privacy Policy, Terms, Changelog and Docs, when the facts call for them. It then builds the pages as HTML in a `landing-page/` folder using the `frontend-design` skill.",
+   "who": "Makers who need a landing page for a product or open-source project and have real facts to work with. It will not invent testimonials or metrics, so expect `[proof needed]` markers where you have none.",
+   "needs": [
+    "Your product name, audience, the problem it solves and the main action you want visitors to take",
+    "Optional: the `frontend-design` skill and `agent-skill-manager` (`asm`) for the HTML build"
+   ],
+   "steps": [
+    {
+     "title": "Claude Code plugin",
+     "text": "This skill lives in the optional lstack-extras plugin.",
+     "code": "claude plugin marketplace add luongnv89/skills\nclaude plugin install lstack@lstack --scope user\nclaude plugin install lstack-extras@lstack --scope user   # optional"
+    },
+    {
+     "title": "Other agents",
+     "text": "This installs the whole catalog. To pick skills, add `--skill` and a name, as in the README's example with `code-review`.",
+     "code": "npx skills@1.7.0 add https://github.com/luongnv89/skills"
+    },
+    {
+     "title": "Get the page-build helper (optional)",
+     "text": "Without `frontend-design`, the skill gives you copy only and no HTML.",
+     "code": "npm install -g agent-skill-manager"
+    },
+    {
+     "title": "Give it a brief",
+     "text": "Describe the product, or point it at your README. It asks for any missing core facts."
+    }
+   ],
+   "try": {
+    "label": "From the README",
+    "where": "Your coding agent",
+    "text": "Ask: \"turn my README into a landing page\"."
+   },
+   "watch": [
+    "Before writing `landing-page/` into your project, it syncs your git repo: it may stash your changes, then fetch and `git pull --rebase`. It stops and asks if there's a conflict.",
+    "Treat the Privacy Policy and Terms it writes as drafts for a lawyer to review.",
+    "It never edits your README. For that, the repo has a separate `readme-generator` skill.",
+    "The README also offers a remote install that pipes a script into your shell. If you use it, read the script first."
+   ],
+   "sources": [
+    "https://github.com/luongnv89/skills/tree/main/extras/landing-page-generator",
+    "https://raw.githubusercontent.com/luongnv89/skills/main/extras/landing-page-generator/SKILL.md",
+    "https://raw.githubusercontent.com/luongnv89/skills/HEAD/README.md"
+   ]
+  }
+ ]
+}
